@@ -57,12 +57,32 @@ func TestTeamsJSONLoader_LoadTeams(t *testing.T) {
 		},
 		{
 			name:     "invalid teams format must produce the expected error",
-			testFile: "teams_invalid.json",
+			testFile: "teams_unmarshalable.json",
 			wantErr: fmt.Errorf("cannot unmarshal team collection: %w", &json.UnmarshalTypeError{
 				Value: "number",
 				Type:  reflect.TypeOf(domain.TeamCollection{}),
 				Field: "teams",
 			}),
+		},
+		{
+			name:     "empty team id must produce the expected error",
+			testFile: "teams_empty_id.json",
+			wantErr:  errors.New("invalid team at index 0: id: is empty"),
+		},
+		{
+			name:     "empty team name must produce the expected error",
+			testFile: "teams_empty_name.json",
+			wantErr:  errors.New("invalid team at index 0: name: is empty"),
+		},
+		{
+			name:     "empty team image url must produce the expected error",
+			testFile: "teams_empty_image_url.json",
+			wantErr:  errors.New("invalid team at index 0: image url: is empty"),
+		},
+		{
+			name:     "duplicate team id must produce the expected error",
+			testFile: "teams_duplicate_id.json",
+			wantErr:  fmt.Errorf("invalid team at index 2: id PTFC: %w", domain.ErrIsDuplicate),
 		},
 	}
 
@@ -104,10 +124,10 @@ func cmpError(t *testing.T, wantErr, gotErr error) {
 	case wantErr == nil && gotErr == nil:
 		return
 	case wantErr == nil && gotErr != nil:
-		t.Fatalf("want nil error, got %s (%T)", gotErr, gotErr)
+		t.Fatalf("want nil error, got '%s' (%T)", gotErr, gotErr)
 	case wantErr != nil && gotErr == nil:
-		t.Fatalf("want error %s (%T), got nil", wantErr, wantErr)
+		t.Fatalf("want error '%s' (%T), got nil", wantErr, wantErr)
 	case wantErr.Error() != gotErr.Error() && !errors.Is(gotErr, wantErr):
-		t.Fatalf("want error %s (%T), got %s (%T)", wantErr, wantErr, gotErr, gotErr)
+		t.Fatalf("want error '%s' (%T), got '%s' (%T)", wantErr, wantErr, gotErr, gotErr)
 	}
 }

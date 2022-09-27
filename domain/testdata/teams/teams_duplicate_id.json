@@ -1,0 +1,19 @@
+{
+  "teams": [
+    {
+      "id": "PTFC",
+      "name": "Poole Town",
+      "imageURL": "http://ptfc.jpg"
+    },
+    {
+      "id": "WTFC",
+      "name": "Wimborne Town",
+      "imageURL": "http://wtfc.jpg"
+    },
+    {
+      "id": "PTFC",
+      "name": "Partick Thistle",
+      "imageURL": "http://partick-thistle.jpg"
+    }
+  ]
+}

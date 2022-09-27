@@ -3,15 +3,15 @@ package domain
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/fs"
+	"strings"
+	"sync"
 )
 
 var (
 	defaultFileSystem fs.FS // TODO: load files via go:embed
-	ErrIsEmpty        = errors.New("is empty")
 )
 
 type Team struct {
@@ -20,7 +20,7 @@ type Team struct {
 	ImageURL string `json:"imageURL"`
 }
 
-type TeamCollection []Team
+type TeamCollection []*Team
 
 type TeamsJSONLoader struct {
 	fSys fs.FS
@@ -76,5 +76,44 @@ func (t *TeamsJSONLoader) LoadTeams(_ context.Context) (TeamCollection, error) {
 		return nil, fmt.Errorf("cannot unmarshal team collection: %w", err)
 	}
 
-	return content.Teams, nil
+	return validateTeams(content.Teams)
+}
+
+func validateTeams(teams TeamCollection) (TeamCollection, error) {
+	ids := &sync.Map{}
+
+	for idx, team := range teams {
+		// validate current team
+		if err := validateTeam(team); err != nil {
+			return nil, fmt.Errorf("invalid team at index %d: %w", idx, err)
+		}
+
+		// check if this team id already exists in the collection
+		if _, ok := ids.Load(team.ID); ok {
+			return nil, fmt.Errorf("invalid team at index %d: id %s: %w", idx, team.ID, ErrIsDuplicate)
+		}
+		ids.Store(team.ID, struct{}{})
+	}
+
+	return teams, nil
+}
+
+func validateTeam(team *Team) error {
+	team.ID = strings.Trim(team.ID, " ")
+	team.Name = strings.Trim(team.Name, " ")
+	team.ImageURL = strings.Trim(team.ImageURL, " ")
+
+	if team.ID == "" {
+		return fmt.Errorf("id: %w", ErrIsEmpty)
+	}
+
+	if team.Name == "" {
+		return fmt.Errorf("name: %w", ErrIsEmpty)
+	}
+
+	if team.ImageURL == "" {
+		return fmt.Errorf("image url: %w", ErrIsEmpty)
+	}
+
+	return nil
 }
