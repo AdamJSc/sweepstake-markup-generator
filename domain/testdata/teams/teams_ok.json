@@ -1,0 +1,44 @@
+{
+  "teams": [
+    {
+      "id": "BPFC",
+      "name": "Bournemouth Poppies",
+      "imageURL": "http://bpfc.jpg"
+    },
+    {
+      "id": "DTFC",
+      "name": "Dorchester Town",
+      "imageURL": "http://dtfc.jpg"
+    },
+    {
+      "id": "DYFC",
+      "name": "Dexters Youth",
+      "imageURL": "http://dyfc.jpg"
+    },
+    {
+      "id": "HUFC",
+      "name": "Hamworthy United",
+      "imageURL": "http://hufc.jpg"
+    },
+    {
+      "id": "PTFC",
+      "name": "Poole Town",
+      "imageURL": "http://ptfc.jpg"
+    },
+    {
+      "id": "SJRFC",
+      "name": "St John's Rangers",
+      "imageURL": "http://sjrfc.jpg"
+    },
+    {
+      "id": "STHFC",
+      "name": "Swanage Town & Herston",
+      "imageURL": "http://sthfc.jpg"
+    },
+    {
+      "id": "WTFC",
+      "name": "Wimborne Town",
+      "imageURL": "http://wtfc.jpg"
+    }
+  ]
+}
