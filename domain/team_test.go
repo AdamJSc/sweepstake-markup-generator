@@ -128,6 +128,17 @@ func cmpError(t *testing.T, wantErr, gotErr error) {
 	case wantErr != nil && gotErr == nil:
 		t.Fatalf("want error '%s' (%T), got nil", wantErr, wantErr)
 	case wantErr.Error() != gotErr.Error() && !errors.Is(gotErr, wantErr):
-		t.Fatalf("want error '%s' (%T), got '%s' (%T)", wantErr, wantErr, gotErr, gotErr)
+		doFatalMsg := func(diff string) {
+			t.Fatalf("want error '%s' (%T), got '%s' (%T), diff: %s", wantErr, wantErr, gotErr, gotErr, diff)
+		}
+
+		defer func() {
+			if r := recover(); r != nil {
+				// unable to diff the error objects so just diff the error messages instead
+				doFatalMsg(cmp.Diff(wantErr.Error(), gotErr.Error()))
+			}
+		}()
+
+		doFatalMsg(cmp.Diff(wantErr, gotErr))
 	}
 }
