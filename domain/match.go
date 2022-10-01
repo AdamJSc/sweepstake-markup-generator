@@ -8,33 +8,40 @@ import (
 	"log"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Match struct {
-	ID   string
-	Home MatchCompetitor
-	Away MatchCompetitor
+	ID        string
+	Date      time.Time
+	Stage     MatchStage
+	Home      MatchCompetitor
+	Away      MatchCompetitor
+	Winner    *Team
+	Completed bool
 }
 
+type MatchStage uint8
+
+const (
+	// TODO: add more match stages and convert to string values
+	_ MatchStage = iota
+	Group
+	Knockout
+)
+
 type MatchCompetitor struct {
-	Team   *Team
-	Events []MatchEvent
+	Team        *Team
+	Goals       uint8
+	YellowCards uint8
+	OwnGoals    []MatchEvent
+	RedCards    []MatchEvent
 }
 
 type MatchEvent struct {
-	EventType MatchEventType
-	Name      string
-	Minute    uint16
+	Name   string
+	Minute float32
 }
-
-type MatchEventType uint8
-
-const (
-	// TODO: add more match event types and convert to string values
-	_       MatchEventType = iota
-	OwnGoal MatchEventType = iota
-	YellowCard
-)
 
 type MatchCollection []*Match
 
@@ -85,6 +92,7 @@ func (m *MatchesCSVLoader) LoadMatches(_ context.Context) (MatchCollection, erro
 	}
 
 	// TODO: parse file contents as csv
+	// TODO: transform file structure to matches collection
 	var matches MatchCollection
 	log.Println(string(b))
 
