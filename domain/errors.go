@@ -11,12 +11,21 @@ var (
 	ErrIsDuplicate = errors.New("is duplicate")
 )
 
-type MultiError struct {
-	Errs   []error
-	prefix string
+type MultiError interface {
+	error
+	Add(err error)
+	IsEmpty() bool
 }
 
-func (m *MultiError) Error() string {
+func NewMultiError() *multiErr {
+	return &multiErr{}
+}
+
+type multiErr struct {
+	Errs []error
+}
+
+func (m *multiErr) Error() string {
 	var msg string
 	switch len(m.Errs) {
 	case 0:
@@ -36,18 +45,32 @@ func (m *MultiError) Error() string {
 	return strings.Trim(msg, "\n")
 }
 
-func (m *MultiError) withPrefix(prefix string) *MultiError {
-	return &MultiError{
-		Errs:   m.Errs,
-		prefix: prefix,
+func (m *multiErr) Add(err error) {
+	if err != nil {
+		m.Errs = append(m.Errs, err)
 	}
 }
 
-func (m *MultiError) add(err error) {
-	if err != nil {
-		if m.prefix != "" {
-			err = fmt.Errorf("%s: %w", m.prefix, err)
-		}
-		m.Errs = append(m.Errs, err)
+func (m *multiErr) IsEmpty() bool {
+	return len(m.Errs) == 0
+}
+
+func (m *multiErr) WithPrefix(prefix string) MultiError {
+	return &multiErrWithPrefix{
+		MultiError: m,
+		prefix:     prefix,
 	}
+}
+
+type multiErrWithPrefix struct {
+	MultiError
+	prefix string
+}
+
+func (m *multiErrWithPrefix) Add(err error) {
+	if err != nil && m.prefix != "" {
+		err = fmt.Errorf("%s: %w", m.prefix, err)
+	}
+
+	m.MultiError.Add(err)
 }

@@ -122,38 +122,33 @@ func (m *MatchesCSVLoader) LoadMatches(_ context.Context) (MatchCollection, erro
 
 func transformCSVToMatches(records [][]string) (MatchCollection, error) {
 	if len(records) < 2 {
-		return nil, fmt.Errorf("%d rows: file must have header row and at least one more row", len(records))
+		return nil, fmt.Errorf("rows %d: file must have header row and at least one more row", len(records))
 	}
 	headerRow := records[0]
 	if diff := cmp.Diff(headerRow, matchesCSVHeader); diff != "" {
-		return nil, fmt.Errorf("headers mismatch: %s", diff)
+		return nil, fmt.Errorf("invalid headers: %s", strings.Join(headerRow, ","))
 	}
 
 	var (
 		matches MatchCollection
-		mErr    = &MultiError{}
+		mErr    = NewMultiError()
 	)
 
 	for idx, row := range records[1:] {
 		rowNum := idx + 1
-		mErrRow := mErr.withPrefix(fmt.Sprintf("row %d", rowNum))
-		if len(row) != len(headerRow) {
-			mErrRow.add(fmt.Errorf("has %d fields but must have %d", len(row), len(headerRow)))
-			continue
-		}
-
+		mErrRow := mErr.WithPrefix(fmt.Sprintf("row %d", rowNum))
 		match := transformCSVRowToMatch(row, mErrRow)
 		matches = append(matches, match)
 	}
 
-	if len(mErr.Errs) > 0 {
+	if !mErr.IsEmpty() {
 		return nil, mErr
 	}
 
 	return matches, nil
 }
 
-func transformCSVRowToMatch(row []string, mErr *MultiError) *Match {
+func transformCSVRowToMatch(row []string, mErr MultiError) *Match {
 	matchID := row[0]             // MATCH_ID
 	sDate := row[1]               // DATE
 	sTime := row[2]               // TIME
@@ -209,40 +204,44 @@ func transformCSVRowToMatch(row []string, mErr *MultiError) *Match {
 	return match
 }
 
-func parseTimestamp(sDate, sTime string, mErr *MultiError) time.Time {
+func parseTimestamp(sDate, sTime string, mErr MultiError) time.Time {
 	sTimestamp := sDate + " " + sTime
 	timestamp, err := time.Parse("02/01/2006 15:04", sTimestamp)
 	if err != nil {
-		mErr.add(fmt.Errorf("invalid timestamp format: %s", sTimestamp))
+		mErr.Add(fmt.Errorf("invalid timestamp format: %s", sTimestamp))
 		return time.Time{}
 	}
 
 	return timestamp
 }
 
-func parseUInt8(sInt, ref string, mErr *MultiError) uint8 {
+func parseUInt8(sInt, ref string, mErr MultiError) uint8 {
+	if sInt == "" {
+		return 0
+	}
+
 	val, err := strconv.Atoi(sInt)
 	if err != nil {
-		mErr.add(fmt.Errorf("%s: invalid int: %w", ref, err))
+		mErr.Add(fmt.Errorf("%s: invalid int: %w", ref, err))
 		return 0
 	}
 
 	return uint8(val)
 }
 
-func parseMatchEvents(sEvents, ref string, mErr *MultiError) []MatchEvent {
+func parseMatchEvents(sEvents, ref string, mErr MultiError) []MatchEvent {
 	// TODO: parse match events
 	return nil
 }
 
-func convertToMatchStage(s string, mErr *MultiError) MatchStage {
+func convertToMatchStage(s string, mErr MultiError) MatchStage {
 	switch s {
 	case "GROUP":
 		return GroupStage
 	case "KO":
 		return KnockoutStage
 	default:
-		mErr.add(fmt.Errorf("invalid match stage: %s", s))
+		mErr.Add(fmt.Errorf("invalid match stage: %s", s))
 		return 0
 	}
 }
