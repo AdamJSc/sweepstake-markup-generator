@@ -130,6 +130,7 @@ func cmpError(t *testing.T, wantErr, gotErr error) {
 		t.Fatalf("want error '%s' (%T), got nil", wantErr, wantErr)
 	case wantErr.Error() != gotErr.Error() && !errors.Is(gotErr, wantErr):
 		doFatalMsg := func(diff string) {
+			t.Helper()
 			t.Fatalf("want error '%s' (%T), got '%s' (%T), diff: %s", wantErr, wantErr, gotErr, gotErr, diff)
 		}
 

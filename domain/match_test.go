@@ -1,6 +1,9 @@
 package domain_test
 
 import (
+	"errors"
+	"fmt"
+	"io/fs"
 	"path/filepath"
 	"testing"
 	"time"
@@ -260,6 +263,75 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:    "empty path must produce the expected error",
+			wantErr: domain.ErrIsEmpty,
+			// testFile is empty
+		},
+		{
+			name:     "non-existent path must produce the expected error",
+			testFile: "non-existent.csv",
+			wantErr:  fs.ErrNotExist,
+		},
+		{
+			name:     "file with invalid number of row fields must produce the expected error",
+			testFile: "matches_invalid_file.csv",
+			wantErr:  errors.New("cannot read file: record on line 2: wrong number of fields"),
+		},
+		{
+			name:     "empty file must produce the expected error",
+			testFile: "matches_empty.csv",
+			wantErr:  errors.New("cannot transform csv: rows 0: file must have header row and at least one more row"),
+		},
+		{
+			name:     "file with only one row must produce the expected error",
+			testFile: "matches_header_row_only.csv",
+			wantErr:  errors.New("cannot transform csv: rows 1: file must have header row and at least one more row"),
+		},
+		{
+			name:     "file with invalid header row must produce the expected error",
+			testFile: "matches_invalid_header_row.csv",
+			wantErr:  errors.New("cannot transform csv: invalid headers: header,row"),
+		},
+		{
+			name:     "file with invalid timestamps must produce the expected error",
+			testFile: "matches_rows_with_invalid_timestamp.csv",
+			wantErr: newMultiError("cannot transform csv", []string{
+				"row 1: invalid timestamp format: epic fail",
+				"row 2: invalid timestamp format: sad 15:00",
+				"row 3: invalid timestamp format: 02/06/2018 times",
+			}),
+		},
+		{
+			name:     "file with invalid stage must produce the expected error",
+			testFile: "matches_rows_with_invalid_stage.csv",
+			wantErr: newMultiError("cannot transform csv", []string{
+				"row 1: invalid match stage: NOT_A_VALID_STAGE",
+			}),
+		},
+		{
+			name:     "file with invalid goals must produce the expected error",
+			testFile: "matches_rows_with_invalid_goals.csv",
+			wantErr: newMultiError("cannot transform csv", []string{
+				`row 1: home goals: invalid int: strconv.Atoi: parsing "OH": invalid syntax`,
+				`row 1: away goals: invalid int: strconv.Atoi: parsing "NO!": invalid syntax`,
+			}),
+		},
+		{
+			name:     "file with invalid yellow cards must produce the expected error",
+			testFile: "matches_rows_with_invalid_yellow_cards.csv",
+			wantErr: newMultiError("cannot transform csv", []string{
+				`row 1: home yellow cards: invalid int: strconv.Atoi: parsing "OH": invalid syntax`,
+				`row 1: away yellow cards: invalid int: strconv.Atoi: parsing "NO!": invalid syntax`,
+			}),
+		},
+		// TODO: add tests for parsing match events
+		// TODO: add tests for remaining validation
+		{
+			name:     "duplicate match id must produce the expected error",
+			testFile: "matches_duplicate_id.csv",
+			wantErr:  fmt.Errorf("invalid match at index 1: id A1: %w", domain.ErrIsDuplicate),
+		},
 	}
 
 	for _, tc := range tt {
@@ -284,4 +356,19 @@ func newMatchesCSVLoader(path ...string) *domain.MatchesCSVLoader {
 	}
 	fullPath := filepath.Join(path...)
 	return (&domain.MatchesCSVLoader{}).WithFileSystem(testdataFilesystem).WithPath(fullPath)
+}
+
+func newMultiError(prefix string, messages []string) error {
+	mErr := domain.NewMultiError()
+
+	for _, msg := range messages {
+		mErr.Add(errors.New(msg))
+	}
+
+	var err error = mErr
+	if prefix != "" {
+		err = fmt.Errorf("%s: %w", prefix, err)
+	}
+
+	return err
 }
