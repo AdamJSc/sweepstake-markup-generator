@@ -15,6 +15,7 @@ import (
 )
 
 const (
+	matchesDir  = "matches"
 	teamsDir    = "teams"
 	testdataDir = "testdata"
 )
