@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"log"
 	"strconv"
 	"strings"
 	"sync"
@@ -61,8 +60,9 @@ type MatchCompetitor struct {
 }
 
 type MatchEvent struct {
-	Name   string
-	Minute float32
+	Name   string // name of player who performed the event
+	Minute uint8  // match minute event took place
+	Offset uint8  // indicates if event took place in stopped time - e.g. 90+2 = offset 2
 }
 
 type MatchCollection []*Match
@@ -236,8 +236,74 @@ func parseUInt8(sInt string, mErr MultiError) uint8 {
 }
 
 func parseMatchEvents(sEvents string, mErr MultiError) []MatchEvent {
-	// TODO: parse match events
+	sEvents = strings.Trim(sEvents, " ")
+	if sEvents == "" {
+		return nil
+	}
+
+	split := strings.Split(sEvents, ";")
+	elemCount, err := strconv.Atoi(split[0])
+	if err != nil {
+		mErr.Add(errors.New("first element must provide count of remaining elements"))
+		return nil
+	}
+
+	elems := split[1:]
+	if len(elems) != elemCount {
+		mErr.Add(fmt.Errorf("must have %d elements", elemCount))
+		return nil
+	}
+
+	var events []MatchEvent
+	for idx, elem := range elems {
+		event := parseMatchEvent(elem, mErr.WithPrefix(fmt.Sprintf("event %d", idx+1)))
+		if event != nil {
+			events = append(events, *event)
+		}
+	}
+
+	if len(events) > 0 {
+		return events
+	}
+
 	return nil
+}
+
+func parseMatchEvent(sEvent string, mErr MultiError) *MatchEvent {
+	split := strings.Split(sEvent, ":")
+	if len(split) != 2 {
+		mErr.Add(errors.New("invalid format"))
+		return nil
+	}
+
+	name := strings.Trim(split[0], " ")
+	minuteWithOffset := split[1]
+
+	split = strings.SplitN(minuteWithOffset, "+", 2)
+	rawMinute := split[0]
+	rawOffset := ""
+	if len(split) == 2 {
+		rawOffset = split[1]
+	}
+
+	minute, err := strconv.Atoi(rawMinute)
+	if err != nil {
+		mErr.Add(fmt.Errorf("invalid int: %w", err))
+		return nil
+	}
+
+	if minute < 1 {
+		mErr.Add(errors.New("minute must be greater than 0"))
+		return nil
+	}
+
+	offset, _ := strconv.Atoi(rawOffset)
+
+	return &MatchEvent{
+		Name:   name,
+		Minute: uint8(minute),
+		Offset: uint8(offset),
+	}
 }
 
 func convertToMatchStage(s string, mErr MultiError) MatchStage {
