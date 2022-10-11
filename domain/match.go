@@ -205,7 +205,11 @@ func transformCSVRowToMatch(row []string, mErr MultiError) *Match {
 }
 
 func parseTimestamp(sDate, sTime string, mErr MultiError) time.Time {
-	sTimestamp := sDate + " " + sTime
+	sTimestamp := strings.Trim(sDate+" "+sTime, " ")
+	if sTimestamp == "" {
+		return time.Time{}
+	}
+
 	timestamp, err := time.Parse("02/01/2006 15:04", sTimestamp)
 	if err != nil {
 		mErr.Add(fmt.Errorf("invalid timestamp format: %s", sTimestamp))
@@ -248,30 +252,77 @@ func convertToMatchStage(s string, mErr MultiError) MatchStage {
 
 func validateMatches(matches MatchCollection) (MatchCollection, error) {
 	ids := &sync.Map{}
+	mErr := NewMultiError()
 
 	for idx, match := range matches {
 		// validate current match
-		if err := validateMatch(match); err != nil {
-			return nil, fmt.Errorf("invalid match at index %d: %w", idx, err)
-		}
+		mErrIdx := mErr.WithPrefix(fmt.Sprintf("index %d", idx))
+		validateMatch(match, mErrIdx)
 
 		// check if this match id already exists in the collection
 		if _, ok := ids.Load(match.ID); ok {
-			return nil, fmt.Errorf("invalid match at index %d: id %s: %w", idx, match.ID, ErrIsDuplicate)
+			mErrIdx.Add(fmt.Errorf("id: %w", ErrIsDuplicate))
 		}
 		ids.Store(match.ID, struct{}{})
+	}
+
+	if !mErr.IsEmpty() {
+		return nil, mErr
 	}
 
 	return matches, nil
 }
 
-func validateMatch(match *Match) error {
-	// TODO: add match sanitisation and validation rules
+func validateMatch(match *Match, mErr MultiError) {
 	match.ID = strings.Trim(match.ID, " ")
 
-	if match.ID == "" {
-		return fmt.Errorf("id: %w", ErrIsEmpty)
+	if match.Home.Team != nil {
+		match.Home.Team.ID = strings.Trim(match.Home.Team.ID, " ")
 	}
 
-	return nil
+	if match.Away.Team != nil {
+		match.Away.Team.ID = strings.Trim(match.Away.Team.ID, " ")
+	}
+
+	if match.Winner != nil {
+		match.Winner.ID = strings.Trim(match.Winner.ID, " ")
+	}
+
+	if match.ID == "" {
+		mErr.Add(fmt.Errorf("id: %w", ErrIsEmpty))
+	}
+
+	if match.Timestamp.Equal(time.Time{}) {
+		mErr.Add(fmt.Errorf("timestamp: %w", ErrIsEmpty))
+	}
+
+	if isTeamIDIdentical(match.Home.Team, match.Away.Team) {
+		mErr.Add(fmt.Errorf("home team id and away team id are identical: %s", match.Home.Team.ID))
+	}
+
+	if isTeamNotOneOf(match.Winner, match.Home.Team, match.Away.Team) {
+		mErr.Add(fmt.Errorf("winning team id %s must match either home or away team id", match.Winner.ID))
+	}
+}
+
+func isTeamIDIdentical(a, b *Team) bool {
+	if a == nil || b == nil {
+		return false // return early
+	}
+
+	return a.ID == b.ID
+}
+
+func isTeamNotOneOf(needle *Team, haystack ...*Team) bool {
+	if needle == nil {
+		return false // exit early
+	}
+
+	for _, t := range haystack {
+		if t != nil && t.ID == needle.ID {
+			return false // needle is one of haystack
+		}
+	}
+
+	return true // needle is not one of haystack
 }
