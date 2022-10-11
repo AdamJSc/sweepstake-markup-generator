@@ -27,12 +27,15 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Timestamp: time.Date(2018, 5, 26, 14, 0, 0, 0, time.UTC),
 					Stage:     domain.GroupStage,
 					Home: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "SWTFC"},
-						Goals: 2,
+						Team:     &domain.Team{ID: "SWTFC"},
+						Goals:    2,
+						OwnGoals: []domain.MatchEvent{{Name: "O'Brien", Minute: 12}},
+						RedCards: []domain.MatchEvent{{Name: "Prichard", Minute: 22}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "PTFC"},
 						YellowCards: 2,
+						OwnGoals:    []domain.MatchEvent{{Name: "Thiessen", Minute: 54}},
 					},
 					Winner: &domain.Team{
 						ID: "SWTFC",
@@ -49,8 +52,9 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						YellowCards: 2,
 					},
 					Away: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "HUFC"},
-						Goals: 1,
+						Team:     &domain.Team{ID: "HUFC"},
+						Goals:    1,
+						OwnGoals: []domain.MatchEvent{{Name: "Friend", Minute: 43}, {Name: "Jefferson", Minute: 89}},
 					},
 					Completed: true,
 				},
@@ -61,11 +65,14 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Home: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "DTFC"},
 						YellowCards: 1,
+						OwnGoals:    []domain.MatchEvent{{Name: "Johnson", Minute: 11}, {Name: "Smith", Minute: 34}},
+						RedCards:    []domain.MatchEvent{{Name: "Isome", Minute: 25}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "DYFC"},
 						Goals:       2,
 						YellowCards: 1,
+						RedCards:    []domain.MatchEvent{{Name: "Reid-Cunningham", Minute: 56}},
 					},
 					Winner: &domain.Team{
 						ID: "DYFC",
@@ -77,12 +84,14 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Timestamp: time.Date(2018, 5, 27, 19, 45, 0, 0, time.UTC),
 					Stage:     domain.GroupStage,
 					Home: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "SJRFC"},
-						Goals: 2,
+						Team:     &domain.Team{ID: "SJRFC"},
+						Goals:    2,
+						OwnGoals: []domain.MatchEvent{{Name: "Jones", Minute: 7}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "STHFC"},
 						YellowCards: 2,
+						OwnGoals:    []domain.MatchEvent{{Name: "Moriarty", Minute: 21}},
 					},
 					Winner: &domain.Team{
 						ID: "SJRFC",
@@ -97,10 +106,12 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						Team:        &domain.Team{ID: "BPFC"},
 						Goals:       1,
 						YellowCards: 2,
+						RedCards:    []domain.MatchEvent{{Name: "Sheahan", Minute: 8}},
 					},
 					Away: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "SWTFC"},
-						Goals: 1,
+						Team:     &domain.Team{ID: "SWTFC"},
+						Goals:    1,
+						OwnGoals: []domain.MatchEvent{{Name: "Racoosin", Minute: 33}, {Name: "Broadfoot", Minute: 90, Offset: 2}},
 					},
 					Completed: true,
 				},
@@ -111,11 +122,13 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Home: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "HUFC"},
 						YellowCards: 1,
+						OwnGoals:    []domain.MatchEvent{{Name: "Kenny", Minute: 65}, {Name: "Jensen", Minute: 80}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "PTFC"},
 						Goals:       2,
 						YellowCards: 1,
+						RedCards:    []domain.MatchEvent{{Name: "Pesarin", Minute: 22}},
 					},
 					Winner: &domain.Team{
 						ID: "PTFC",
@@ -127,12 +140,15 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Timestamp: time.Date(2018, 5, 29, 15, 0, 0, 0, time.UTC),
 					Stage:     domain.GroupStage,
 					Home: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "DTFC"},
-						Goals: 2,
+						Team:     &domain.Team{ID: "DTFC"},
+						Goals:    2,
+						OwnGoals: []domain.MatchEvent{{Name: "Scott", Minute: 45, Offset: 4}},
+						RedCards: []domain.MatchEvent{{Name: "Neilson", Minute: 67}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "SJRFC"},
 						YellowCards: 2,
+						OwnGoals:    []domain.MatchEvent{{Name: "Fillios", Minute: 89}},
 					},
 					Winner: &domain.Team{
 						ID: "DTFC",
@@ -149,8 +165,9 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						YellowCards: 2,
 					},
 					Away: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "STHFC"},
-						Goals: 1,
+						Team:     &domain.Team{ID: "STHFC"},
+						Goals:    1,
+						OwnGoals: []domain.MatchEvent{{Name: "Landenna", Minute: 20}, {Name: "Dongoski", Minute: 24}},
 					},
 					Completed: true,
 				},
@@ -161,11 +178,14 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Home: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "BPFC"},
 						YellowCards: 1,
+						OwnGoals:    []domain.MatchEvent{{Name: "Peterson", Minute: 9}, {Name: "Williamson", Minute: 33}},
+						RedCards:    []domain.MatchEvent{{Name: "Wacquant", Minute: 11}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "PTFC"},
 						Goals:       2,
 						YellowCards: 1,
+						RedCards:    []domain.MatchEvent{{Name: "Sewall", Minute: 32}},
 					},
 					Winner: &domain.Team{
 						ID: "PTFC",
@@ -177,12 +197,14 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Timestamp: time.Date(2018, 5, 30, 15, 0, 0, 0, time.UTC),
 					Stage:     domain.GroupStage,
 					Home: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "HUFC"},
-						Goals: 2,
+						Team:     &domain.Team{ID: "HUFC"},
+						Goals:    2,
+						OwnGoals: []domain.MatchEvent{{Name: "McCartney", Minute: 12}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "SWTFC"},
 						YellowCards: 2,
+						OwnGoals:    []domain.MatchEvent{{Name: "Margaitis", Minute: 59}},
 					},
 					Winner: &domain.Team{
 						ID: "HUFC",
@@ -197,10 +219,12 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						Team:        &domain.Team{ID: "DTFC"},
 						Goals:       1,
 						YellowCards: 2,
+						RedCards:    []domain.MatchEvent{{Name: "Bhide", Minute: 55}},
 					},
 					Away: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "STHFC"},
-						Goals: 1,
+						Team:     &domain.Team{ID: "STHFC"},
+						Goals:    1,
+						OwnGoals: []domain.MatchEvent{{Name: "Daboni", Minute: 76}, {Name: "T.Wegman", Minute: 77}},
 					},
 					Completed: true,
 				},
@@ -211,11 +235,13 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Home: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "DYFC"},
 						YellowCards: 1,
+						OwnGoals:    []domain.MatchEvent{{Name: "Lennon", Minute: 1}, {Name: "Starr", Minute: 46}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "SJRFC"},
 						Goals:       2,
 						YellowCards: 1,
+						RedCards:    []domain.MatchEvent{{Name: "Glover", Minute: 44}, {Name: "Litwin", Minute: 23}},
 					},
 					Winner: &domain.Team{
 						ID: "SJRFC",
@@ -227,12 +253,16 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Timestamp: time.Date(2018, 6, 1, 15, 0, 0, 0, time.UTC),
 					Stage:     domain.KnockoutStage,
 					Home: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "PTFC"},
-						Goals: 2,
+						Team:     &domain.Team{ID: "PTFC"},
+						Goals:    2,
+						OwnGoals: []domain.MatchEvent{{Name: "Harrison", Minute: 7}},
+						RedCards: []domain.MatchEvent{{Name: "St.Martin", Minute: 13}},
 					},
 					Away: domain.MatchCompetitor{
 						Team:        &domain.Team{ID: "DTFC"},
 						YellowCards: 2,
+						OwnGoals:    []domain.MatchEvent{{Name: "Bickmore", Minute: 41}},
+						RedCards:    []domain.MatchEvent{{Name: "Kinnaman", Minute: 77}},
 					},
 					Winner: &domain.Team{
 						ID: "PTFC",
@@ -249,8 +279,9 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						YellowCards: 2,
 					},
 					Away: domain.MatchCompetitor{
-						Team:  &domain.Team{ID: "BPFC"},
-						Goals: 1,
+						Team:     &domain.Team{ID: "BPFC"},
+						Goals:    1,
+						OwnGoals: []domain.MatchEvent{{Name: "Lomeli", Minute: 67}, {Name: "Prichard", Minute: 89}},
 					},
 				},
 				{
