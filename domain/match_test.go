@@ -296,68 +296,68 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 		{
 			name:     "file with invalid timestamps must produce the expected error",
 			testFile: "matches_rows_with_invalid_timestamp.csv",
-			wantErr: newMultiError("cannot transform csv", []string{
+			wantErr: fmt.Errorf("cannot transform csv: %w", newMultiError([]string{
 				"row 1: invalid timestamp format: epic fail",
 				"row 2: invalid timestamp format: sad 15:00",
 				"row 3: invalid timestamp format: 02/06/2018 times",
-			}),
+			})),
 		},
 		{
 			name:     "file with invalid stage must produce the expected error",
 			testFile: "matches_rows_with_invalid_stage.csv",
-			wantErr: newMultiError("cannot transform csv", []string{
+			wantErr: fmt.Errorf("cannot transform csv: %w", newMultiError([]string{
 				"row 1: invalid match stage: NOT_A_VALID_STAGE",
-			}),
+			})),
 		},
 		{
 			name:     "file with invalid goals must produce the expected error",
 			testFile: "matches_rows_with_invalid_goals.csv",
-			wantErr: newMultiError("cannot transform csv", []string{
+			wantErr: fmt.Errorf("cannot transform csv: %w", newMultiError([]string{
 				`row 1: home goals: invalid int: strconv.Atoi: parsing "OH": invalid syntax`,
 				`row 1: away goals: invalid int: strconv.Atoi: parsing "NO!": invalid syntax`,
-			}),
+			})),
 		},
 		{
 			name:     "file with invalid yellow cards must produce the expected error",
 			testFile: "matches_rows_with_invalid_yellow_cards.csv",
-			wantErr: newMultiError("cannot transform csv", []string{
+			wantErr: fmt.Errorf("cannot transform csv: %w", newMultiError([]string{
 				`row 1: home yellow cards: invalid int: strconv.Atoi: parsing "OH": invalid syntax`,
 				`row 1: away yellow cards: invalid int: strconv.Atoi: parsing "NO!": invalid syntax`,
-			}),
+			})),
 		},
 		// TODO: add tests for parsing match events
 		{
 			name:     "empty match id must produce the expected error",
 			testFile: "matches_rows_with_missing_id.csv",
-			wantErr: newMultiError("", []string{
+			wantErr: newMultiError([]string{
 				`index 0: id: is empty`,
 			}),
 		},
 		{
 			name:     "empty timestamp must produce the expected error",
 			testFile: "matches_rows_with_empty_timestamp.csv",
-			wantErr: newMultiError("", []string{
+			wantErr: newMultiError([]string{
 				`index 0: timestamp: is empty`,
 			}),
 		},
 		{
 			name:     "identical home and away team ids must produce the expected error",
 			testFile: "matches_rows_with_identical_home_away_team_ids.csv",
-			wantErr: newMultiError("", []string{
+			wantErr: newMultiError([]string{
 				`index 0: home team id and away team id are identical: PTFC`,
 			}),
 		},
 		{
 			name:     "winning team id is not home or away team id must produce the expected error",
 			testFile: "matches_rows_with_mismatch_winning_team_id.csv",
-			wantErr: newMultiError("", []string{
+			wantErr: newMultiError([]string{
 				`index 0: winning team id ABC must match either home or away team id`,
 			}),
 		},
 		{
 			name:     "duplicate match id must produce the expected error",
 			testFile: "matches_rows_with_duplicate_id.csv",
-			wantErr: newMultiError("", []string{
+			wantErr: newMultiError([]string{
 				`index 1: id: is duplicate`,
 			}),
 		},
@@ -387,17 +387,12 @@ func newMatchesCSVLoader(path ...string) *domain.MatchesCSVLoader {
 	return (&domain.MatchesCSVLoader{}).WithFileSystem(testdataFilesystem).WithPath(fullPath)
 }
 
-func newMultiError(prefix string, messages []string) error {
+func newMultiError(messages []string) error {
 	mErr := domain.NewMultiError()
 
 	for _, msg := range messages {
 		mErr.Add(errors.New(msg))
 	}
 
-	var err error = mErr
-	if prefix != "" {
-		err = fmt.Errorf("%s: %w", prefix, err)
-	}
-
-	return err
+	return mErr
 }
