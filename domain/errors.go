@@ -15,6 +15,7 @@ type MultiError interface {
 	error
 	Add(err error)
 	IsEmpty() bool
+	WithPrefix(prefix string) MultiError
 }
 
 func NewMultiError() *multiErr {
@@ -73,4 +74,8 @@ func (m *multiErrWithPrefix) Add(err error) {
 	}
 
 	m.MultiError.Add(err)
+}
+
+func (m *multiErrWithPrefix) WithPrefix(prefix string) MultiError {
+	return m.MultiError.WithPrefix(m.prefix + ": " + prefix)
 }

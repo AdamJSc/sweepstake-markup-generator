@@ -3,8 +3,10 @@ package domain
 import (
 	"context"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io/fs"
+	"log"
 	"strconv"
 	"strings"
 	"sync"
@@ -171,16 +173,16 @@ func transformCSVRowToMatch(row []string, mErr MultiError) *Match {
 		Timestamp: parseTimestamp(sDate, sTime, mErr),
 		Stage:     convertToMatchStage(rawStage, mErr),
 		Home: MatchCompetitor{
-			Goals:       parseUInt8(rawHomeGoals, "home goals", mErr),
-			YellowCards: parseUInt8(rawHomeYellowCards, "home yellow cards", mErr),
-			OwnGoals:    parseMatchEvents(rawHomeOG, "home own goals", mErr),
-			RedCards:    parseMatchEvents(rawHomeRedCards, "home red cards", mErr),
+			Goals:       parseUInt8(rawHomeGoals, mErr.WithPrefix("home goals")),
+			YellowCards: parseUInt8(rawHomeYellowCards, mErr.WithPrefix("home yellow cards")),
+			OwnGoals:    parseMatchEvents(rawHomeOG, mErr.WithPrefix("home own goals")),
+			RedCards:    parseMatchEvents(rawHomeRedCards, mErr.WithPrefix("home red cards")),
 		},
 		Away: MatchCompetitor{
-			Goals:       parseUInt8(rawAwayGoals, "away goals", mErr),
-			YellowCards: parseUInt8(rawAwayYellowCards, "away yellow cards", mErr),
-			OwnGoals:    parseMatchEvents(rawAwayOG, "away own goals", mErr),
-			RedCards:    parseMatchEvents(rawAwayRedCards, "away red cards", mErr),
+			Goals:       parseUInt8(rawAwayGoals, mErr.WithPrefix("away goals")),
+			YellowCards: parseUInt8(rawAwayYellowCards, mErr.WithPrefix("away yellow cards")),
+			OwnGoals:    parseMatchEvents(rawAwayOG, mErr.WithPrefix("away own goals")),
+			RedCards:    parseMatchEvents(rawAwayRedCards, mErr.WithPrefix("away red cards")),
 		},
 		Completed: rawCompleted == "Y",
 	}
@@ -219,21 +221,21 @@ func parseTimestamp(sDate, sTime string, mErr MultiError) time.Time {
 	return timestamp
 }
 
-func parseUInt8(sInt, ref string, mErr MultiError) uint8 {
+func parseUInt8(sInt string, mErr MultiError) uint8 {
 	if sInt == "" {
 		return 0
 	}
 
 	val, err := strconv.Atoi(sInt)
 	if err != nil {
-		mErr.Add(fmt.Errorf("%s: invalid int: %w", ref, err))
+		mErr.Add(fmt.Errorf("invalid int: %w", err))
 		return 0
 	}
 
 	return uint8(val)
 }
 
-func parseMatchEvents(sEvents, ref string, mErr MultiError) []MatchEvent {
+func parseMatchEvents(sEvents string, mErr MultiError) []MatchEvent {
 	// TODO: parse match events
 	return nil
 }
