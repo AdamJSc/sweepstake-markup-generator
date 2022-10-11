@@ -99,7 +99,7 @@ func (m *MatchesCSVLoader) LoadMatches(_ context.Context) (MatchCollection, erro
 		return nil, err
 	}
 
-	// open file
+	// open matches csv file
 	f, err := m.fSys.Open(m.path)
 	if err != nil {
 		return nil, fmt.Errorf("cannot open file: %w", err)

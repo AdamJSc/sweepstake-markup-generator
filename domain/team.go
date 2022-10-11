@@ -54,7 +54,7 @@ func (t *TeamsJSONLoader) LoadTeams(_ context.Context) (TeamCollection, error) {
 		return nil, err
 	}
 
-	// open file
+	// open teams config file
 	f, err := t.fSys.Open(t.path)
 	if err != nil {
 		return nil, fmt.Errorf("cannot open file: %w", err)
