@@ -326,11 +326,40 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 			}),
 		},
 		// TODO: add tests for parsing match events
-		// TODO: add tests for remaining validation
+		{
+			name:     "empty match id must produce the expected error",
+			testFile: "matches_rows_with_missing_id.csv",
+			wantErr: newMultiError("", []string{
+				`index 0: id: is empty`,
+			}),
+		},
+		{
+			name:     "empty timestamp must produce the expected error",
+			testFile: "matches_rows_with_empty_timestamp.csv",
+			wantErr: newMultiError("", []string{
+				`index 0: timestamp: is empty`,
+			}),
+		},
+		{
+			name:     "identical home and away team ids must produce the expected error",
+			testFile: "matches_rows_with_identical_home_away_team_ids.csv",
+			wantErr: newMultiError("", []string{
+				`index 0: home team id and away team id are identical: PTFC`,
+			}),
+		},
+		{
+			name:     "winning team id is not home or away team id must produce the expected error",
+			testFile: "matches_rows_with_mismatch_winning_team_id.csv",
+			wantErr: newMultiError("", []string{
+				`index 0: winning team id ABC must match either home or away team id`,
+			}),
+		},
 		{
 			name:     "duplicate match id must produce the expected error",
-			testFile: "matches_duplicate_id.csv",
-			wantErr:  fmt.Errorf("invalid match at index 1: id A1: %w", domain.ErrIsDuplicate),
+			testFile: "matches_rows_with_duplicate_id.csv",
+			wantErr: newMultiError("", []string{
+				`index 1: id: is duplicate`,
+			}),
 		},
 	}
 
