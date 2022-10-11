@@ -250,7 +250,11 @@ func parseMatchEvents(sEvents string, mErr MultiError) []MatchEvent {
 
 	elems := split[1:]
 	if len(elems) != elemCount {
-		mErr.Add(fmt.Errorf("must have %d elements", elemCount))
+		fmtMsg := "must have %d element"
+		if elemCount != 1 {
+			fmtMsg += "s"
+		}
+		mErr.Add(fmt.Errorf(fmtMsg, elemCount))
 		return nil
 	}
 
@@ -288,16 +292,28 @@ func parseMatchEvent(sEvent string, mErr MultiError) *MatchEvent {
 
 	minute, err := strconv.Atoi(rawMinute)
 	if err != nil {
-		mErr.Add(fmt.Errorf("invalid int: %w", err))
+		mErr.Add(fmt.Errorf("minute: invalid int: %w", err))
 		return nil
 	}
 
 	if minute < 1 {
-		mErr.Add(errors.New("minute must be greater than 0"))
+		mErr.Add(errors.New("minute: must be greater than 0"))
 		return nil
 	}
 
-	offset, _ := strconv.Atoi(rawOffset)
+	var offset int
+	if rawOffset != "" {
+		offset, err = strconv.Atoi(rawOffset)
+		if err != nil {
+			mErr.Add(fmt.Errorf("offset: invalid int: %w", err))
+			return nil
+		}
+
+		if offset < 1 {
+			mErr.Add(errors.New("offset: must be greater than 0"))
+			return nil
+		}
+	}
 
 	return &MatchEvent{
 		Name:   name,

@@ -356,7 +356,28 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 				`row 1: away yellow cards: invalid int: strconv.Atoi: parsing "NO!": invalid syntax`,
 			})),
 		},
-		// TODO: add tests for parsing match events
+		{
+			name:     "file with invalid match events must produce the expected error",
+			testFile: "matches_rows_with_invalid_match_events.csv",
+			wantErr: fmt.Errorf("cannot transform csv: %w", newMultiError([]string{
+				`row 1: home own goals: first element must provide count of remaining elements`,
+				`row 1: home red cards: first element must provide count of remaining elements`,
+				`row 1: away own goals: first element must provide count of remaining elements`,
+				`row 1: away red cards: first element must provide count of remaining elements`,
+				`row 2: home own goals: must have 1 element`,
+				`row 2: home red cards: must have 3 elements`,
+				`row 2: away own goals: must have 2 elements`,
+				`row 2: away red cards: must have 4 elements`,
+				`row 3: home own goals: event 1: invalid format`,
+				`row 3: home red cards: event 2: invalid format`,
+				`row 3: away own goals: event 1: minute: invalid int: strconv.Atoi: parsing "invalidNumber": invalid syntax`,
+				`row 3: away red cards: event 2: minute: invalid int: strconv.Atoi: parsing "invalidNumber": invalid syntax`,
+				`row 4: away own goals: event 1: minute: must be greater than 0`,
+				`row 5: home red cards: event 1: offset: invalid int: strconv.Atoi: parsing "invalidNumber": invalid syntax`,
+				`row 6: away red cards: event 1: offset: must be greater than 0`,
+			})),
+		},
+
 		{
 			name:     "empty match id must produce the expected error",
 			testFile: "matches_rows_with_missing_id.csv",
