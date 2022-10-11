@@ -15,9 +15,10 @@ import (
 )
 
 const (
-	matchesDir  = "matches"
-	teamsDir    = "teams"
-	testdataDir = "testdata"
+	matchesDir     = "matches"
+	teamsDir       = "teams"
+	testdataDir    = "testdata"
+	tournamentsDir = "tournaments"
 )
 
 var (
