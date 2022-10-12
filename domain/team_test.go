@@ -26,6 +26,61 @@ var (
 	testdataFilesystem embed.FS
 )
 
+func TestTeamCollection_GetByID(t *testing.T) {
+	teamA1 := &domain.Team{
+		ID:       "teamA",
+		Name:     "TeamA",
+		ImageURL: "http://team-a1.jpg",
+	}
+
+	teamB := &domain.Team{
+		ID:       "teamB",
+		Name:     "TeamB",
+		ImageURL: "http://team-b.jpg",
+	}
+
+	teamA2 := &domain.Team{
+		ID:       "teamA",
+		Name:     "TeamA2",
+		ImageURL: "http://team-a2.jpg",
+	}
+
+	collection := domain.TeamCollection{
+		teamA1,
+		teamB,
+		teamA2, // duplicate id, should never be returned (teamA1 should match first)
+	}
+
+	tt := []struct {
+		name     string
+		id       string
+		wantTeam *domain.Team
+	}{
+		{
+			name:     "duplicate team id must return first matched item",
+			id:       "teamA",
+			wantTeam: teamA1,
+		},
+		{
+			name:     "unique team id must return only matching item",
+			id:       "teamB",
+			wantTeam: teamB,
+		},
+		{
+			name: "non-matching item must return nil",
+			id:   "teamC",
+			// want nil team
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotTeam := collection.GetByID(tc.id)
+			cmpDiff(t, tc.wantTeam, gotTeam)
+		})
+	}
+}
+
 func TestTeamsJSONLoader_LoadTeams(t *testing.T) {
 	tt := []struct {
 		name      string

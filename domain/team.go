@@ -22,6 +22,16 @@ type Team struct {
 
 type TeamCollection []*Team
 
+func (tc TeamCollection) GetByID(id string) *Team {
+	for _, team := range tc {
+		if team != nil && team.ID == id {
+			return team
+		}
+	}
+
+	return nil
+}
+
 type TeamsJSONLoader struct {
 	fSys fs.FS
 	path string
