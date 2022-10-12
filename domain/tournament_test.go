@@ -88,7 +88,53 @@ func TestTournamentLoader_LoadTournament(t *testing.T) {
 				"image url: is empty",
 			}),
 		},
-		// TODO: add extra tournament validation tests
+		{
+			name:     "teams that exist by id must be enriched successfully",
+			testFile: "tournament_ok.json",
+			teamsLoader: newMockTeamsLoader(domain.TeamCollection{
+				{ID: "123", Name: "Team123", ImageURL: "http://team123.jpg"},
+				{ID: "456", Name: "Team456", ImageURL: "http://team456.jpg"},
+			}, nil),
+			matchesLoader: newMockMatchesLoader(domain.MatchCollection{
+				{
+					Home:   domain.MatchCompetitor{Team: &domain.Team{ID: "123"}},
+					Away:   domain.MatchCompetitor{Team: &domain.Team{ID: "456"}},
+					Winner: &domain.Team{ID: "123"},
+				},
+			}, nil),
+			wantTournament: &domain.Tournament{
+				ID:       "TestTourney1",
+				Name:     "Test Tournament 1",
+				ImageURL: "http://tourney.jpg",
+				Teams: domain.TeamCollection{
+					{ID: "123", Name: "Team123", ImageURL: "http://team123.jpg"},
+					{ID: "456", Name: "Team456", ImageURL: "http://team456.jpg"},
+				},
+				Matches: domain.MatchCollection{
+					{
+						Home:   domain.MatchCompetitor{Team: &domain.Team{ID: "123", Name: "Team123", ImageURL: "http://team123.jpg"}}, // fully-enriched team
+						Away:   domain.MatchCompetitor{Team: &domain.Team{ID: "456", Name: "Team456", ImageURL: "http://team456.jpg"}}, // fully-enriched team
+						Winner: &domain.Team{ID: "123", Name: "Team123", ImageURL: "http://team123.jpg"},                               // fully-enriched team
+					},
+				},
+			},
+		},
+		{
+			name:     "teams that do not exist by id must produce the expected error",
+			testFile: "tournament_ok.json",
+			matchesLoader: newMockMatchesLoader(domain.MatchCollection{
+				{
+					Home:   domain.MatchCompetitor{Team: &domain.Team{ID: "AAA"}},
+					Away:   domain.MatchCompetitor{Team: &domain.Team{ID: "BBB"}},
+					Winner: &domain.Team{ID: "CCC"},
+				},
+			}, nil),
+			wantErr: newMultiError([]string{
+				"match 1: home: team id 'AAA': not found",
+				"match 1: away: team id 'BBB': not found",
+				"match 1: winner: team id 'CCC': not found",
+			}),
+		},
 	}
 
 	for _, tc := range tt {

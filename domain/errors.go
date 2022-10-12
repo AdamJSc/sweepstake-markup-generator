@@ -7,8 +7,9 @@ import (
 )
 
 var (
-	ErrIsEmpty     = errors.New("is empty")
 	ErrIsDuplicate = errors.New("is duplicate")
+	ErrIsEmpty     = errors.New("is empty")
+	ErrNotFound    = errors.New("not found")
 )
 
 type MultiError interface {

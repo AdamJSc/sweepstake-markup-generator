@@ -137,5 +137,38 @@ func validateTournament(tournament *Tournament, mErr MultiError) {
 		mErr.Add(fmt.Errorf("image url: %w", ErrIsEmpty))
 	}
 
-	// TODO: populate matches with team entities from associated team collection
+	for idx, match := range tournament.Matches {
+		matchNum := idx + 1
+		mErrMatch := mErr.WithPrefix(fmt.Sprintf("match %d", matchNum))
+
+		// enrich team entities based on existing ids
+		if err := populateTeamByID(match.Home.Team, tournament.Teams); err != nil {
+			mErrMatch.Add(fmt.Errorf("home: %w", err))
+		}
+		if err := populateTeamByID(match.Away.Team, tournament.Teams); err != nil {
+			mErrMatch.Add(fmt.Errorf("away: %w", err))
+		}
+		if err := populateTeamByID(match.Winner, tournament.Teams); err != nil {
+			mErrMatch.Add(fmt.Errorf("winner: %w", err))
+		}
+	}
+}
+
+func populateTeamByID(team *Team, collection TeamCollection) error {
+	if team == nil {
+		return nil
+	}
+
+	if team.ID == "" {
+		return nil
+	}
+
+	t := collection.GetByID(team.ID)
+	if t == nil {
+		return fmt.Errorf("team id '%s': %w", team.ID, ErrNotFound)
+	}
+
+	*team = *t
+
+	return nil
 }
