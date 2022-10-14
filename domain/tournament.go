@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/fs"
 	"strings"
+	"sync"
 )
 
 type Tournament struct {
@@ -25,34 +26,34 @@ type MatchesLoader interface {
 	LoadMatches(ctx context.Context) (MatchCollection, error)
 }
 
-type TournamentLoader struct {
+type TournamentFSLoader struct {
 	fSys fs.FS
 	path string
 	tl   TeamsLoader
 	ml   MatchesLoader
 }
 
-func (t *TournamentLoader) WithFileSystem(fSys fs.FS) *TournamentLoader {
+func (t *TournamentFSLoader) WithFileSystem(fSys fs.FS) *TournamentFSLoader {
 	t.fSys = fSys
 	return t
 }
 
-func (t *TournamentLoader) WithPath(path string) *TournamentLoader {
+func (t *TournamentFSLoader) WithPath(path string) *TournamentFSLoader {
 	t.path = path
 	return t
 }
 
-func (t *TournamentLoader) WithTeamsLoader(tl TeamsLoader) *TournamentLoader {
+func (t *TournamentFSLoader) WithTeamsLoader(tl TeamsLoader) *TournamentFSLoader {
 	t.tl = tl
 	return t
 }
 
-func (t *TournamentLoader) WithMatchesLoader(ml MatchesLoader) *TournamentLoader {
+func (t *TournamentFSLoader) WithMatchesLoader(ml MatchesLoader) *TournamentFSLoader {
 	t.ml = ml
 	return t
 }
 
-func (t *TournamentLoader) init() error {
+func (t *TournamentFSLoader) init() error {
 	if t.fSys == nil {
 		t.fSys = defaultFileSystem
 	}
@@ -72,7 +73,7 @@ func (t *TournamentLoader) init() error {
 	return nil
 }
 
-func (t *TournamentLoader) LoadTournament(ctx context.Context) (*Tournament, error) {
+func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, error) {
 	if err := t.init(); err != nil {
 		return nil, err
 	}
@@ -171,4 +172,44 @@ func populateTeamByID(team *Team, collection TeamCollection) error {
 	*team = *t
 
 	return nil
+}
+
+type TournamentCollection []*Tournament
+
+type TournamentLoader interface {
+	LoadTournament(ctx context.Context) (*Tournament, error)
+}
+
+func NewTournamentCollection(ctx context.Context, loaders []TournamentLoader) (TournamentCollection, error) {
+	var tournaments TournamentCollection
+
+	for idx, loader := range loaders {
+		tournament, err := loader.LoadTournament(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("loader index %d: %w", idx, err)
+		}
+
+		tournaments = append(tournaments, tournament)
+	}
+
+	return validateTournaments(tournaments)
+}
+
+func validateTournaments(tournaments TournamentCollection) (TournamentCollection, error) {
+	ids := &sync.Map{}
+	mErr := NewMultiError()
+
+	for _, tournament := range tournaments {
+		// check if this tournament id already exists in the collection
+		if _, ok := ids.Load(tournament.ID); ok {
+			mErr.Add(fmt.Errorf("id '%s': %w", tournament.ID, ErrIsDuplicate))
+		}
+		ids.Store(tournament.ID, struct{}{})
+	}
+
+	if !mErr.IsEmpty() {
+		return nil, mErr
+	}
+
+	return tournaments, nil
 }
