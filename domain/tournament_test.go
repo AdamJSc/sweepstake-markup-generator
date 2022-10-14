@@ -15,7 +15,7 @@ import (
 
 var errSadTimes = errors.New("sad times :'(")
 
-func TestTournamentLoader_LoadTournament(t *testing.T) {
+func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 	defaultMockTeamsLoader := newMockTeamsLoader(domain.TeamCollection{
 		{ID: "123"}, {ID: "456"},
 	}, nil)
@@ -156,7 +156,7 @@ func TestTournamentLoader_LoadTournament(t *testing.T) {
 				matchesLoader = defaultMockMatchesLoader
 			}
 
-			loader := newTournamentLoader(testPath...).WithTeamsLoader(
+			loader := newTournamentFSLoader(testPath...).WithTeamsLoader(
 				teamsLoader,
 			).WithMatchesLoader(
 				matchesLoader,
@@ -170,12 +170,92 @@ func TestTournamentLoader_LoadTournament(t *testing.T) {
 	}
 }
 
-func newTournamentLoader(path ...string) *domain.TournamentLoader {
+func TestNewTournamentCollection(t *testing.T) {
+	tt := []struct {
+		name           string
+		loaders        []domain.TournamentLoader
+		wantCollection domain.TournamentCollection
+		wantErr        error
+	}{
+		{
+			name: "valid loaders must be processed successfully",
+			loaders: []domain.TournamentLoader{
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament1",
+				}, nil),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament2",
+				}, nil),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament3",
+				}, nil),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament4",
+				}, nil),
+			},
+			wantCollection: domain.TournamentCollection{
+				{ID: "tournament1"},
+				{ID: "tournament2"},
+				{ID: "tournament3"},
+				{ID: "tournament4"},
+			},
+		},
+		{
+			name: "processing loaders that return errors must produce the expected error",
+			loaders: []domain.TournamentLoader{
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament1",
+				}, nil),
+				newMockTournamentLoader(nil, fmt.Errorf("tournament2: %w", errSadTimes)),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament3",
+				}, nil),
+			},
+			wantErr: errSadTimes,
+		},
+		{
+			name: "duplicate tournament ids must produce the expected error",
+			loaders: []domain.TournamentLoader{
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament1",
+				}, nil),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament2",
+				}, nil),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament1",
+				}, nil),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament2",
+				}, nil),
+				newMockTournamentLoader(&domain.Tournament{
+					ID: "tournament3",
+				}, nil),
+			},
+			wantErr: newMultiError([]string{
+				"id 'tournament1': is duplicate",
+				"id 'tournament2': is duplicate",
+			}),
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.Background()
+			gotCollection, gotErr := domain.NewTournamentCollection(ctx, tc.loaders)
+
+			cmpDiff(t, tc.wantCollection, gotCollection)
+			cmpError(t, tc.wantErr, gotErr)
+		})
+	}
+}
+
+func newTournamentFSLoader(path ...string) *domain.TournamentFSLoader {
 	if len(path) > 0 {
 		path = append([]string{testdataDir}, path...)
 	}
 	fullPath := filepath.Join(path...)
-	return (&domain.TournamentLoader{}).WithFileSystem(testdataFilesystem).WithPath(fullPath)
+	return (&domain.TournamentFSLoader{}).WithFileSystem(testdataFilesystem).WithPath(fullPath)
 }
 
 type mockTeamsLoader struct {
@@ -207,5 +287,21 @@ func newMockMatchesLoader(matches domain.MatchCollection, err error) *mockMatche
 	return &mockMatchesLoader{
 		matches: matches,
 		err:     err,
+	}
+}
+
+type mockTournamentLoader struct {
+	tournament *domain.Tournament
+	err        error
+}
+
+func (m *mockTournamentLoader) LoadTournament(_ context.Context) (*domain.Tournament, error) {
+	return m.tournament, m.err
+}
+
+func newMockTournamentLoader(tournament *domain.Tournament, err error) *mockTournamentLoader {
+	return &mockTournamentLoader{
+		tournament: tournament,
+		err:        err,
 	}
 }

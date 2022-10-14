@@ -410,7 +410,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 			name:     "duplicate match id must produce the expected error",
 			testFile: "matches_rows_with_duplicate_id.csv",
 			wantErr: newMultiError([]string{
-				`index 1: id: is duplicate`,
+				`index 1: id 'A1': is duplicate`,
 			}),
 		},
 	}

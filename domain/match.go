@@ -345,7 +345,7 @@ func validateMatches(matches MatchCollection) (MatchCollection, error) {
 
 		// check if this match id already exists in the collection
 		if _, ok := ids.Load(match.ID); ok {
-			mErrIdx.Add(fmt.Errorf("id: %w", ErrIsDuplicate))
+			mErrIdx.Add(fmt.Errorf("id '%s': %w", match.ID, ErrIsDuplicate))
 		}
 		ids.Store(match.ID, struct{}{})
 	}
