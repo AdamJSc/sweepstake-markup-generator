@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
+	"sort"
 	"strings"
+	"sync"
 )
 
 type Sweepstake struct {
@@ -14,15 +16,15 @@ type Sweepstake struct {
 	Name            string `json:"name"`
 	ImageURL        string `json:"imageURL"`
 	Tournament      *Tournament
-	Participants    []Participant `json:"participants"`
+	Participants    []*Participant `json:"participants"`
 	Template        *template.Template
 	Build           bool `json:"build"`
 	WithLastUpdated bool `json:"with_last_updated"`
 }
 
 type Participant struct {
-	TeamID          string `json:"team_id"`
-	ParticipantName string `json:"participant_name"`
+	TeamID string `json:"team_id"`
+	Name   string `json:"participant_name"`
 }
 
 type SweepstakeJSONLoader struct {
@@ -121,23 +123,103 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 }
 
 func validateSweepstake(sweepstake *Sweepstake) (*Sweepstake, error) {
+	mErr := NewMultiError()
+
 	sweepstake.ID = strings.Trim(sweepstake.ID, " ")
 	sweepstake.Name = strings.Trim(sweepstake.Name, " ")
 	sweepstake.ImageURL = strings.Trim(sweepstake.ImageURL, " ")
 
 	if sweepstake.ID == "" {
-		return nil, fmt.Errorf("id: %w", ErrIsEmpty)
+		mErr.Add(fmt.Errorf("id: %w", ErrIsEmpty))
 	}
 
 	if sweepstake.Name == "" {
-		return nil, fmt.Errorf("name: %w", ErrIsEmpty)
+		mErr.Add(fmt.Errorf("name: %w", ErrIsEmpty))
 	}
 
 	if sweepstake.ImageURL == "" {
-		return nil, fmt.Errorf("image url: %w", ErrIsEmpty)
+		mErr.Add(fmt.Errorf("image url: %w", ErrIsEmpty))
 	}
 
-	// TODO: add extra sweepstake validation rules
+	teamsMap := newTeamsIDMap(sweepstake.Tournament.Teams, "tournament team")
+	for idx, participant := range sweepstake.Participants {
+		participant.TeamID = strings.Trim(participant.TeamID, " ")
+		participant.Name = strings.Trim(participant.Name, " ")
+
+		mErrIdx := mErr.WithPrefix(fmt.Sprintf("participant index %d", idx))
+
+		val, ok := teamsMap.load(participant.TeamID)
+		if !ok {
+			mErrIdx.Add(fmt.Errorf("unrecognised participant team id: %s", participant.TeamID))
+		}
+
+		teamsMap.store(participant.TeamID, val+1)
+	}
+
+	teamsMap.validate(mErr)
+
+	if !mErr.IsEmpty() {
+		return nil, mErr
+	}
 
 	return sweepstake, nil
+}
+
+type idMap struct {
+	*sync.Map
+	name string
+}
+
+func (i *idMap) init() {
+	if i.Map == nil {
+		i.Map = &sync.Map{}
+	}
+}
+
+func (i *idMap) store(key string, val int) {
+	i.init()
+	i.Map.Store(key, val)
+}
+
+func (i *idMap) load(key string) (int, bool) {
+	i.init()
+	val, ok := i.Map.Load(key)
+	if !ok {
+		return 0, false
+	}
+	return val.(int), ok
+}
+
+func (i *idMap) validate(mErr MultiError) {
+	prefix := "id"
+	if i.name != "" {
+		prefix = i.name + " id"
+	}
+
+	var errs []error
+	i.Map.Range(func(key, val any) bool {
+		if val.(int) != 1 {
+			errs = append(errs, fmt.Errorf("%s '%s', count = %d", prefix, key, val))
+		}
+		return true
+	})
+
+	// guarantee error order
+	sort.SliceStable(errs, func(i, j int) bool {
+		return errs[i].Error() < errs[j].Error()
+	})
+
+	for _, err := range errs {
+		mErr.Add(err)
+	}
+}
+
+func newTeamsIDMap(teams TeamCollection, name string) *idMap {
+	mp := &idMap{name: name}
+
+	for _, team := range teams {
+		mp.store(team.ID, 0)
+	}
+
+	return mp
 }

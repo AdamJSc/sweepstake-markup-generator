@@ -16,10 +16,22 @@ import (
 )
 
 func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
-	defaultTestTournaments := domain.TournamentCollection{
-		{
-			ID: "TestTourney1",
+	testTourney := &domain.Tournament{
+		ID: "TestTourney1",
+		Teams: domain.TeamCollection{
+			{ID: "BPFC"},
+			{ID: "DTFC"},
+			{ID: "DYFC"},
+			{ID: "HUFC"},
+			{ID: "PTFC"},
+			{ID: "SJRFC"},
+			{ID: "STHFC"},
+			{ID: "WTFC"},
 		},
+	}
+
+	defaultTestTournaments := domain.TournamentCollection{
+		testTourney,
 	}
 
 	tt := []struct {
@@ -39,16 +51,16 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 				ID:         "test-sweepstake-1",
 				Name:       "Test Sweepstake 1",
 				ImageURL:   "http://sweepstake1.jpg",
-				Tournament: &domain.Tournament{ID: "TestTourney1"},
-				Participants: []domain.Participant{
-					{TeamID: "BPFC ", ParticipantName: "John L "},
-					{TeamID: "DTFC", ParticipantName: "Paul M"},
-					{TeamID: "DYFC", ParticipantName: "George H"},
-					{TeamID: "HUFC", ParticipantName: "Ringo S"},
-					{TeamID: "PTFC", ParticipantName: "Jon L"},
-					{TeamID: "SJRFC", ParticipantName: "Steve J"},
-					{TeamID: "STHFC", ParticipantName: "Paul C"},
-					{TeamID: "WTFC", ParticipantName: "Sid V / Glen M"},
+				Tournament: testTourney,
+				Participants: []*domain.Participant{
+					{TeamID: "BPFC", Name: "John L"},
+					{TeamID: "DTFC", Name: "Paul M"},
+					{TeamID: "DYFC", Name: "George H"},
+					{TeamID: "HUFC", Name: "Ringo S"},
+					{TeamID: "PTFC", Name: "Jon L"},
+					{TeamID: "SJRFC", Name: "Steve J"},
+					{TeamID: "STHFC", Name: "Paul C"},
+					{TeamID: "WTFC", Name: "Sid V / Glen M"},
 				},
 				Template:        parseTemplate(t, "<h1>Hello World</h1>"),
 				Build:           true,
@@ -107,7 +119,20 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 			markupFilename: "non-existent.gohtml",
 			wantErr:        fs.ErrNotExist,
 		},
-		// TODO: add more sad path tests
+		{
+			name:           "invalid sweepstake must produce the expected error",
+			tournaments:    defaultTestTournaments,
+			configFilename: "sweepstake_config_invalid.json",
+			markupFilename: "sweepstake_markup_ok.gohtml",
+			wantErr: newMultiError([]string{
+				"id: is empty",
+				"name: is empty",
+				"image url: is empty",
+				"participant index 0: unrecognised participant team id: NOT_BPFC",
+				"tournament team id 'BPFC', count = 0",
+				"tournament team id 'WTFC', count = 2",
+			}),
+		},
 	}
 
 	for _, tc := range tt {

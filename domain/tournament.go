@@ -129,6 +129,8 @@ func validateTournament(tournament *Tournament, mErr MultiError) {
 		mErr.Add(fmt.Errorf("image url: %w", ErrIsEmpty))
 	}
 
+	// TODO: ensure that each tournament team appears in at least one match home or away
+
 	for idx, match := range tournament.Matches {
 		matchNum := idx + 1
 		mErrMatch := mErr.WithPrefix(fmt.Sprintf("match %d", matchNum))
