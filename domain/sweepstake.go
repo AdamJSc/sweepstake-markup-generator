@@ -78,14 +78,14 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 	}
 
 	// read sweepstake config file
-	b, err := readFile(s.fSys, s.configPath)
+	rawConfigJSON, err := readFile(s.fSys, s.configPath)
 	if err != nil {
 		return nil, err
 	}
 
 	// parse as sweepstake
 	sweepstake := &Sweepstake{}
-	if err = json.Unmarshal(b, sweepstake); err != nil {
+	if err = json.Unmarshal(rawConfigJSON, sweepstake); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal sweepstake: %w", err)
 	}
 
@@ -93,7 +93,7 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 	var content = &struct {
 		TournamentID string `json:"tournament_id"`
 	}{}
-	if err = json.Unmarshal(b, &content); err != nil {
+	if err = json.Unmarshal(rawConfigJSON, &content); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal tournament id: %w", err)
 	}
 
@@ -104,7 +104,13 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 
 	sweepstake.Tournament = tournament
 
-	// TODO: read and parse markup file
+	// read markup config file
+	_, err = readFile(s.fSys, s.markupPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: parse raw markup as template
 
 	return validateSweepstake(sweepstake)
 }
