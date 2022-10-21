@@ -170,6 +170,61 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 	}
 }
 
+func TestTournamentCollection_GetByID(t *testing.T) {
+	tournamentA1 := &domain.Tournament{
+		ID:       "tourneyA",
+		Name:     "TourneyA1",
+		ImageURL: "http://tourney-a1.jpg",
+	}
+
+	tournamentB := &domain.Tournament{
+		ID:       "tourneyB",
+		Name:     "TourneyB",
+		ImageURL: "http://tourney-b.jpg",
+	}
+
+	tournamentA2 := &domain.Tournament{
+		ID:       "tourneyA",
+		Name:     "TourneyA2",
+		ImageURL: "http://tourney-a2.jpg",
+	}
+
+	collection := domain.TournamentCollection{
+		tournamentA1,
+		tournamentB,
+		tournamentA2, // duplicate id, should never be returned (tournamentA1 should match first)
+	}
+
+	tt := []struct {
+		name           string
+		id             string
+		wantTournament *domain.Tournament
+	}{
+		{
+			name:           "duplicate tournament id must return first matched item",
+			id:             "tourneyA",
+			wantTournament: tournamentA1,
+		},
+		{
+			name:           "unique tournament id must return only matching item",
+			id:             "tourneyB",
+			wantTournament: tournamentB,
+		},
+		{
+			name: "non-matching item must return nil",
+			id:   "tourneyC",
+			// want nil team
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotTeam := collection.GetByID(tc.id)
+			cmpDiff(t, tc.wantTournament, gotTeam)
+		})
+	}
+}
+
 func TestNewTournamentCollection(t *testing.T) {
 	tt := []struct {
 		name           string

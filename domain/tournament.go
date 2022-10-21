@@ -167,6 +167,16 @@ func populateTeamByID(team *Team, collection TeamCollection) error {
 
 type TournamentCollection []*Tournament
 
+func (tc TournamentCollection) GetByID(id string) *Tournament {
+	for _, tournament := range tc {
+		if tournament != nil && tournament.ID == id {
+			return tournament
+		}
+	}
+
+	return nil
+}
+
 type TournamentLoader interface {
 	LoadTournament(ctx context.Context) (*Tournament, error)
 }
