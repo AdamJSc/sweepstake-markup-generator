@@ -64,18 +64,10 @@ func (t *TeamsJSONLoader) LoadTeams(_ context.Context) (TeamCollection, error) {
 		return nil, err
 	}
 
-	// open teams config file
-	f, err := t.fSys.Open(t.path)
+	// read teams config file
+	b, err := readFile(t.fSys, t.path)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open file: %w", err)
-	}
-
-	defer f.Close()
-
-	// read file contents
-	b, err := io.ReadAll(f)
-	if err != nil {
-		return nil, fmt.Errorf("cannot read file: %w", err)
+		return nil, err
 	}
 
 	// parse file contents
@@ -87,6 +79,23 @@ func (t *TeamsJSONLoader) LoadTeams(_ context.Context) (TeamCollection, error) {
 	}
 
 	return validateTeams(content.Teams)
+}
+
+func readFile(fSys fs.FS, path string) ([]byte, error) {
+	f, err := fSys.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("cannot open file '%s': %w", path, err)
+	}
+
+	defer f.Close()
+
+	// read file contents
+	b, err := io.ReadAll(f)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read file '%s': %w", path, err)
+	}
+
+	return b, nil
 }
 
 func validateTeams(teams TeamCollection) (TeamCollection, error) {

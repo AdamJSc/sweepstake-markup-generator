@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/fs"
 	"strings"
 	"sync"
@@ -78,18 +77,10 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 		return nil, err
 	}
 
-	// open tournament config file
-	f, err := t.fSys.Open(t.path)
+	// read tournament config file
+	b, err := readFile(t.fSys, t.path)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open file: %w", err)
-	}
-
-	defer f.Close()
-
-	// read file contents
-	b, err := io.ReadAll(f)
-	if err != nil {
-		return nil, fmt.Errorf("cannot read file: %w", err)
+		return nil, err
 	}
 
 	// parse file contents
