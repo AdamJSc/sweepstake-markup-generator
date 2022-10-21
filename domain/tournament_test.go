@@ -156,11 +156,9 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 				matchesLoader = defaultMockMatchesLoader
 			}
 
-			loader := newTournamentFSLoader(testPath...).WithTeamsLoader(
-				teamsLoader,
-			).WithMatchesLoader(
-				matchesLoader,
-			)
+			loader := newTournamentFSLoader(testPath...).
+				WithTeamsLoader(teamsLoader).
+				WithMatchesLoader(matchesLoader)
 
 			gotTournament, gotErr := loader.LoadTournament(ctx)
 

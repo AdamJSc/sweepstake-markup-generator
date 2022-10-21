@@ -1,0 +1,42 @@
+{
+  "id": "test-sweepstake-1 ",
+  "name": "Test Sweepstake 1 ",
+  "imageURL": "http://sweepstake1.jpg ",
+  "tournament_id": "TestTourney1",
+  "build": true,
+  "with_last_updated": true,
+  "participants": [
+    {
+      "team_id": "BPFC ",
+      "participant_name": "John L "
+    },
+    {
+      "team_id": "DTFC",
+      "participant_name": "Paul M"
+    },
+    {
+      "team_id": "DYFC",
+      "participant_name": "George H"
+    },
+    {
+      "team_id": "HUFC",
+      "participant_name": "Ringo S"
+    },
+    {
+      "team_id": "PTFC",
+      "participant_name": "Jon L"
+    },
+    {
+      "team_id": "SJRFC",
+      "participant_name": "Steve J"
+    },
+    {
+      "team_id": "STHFC",
+      "participant_name": "Paul C"
+    },
+    {
+      "team_id": "WTFC",
+      "participant_name": "Sid V / Glen M"
+    }
+  ]
+}

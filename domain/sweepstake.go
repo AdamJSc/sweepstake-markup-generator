@@ -97,7 +97,7 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 		return nil, fmt.Errorf("cannot unmarshal tournament id: %w", err)
 	}
 
-	tournament := s.tournaments.GetByID(strings.Trim(content.TournamentID, " "))
+	tournament := s.tournaments.GetByID(content.TournamentID)
 	if tournament == nil {
 		return nil, fmt.Errorf("tournament id '%s': %w", content.TournamentID, ErrNotFound)
 	}

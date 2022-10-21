@@ -16,6 +16,7 @@ import (
 
 const (
 	matchesDir     = "matches"
+	sweepstakesDir = "sweepstakes"
 	teamsDir       = "teams"
 	testdataDir    = "testdata"
 	tournamentsDir = "tournaments"
