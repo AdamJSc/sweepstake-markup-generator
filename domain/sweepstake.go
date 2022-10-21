@@ -15,7 +15,7 @@ type Sweepstake struct {
 	ImageURL        string `json:"imageURL"`
 	Tournament      *Tournament
 	Participants    []Participant `json:"participants"`
-	Markup          template.HTML
+	Template        *template.Template
 	Build           bool `json:"build"`
 	WithLastUpdated bool `json:"with_last_updated"`
 }
@@ -104,13 +104,18 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 
 	sweepstake.Tournament = tournament
 
-	// read markup config file
-	_, err = readFile(s.fSys, s.markupPath)
+	// parse markup as template
+	rawMarkup, err := readFile(s.fSys, s.markupPath)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: parse raw markup as template
+	tpl, err := template.New("tpl").Parse(string(rawMarkup))
+	if err != nil {
+		return nil, fmt.Errorf("cannot parse template: %w", err)
+	}
+
+	sweepstake.Template = tpl
 
 	return validateSweepstake(sweepstake)
 }

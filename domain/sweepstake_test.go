@@ -1,6 +1,7 @@
 package domain_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/sweepstake.adamjs.net/domain"
 )
 
@@ -48,7 +50,7 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 					{TeamID: "STHFC", ParticipantName: "Paul C"},
 					{TeamID: "WTFC", ParticipantName: "Sid V / Glen M"},
 				},
-				Markup:          template.HTML(""),
+				Template:        parseTemplate(t, "<h1>Hello World</h1>"),
 				Build:           true,
 				WithLastUpdated: true,
 			},
@@ -132,3 +134,26 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 		})
 	}
 }
+
+func parseTemplate(t *testing.T, raw string) *template.Template {
+	t.Helper()
+
+	tpl, err := template.New("tpl").Parse(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return tpl
+}
+
+var templateComparer = cmp.Comparer(func(want, got *template.Template) bool {
+	// want and got are equal templates if output of execution is the same
+	wantBuf, gotBuf := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
+	if err := want.Execute(wantBuf, nil); err != nil {
+		return false
+	}
+	if err := got.Execute(gotBuf, nil); err != nil {
+		return false
+	}
+	return wantBuf.String() == gotBuf.String()
+})

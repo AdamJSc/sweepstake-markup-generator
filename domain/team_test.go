@@ -170,7 +170,7 @@ func newTeamsJSONLoader(path ...string) *domain.TeamsJSONLoader {
 
 func cmpDiff(t *testing.T, want, got interface{}) {
 	t.Helper()
-	if diff := cmp.Diff(want, got); diff != "" {
+	if diff := cmp.Diff(want, got, templateComparer); diff != "" {
 		t.Fatalf("mismatch (-want, +got): %s", diff)
 	}
 }
