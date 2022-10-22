@@ -173,6 +173,14 @@ func parseTemplate(t *testing.T, raw string) *template.Template {
 
 var templateComparer = cmp.Comparer(func(want, got *template.Template) bool {
 	// want and got are equal templates if output of execution is the same
+	switch {
+	case want == nil && got == nil:
+		return true
+	case want == nil && got != nil:
+		return false
+	case want != nil && got == nil:
+		return false
+	}
 	wantBuf, gotBuf := bytes.NewBuffer(nil), bytes.NewBuffer(nil)
 	if err := want.Execute(wantBuf, nil); err != nil {
 		return false

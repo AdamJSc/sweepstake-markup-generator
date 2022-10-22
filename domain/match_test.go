@@ -425,8 +425,8 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 			loader := newMatchesCSVLoader(testPath...)
 			gotMatches, gotErr := loader.LoadMatches(nil)
 
-			cmpDiff(t, tc.wantMatches, gotMatches)
 			cmpError(t, tc.wantErr, gotErr)
+			cmpDiff(t, tc.wantMatches, gotMatches)
 		})
 	}
 }

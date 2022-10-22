@@ -13,6 +13,11 @@ import (
 	"github.com/sweepstake.adamjs.net/domain"
 )
 
+const (
+	tournamentConfigOkFilename = "tournament_config_ok.json"
+	tournamentMarkupOkFilename = "tournament_markup_ok.gohtml"
+)
+
 var errSadTimes = errors.New("sad times :'(")
 
 func TestTournamentFSLoader_LoadTournament(t *testing.T) {
@@ -38,55 +43,68 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 
 	tt := []struct {
 		name           string
-		testFile       string
+		configFilename string
+		markupFilename string
 		teamsLoader    domain.TeamsLoader
 		matchesLoader  domain.MatchesLoader
 		wantTournament *domain.Tournament
 		wantErr        error
 	}{
 		{
-			name:          "valid tournament json must be loaded successfully",
-			testFile:      "tournament_ok.json",
-			teamsLoader:   defaultMockTeamsLoader,
-			matchesLoader: defaultMockMatchesLoader,
+			name:           "valid tournament json must be loaded successfully",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    defaultMockTeamsLoader,
+			matchesLoader:  defaultMockMatchesLoader,
 			wantTournament: &domain.Tournament{
 				ID:       "TestTourney1",
 				Name:     "Test Tournament 1",
 				ImageURL: "http://tourney.jpg",
 				Teams:    defaultTeamCollection,
 				Matches:  defaultMatchCollection,
+				Template: parseTemplate(t, "<h1>Hello World</h1>"),
 			},
 		},
 		{
-			name:    "empty path must produce the expected error",
+			name:    "empty config path must produce the expected error",
 			wantErr: domain.ErrIsEmpty,
-			// testFile is empty
+			// configFilename is empty
 		},
 		{
-			name:     "empty teams loader must produce the expected error",
-			testFile: "non-empty path",
-			wantErr:  domain.ErrIsEmpty,
+			name:           "empty markup path must produce the expected error",
+			configFilename: tournamentConfigOkFilename,
+			wantErr:        domain.ErrIsEmpty,
+			// markupFilename is empty
+		},
+		{
+			name:           "empty teams loader must produce the expected error",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
+			wantErr:        domain.ErrIsEmpty,
 			// teamsLoader is empty
 		},
 		{
-			name:        "empty matches loader must produce the expected error",
-			testFile:    "non-empty path",
-			teamsLoader: defaultMockTeamsLoader,
-			wantErr:     domain.ErrIsEmpty,
+			name:           "empty matches loader must produce the expected error",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    defaultMockTeamsLoader,
+			wantErr:        domain.ErrIsEmpty,
 			// matchesLoader is empty
 		},
 		{
-			name:          "non-existent path must produce the expected error",
-			teamsLoader:   defaultMockTeamsLoader,
-			matchesLoader: defaultMockMatchesLoader,
-			testFile:      "non-existent.json",
-			wantErr:       fs.ErrNotExist,
+			name:           "non-existent config path must produce the expected error",
+			teamsLoader:    defaultMockTeamsLoader,
+			matchesLoader:  defaultMockMatchesLoader,
+			configFilename: "non-existent.json",
+			markupFilename: tournamentMarkupOkFilename,
+			wantErr:        fs.ErrNotExist,
 		},
 		{
-			name:          "invalid tournament format must produce the expected error",
-			testFile:      "tournament_unmarshalable.json",
-			teamsLoader:   defaultMockTeamsLoader,
-			matchesLoader: defaultMockMatchesLoader,
+			name:           "invalid tournament format must produce the expected error",
+			configFilename: "tournament_config_unmarshalable.json",
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    defaultMockTeamsLoader,
+			matchesLoader:  defaultMockMatchesLoader,
 			wantErr: fmt.Errorf("cannot unmarshal tournament: %w", &json.UnmarshalTypeError{
 				Value:  "number",
 				Struct: "Tournament",
@@ -95,24 +113,27 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 			}),
 		},
 		{
-			name:          "failure to load teams must produce the expected error",
-			testFile:      "tournament_ok.json",
-			teamsLoader:   newMockTeamsLoader(nil, errSadTimes),
-			matchesLoader: defaultMockMatchesLoader,
-			wantErr:       errSadTimes,
+			name:           "failure to load teams must produce the expected error",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    newMockTeamsLoader(nil, errSadTimes),
+			matchesLoader:  defaultMockMatchesLoader,
+			wantErr:        errSadTimes,
 		},
 		{
-			name:          "failure to load matches must produce the expected error",
-			testFile:      "tournament_ok.json",
-			teamsLoader:   defaultMockTeamsLoader,
-			matchesLoader: newMockMatchesLoader(nil, errSadTimes),
-			wantErr:       errSadTimes,
+			name:           "failure to load matches must produce the expected error",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    defaultMockTeamsLoader,
+			matchesLoader:  newMockMatchesLoader(nil, errSadTimes),
+			wantErr:        errSadTimes,
 		},
 		{
-			name:          "empty tournament must produce the expected error",
-			testFile:      "tournament_empty.json",
-			teamsLoader:   defaultMockTeamsLoader,
-			matchesLoader: defaultMockMatchesLoader,
+			name:           "empty tournament must produce the expected error",
+			configFilename: "tournament_config_empty.json",
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    defaultMockTeamsLoader,
+			matchesLoader:  defaultMockMatchesLoader,
 			wantErr: newMultiError([]string{
 				"id: is empty",
 				"name: is empty",
@@ -120,8 +141,9 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 			}),
 		},
 		{
-			name:     "teams that exist by id must be enriched successfully",
-			testFile: "tournament_ok.json",
+			name:           "teams that exist by id must be enriched successfully",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
 			teamsLoader: newMockTeamsLoader(domain.TeamCollection{
 				{ID: "123", Name: "Team123", ImageURL: "http://team123.jpg"},
 				{ID: "456", Name: "Team456", ImageURL: "http://team456.jpg"},
@@ -148,12 +170,14 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 						Winner: &domain.Team{ID: "123", Name: "Team123", ImageURL: "http://team123.jpg"},                               // fully-enriched team
 					},
 				},
+				Template: parseTemplate(t, "<h1>Hello World</h1>"),
 			},
 		},
 		{
-			name:        "teams that do not exist by id must produce the expected error",
-			testFile:    "tournament_ok.json",
-			teamsLoader: defaultMockTeamsLoader,
+			name:           "teams that do not exist by id must produce the expected error",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    defaultMockTeamsLoader,
 			matchesLoader: newMockMatchesLoader(domain.MatchCollection{
 				{
 					Home: domain.MatchCompetitor{Team: &domain.Team{ID: "123"}}, // included in default team collection
@@ -172,10 +196,11 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 			}),
 		},
 		{
-			name:          "teams that are not accounted for within any matches must produce the expected error",
-			testFile:      "tournament_ok.json",
-			teamsLoader:   defaultMockTeamsLoader,
-			matchesLoader: newMockMatchesLoader(domain.MatchCollection{}, nil),
+			name:           "teams that are not accounted for within any matches must produce the expected error",
+			configFilename: tournamentConfigOkFilename,
+			markupFilename: tournamentMarkupOkFilename,
+			teamsLoader:    defaultMockTeamsLoader,
+			matchesLoader:  newMockMatchesLoader(domain.MatchCollection{}, nil),
 			wantErr: newMultiError([]string{
 				"team id '123': count 0", // first team in team collection
 				"team id '456': count 0", // second team in team collection
@@ -187,12 +212,18 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
 
-			var testPath []string
-			if tc.testFile != "" {
-				testPath = []string{tournamentsDir, tc.testFile}
+			var configPath, markupPath string
+			if tc.configFilename != "" {
+				configPath = filepath.Join(testdataDir, tournamentsDir, tc.configFilename)
+			}
+			if tc.markupFilename != "" {
+				markupPath = filepath.Join(testdataDir, tournamentsDir, tc.markupFilename)
 			}
 
-			loader := newTournamentFSLoader(testPath...).
+			loader := (&domain.TournamentFSLoader{}).
+				WithFileSystem(testdataFilesystem).
+				WithConfigPath(configPath).
+				WithMarkupPath(markupPath).
 				WithTeamsLoader(tc.teamsLoader).
 				WithMatchesLoader(tc.matchesLoader)
 
@@ -333,18 +364,10 @@ func TestNewTournamentCollection(t *testing.T) {
 			ctx := context.Background()
 			gotCollection, gotErr := domain.NewTournamentCollection(ctx, tc.loaders)
 
-			cmpDiff(t, tc.wantCollection, gotCollection)
 			cmpError(t, tc.wantErr, gotErr)
+			cmpDiff(t, tc.wantCollection, gotCollection)
 		})
 	}
-}
-
-func newTournamentFSLoader(path ...string) *domain.TournamentFSLoader {
-	if len(path) > 0 {
-		path = append([]string{testdataDir}, path...)
-	}
-	fullPath := filepath.Join(path...)
-	return (&domain.TournamentFSLoader{}).WithFileSystem(testdataFilesystem).WithPath(fullPath)
 }
 
 type mockTeamsLoader struct {

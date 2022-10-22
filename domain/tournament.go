@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/fs"
 	"strings"
 	"sync"
@@ -15,6 +16,7 @@ type Tournament struct {
 	ImageURL string `json:"imageURL"`
 	Teams    TeamCollection
 	Matches  MatchCollection
+	Template *template.Template
 }
 
 type TeamsLoader interface {
@@ -26,10 +28,11 @@ type MatchesLoader interface {
 }
 
 type TournamentFSLoader struct {
-	fSys fs.FS
-	path string
-	tl   TeamsLoader
-	ml   MatchesLoader
+	fSys       fs.FS
+	configPath string
+	markupPath string
+	tl         TeamsLoader
+	ml         MatchesLoader
 }
 
 func (t *TournamentFSLoader) WithFileSystem(fSys fs.FS) *TournamentFSLoader {
@@ -37,8 +40,13 @@ func (t *TournamentFSLoader) WithFileSystem(fSys fs.FS) *TournamentFSLoader {
 	return t
 }
 
-func (t *TournamentFSLoader) WithPath(path string) *TournamentFSLoader {
-	t.path = path
+func (t *TournamentFSLoader) WithConfigPath(path string) *TournamentFSLoader {
+	t.configPath = path
+	return t
+}
+
+func (t *TournamentFSLoader) WithMarkupPath(path string) *TournamentFSLoader {
+	t.markupPath = path
 	return t
 }
 
@@ -57,8 +65,12 @@ func (t *TournamentFSLoader) init() error {
 		t.fSys = defaultFileSystem
 	}
 
-	if t.path == "" {
-		return fmt.Errorf("path: %w", ErrIsEmpty)
+	if t.configPath == "" {
+		return fmt.Errorf("config path: %w", ErrIsEmpty)
+	}
+
+	if t.markupPath == "" {
+		return fmt.Errorf("config path: %w", ErrIsEmpty)
 	}
 
 	if t.tl == nil {
@@ -78,7 +90,7 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 	}
 
 	// read tournament config file
-	b, err := readFile(t.fSys, t.path)
+	b, err := readFile(t.fSys, t.configPath)
 	if err != nil {
 		return nil, err
 	}
@@ -101,6 +113,19 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 
 	tournament.Teams = teams
 	tournament.Matches = matches
+
+	// parse markup as template
+	rawMarkup, err := readFile(t.fSys, t.markupPath)
+	if err != nil {
+		return nil, err
+	}
+
+	tpl, err := template.New("tpl").Parse(string(rawMarkup))
+	if err != nil {
+		return nil, fmt.Errorf("cannot parse template: %w", err)
+	}
+
+	tournament.Template = tpl
 
 	mErr := NewMultiError()
 	validateTournament(tournament, mErr)

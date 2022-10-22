@@ -154,8 +154,8 @@ func TestTeamsJSONLoader_LoadTeams(t *testing.T) {
 			loader := newTeamsJSONLoader(testPath...)
 			gotTeams, gotErr := loader.LoadTeams(nil)
 
-			cmpDiff(t, tc.wantTeams, gotTeams)
 			cmpError(t, tc.wantErr, gotErr)
+			cmpDiff(t, tc.wantTeams, gotTeams)
 		})
 	}
 }
