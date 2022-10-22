@@ -16,13 +16,25 @@ import (
 var errSadTimes = errors.New("sad times :'(")
 
 func TestTournamentFSLoader_LoadTournament(t *testing.T) {
-	defaultMockTeamsLoader := newMockTeamsLoader(domain.TeamCollection{
+	defaultTeamCollection := domain.TeamCollection{
 		{ID: "123"}, {ID: "456"},
-	}, nil)
+	}
 
-	defaultMockMatchesLoader := newMockMatchesLoader(domain.MatchCollection{
-		{ID: "654"}, {ID: "321"},
-	}, nil)
+	defaultMatchCollection := domain.MatchCollection{
+		{ID: "654"},
+		{
+			ID: "321",
+			Home: domain.MatchCompetitor{
+				Team: &domain.Team{ID: "123"},
+			},
+			Away: domain.MatchCompetitor{
+				Team: &domain.Team{ID: "456"},
+			},
+		},
+	}
+
+	defaultMockTeamsLoader := newMockTeamsLoader(defaultTeamCollection, nil)
+	defaultMockMatchesLoader := newMockMatchesLoader(defaultMatchCollection, nil)
 
 	tt := []struct {
 		name           string
@@ -33,18 +45,16 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 		wantErr        error
 	}{
 		{
-			name:     "valid tournament json must be loaded successfully",
-			testFile: "tournament_ok.json",
+			name:          "valid tournament json must be loaded successfully",
+			testFile:      "tournament_ok.json",
+			teamsLoader:   defaultMockTeamsLoader,
+			matchesLoader: defaultMockMatchesLoader,
 			wantTournament: &domain.Tournament{
 				ID:       "TestTourney1",
 				Name:     "Test Tournament 1",
 				ImageURL: "http://tourney.jpg",
-				Teams: domain.TeamCollection{
-					{ID: "123"}, {ID: "456"},
-				},
-				Matches: domain.MatchCollection{
-					{ID: "654"}, {ID: "321"},
-				},
+				Teams:    defaultTeamCollection,
+				Matches:  defaultMatchCollection,
 			},
 		},
 		{
@@ -53,13 +63,30 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 			// testFile is empty
 		},
 		{
-			name:     "non-existent path must produce the expected error",
-			testFile: "non-existent.json",
-			wantErr:  fs.ErrNotExist,
+			name:     "empty teams loader must produce the expected error",
+			testFile: "non-empty path",
+			wantErr:  domain.ErrIsEmpty,
+			// teamsLoader is empty
 		},
 		{
-			name:     "invalid tournament format must produce the expected error",
-			testFile: "tournament_unmarshalable.json",
+			name:        "empty matches loader must produce the expected error",
+			testFile:    "non-empty path",
+			teamsLoader: defaultMockTeamsLoader,
+			wantErr:     domain.ErrIsEmpty,
+			// matchesLoader is empty
+		},
+		{
+			name:          "non-existent path must produce the expected error",
+			teamsLoader:   defaultMockTeamsLoader,
+			matchesLoader: defaultMockMatchesLoader,
+			testFile:      "non-existent.json",
+			wantErr:       fs.ErrNotExist,
+		},
+		{
+			name:          "invalid tournament format must produce the expected error",
+			testFile:      "tournament_unmarshalable.json",
+			teamsLoader:   defaultMockTeamsLoader,
+			matchesLoader: defaultMockMatchesLoader,
 			wantErr: fmt.Errorf("cannot unmarshal tournament: %w", &json.UnmarshalTypeError{
 				Value:  "number",
 				Struct: "Tournament",
@@ -68,20 +95,24 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 			}),
 		},
 		{
-			name:        "failure to load teams must produce the expected error",
-			testFile:    "tournament_ok.json",
-			teamsLoader: newMockTeamsLoader(nil, errSadTimes),
-			wantErr:     errSadTimes,
+			name:          "failure to load teams must produce the expected error",
+			testFile:      "tournament_ok.json",
+			teamsLoader:   newMockTeamsLoader(nil, errSadTimes),
+			matchesLoader: defaultMockMatchesLoader,
+			wantErr:       errSadTimes,
 		},
 		{
 			name:          "failure to load matches must produce the expected error",
 			testFile:      "tournament_ok.json",
+			teamsLoader:   defaultMockTeamsLoader,
 			matchesLoader: newMockMatchesLoader(nil, errSadTimes),
 			wantErr:       errSadTimes,
 		},
 		{
-			name:     "empty tournament must produce the expected error",
-			testFile: "tournament_empty.json",
+			name:          "empty tournament must produce the expected error",
+			testFile:      "tournament_empty.json",
+			teamsLoader:   defaultMockTeamsLoader,
+			matchesLoader: defaultMockMatchesLoader,
 			wantErr: newMultiError([]string{
 				"id: is empty",
 				"name: is empty",
@@ -120,9 +151,14 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 			},
 		},
 		{
-			name:     "teams that do not exist by id must produce the expected error",
-			testFile: "tournament_ok.json",
+			name:        "teams that do not exist by id must produce the expected error",
+			testFile:    "tournament_ok.json",
+			teamsLoader: defaultMockTeamsLoader,
 			matchesLoader: newMockMatchesLoader(domain.MatchCollection{
+				{
+					Home: domain.MatchCompetitor{Team: &domain.Team{ID: "123"}}, // included in default team collection
+					Away: domain.MatchCompetitor{Team: &domain.Team{ID: "456"}}, // included in default team collection
+				},
 				{
 					Home:   domain.MatchCompetitor{Team: &domain.Team{ID: "AAA"}},
 					Away:   domain.MatchCompetitor{Team: &domain.Team{ID: "BBB"}},
@@ -130,9 +166,19 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 				},
 			}, nil),
 			wantErr: newMultiError([]string{
-				"match 1: home: team id 'AAA': not found",
-				"match 1: away: team id 'BBB': not found",
-				"match 1: winner: team id 'CCC': not found",
+				"match 2: home: team id 'AAA': not found",
+				"match 2: away: team id 'BBB': not found",
+				"match 2: winner: team id 'CCC': not found",
+			}),
+		},
+		{
+			name:          "teams that are not accounted for within any matches must produce the expected error",
+			testFile:      "tournament_ok.json",
+			teamsLoader:   defaultMockTeamsLoader,
+			matchesLoader: newMockMatchesLoader(domain.MatchCollection{}, nil),
+			wantErr: newMultiError([]string{
+				"team id '123': count 0", // first team in team collection
+				"team id '456': count 0", // second team in team collection
 			}),
 		},
 	}
@@ -146,24 +192,14 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 				testPath = []string{tournamentsDir, tc.testFile}
 			}
 
-			teamsLoader := tc.teamsLoader
-			if teamsLoader == nil {
-				teamsLoader = defaultMockTeamsLoader
-			}
-
-			matchesLoader := tc.matchesLoader
-			if matchesLoader == nil {
-				matchesLoader = defaultMockMatchesLoader
-			}
-
 			loader := newTournamentFSLoader(testPath...).
-				WithTeamsLoader(teamsLoader).
-				WithMatchesLoader(matchesLoader)
+				WithTeamsLoader(tc.teamsLoader).
+				WithMatchesLoader(tc.matchesLoader)
 
 			gotTournament, gotErr := loader.LoadTournament(ctx)
 
-			cmpDiff(t, tc.wantTournament, gotTournament)
 			cmpError(t, tc.wantErr, gotErr)
+			cmpDiff(t, tc.wantTournament, gotTournament)
 		})
 	}
 }

@@ -139,7 +139,7 @@ func validateSweepstake(sweepstake *Sweepstake) (*Sweepstake, error) {
 		mErr.Add(fmt.Errorf("image url: %w", ErrIsEmpty))
 	}
 
-	audit := &teamAudit{teams: sweepstake.Tournament.Teams}
+	audit := &teamsAudit{teams: sweepstake.Tournament.Teams}
 	for idx, participant := range sweepstake.Participants {
 		participant.TeamID = strings.Trim(participant.TeamID, " ")
 		participant.Name = strings.Trim(participant.Name, " ")

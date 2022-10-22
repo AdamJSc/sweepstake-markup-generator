@@ -129,7 +129,7 @@ func validateTournament(tournament *Tournament, mErr MultiError) {
 		mErr.Add(fmt.Errorf("image url: %w", ErrIsEmpty))
 	}
 
-	// TODO: ensure that each tournament team appears in at least one match home or away
+	audit := &teamsAudit{teams: tournament.Teams}
 
 	for idx, match := range tournament.Matches {
 		matchNum := idx + 1
@@ -145,7 +145,13 @@ func validateTournament(tournament *Tournament, mErr MultiError) {
 		if err := populateTeamByID(match.Winner, tournament.Teams); err != nil {
 			mErrMatch.Add(fmt.Errorf("winner: %w", err))
 		}
+
+		// ensure that each tournament team appears at least once either home or away
+		audit.ack(match.Home.Team)
+		audit.ack(match.Away.Team)
 	}
+
+	audit.validate(mErr, true)
 }
 
 func populateTeamByID(team *Team, collection TeamCollection) error {

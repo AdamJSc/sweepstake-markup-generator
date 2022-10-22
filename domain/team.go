@@ -138,12 +138,12 @@ func validateTeam(team *Team) error {
 	return nil
 }
 
-type teamAudit struct {
+type teamsAudit struct {
 	teams TeamCollection
 	mp    *sync.Map
 }
 
-func (t *teamAudit) init() {
+func (t *teamsAudit) init() {
 	if t.mp == nil {
 		t.mp = &sync.Map{}
 	}
@@ -159,7 +159,7 @@ func (t *teamAudit) init() {
 	}
 }
 
-func (t *teamAudit) set(team *Team, val int) bool {
+func (t *teamsAudit) set(team *Team, val int) bool {
 	if team == nil {
 		return false
 	}
@@ -170,7 +170,7 @@ func (t *teamAudit) set(team *Team, val int) bool {
 	return true
 }
 
-func (t *teamAudit) ack(team *Team) bool {
+func (t *teamsAudit) ack(team *Team) bool {
 	if team == nil {
 		return false
 	}
@@ -184,12 +184,14 @@ func (t *teamAudit) ack(team *Team) bool {
 	return t.set(team, val.(int)+1)
 }
 
-func (t *teamAudit) validate(mErr MultiError, exactlyOnce bool) {
+func (t *teamsAudit) validate(mErr MultiError, exactlyOnce bool) {
+	t.init()
+
 	var errs []error
 	t.mp.Range(func(key, val any) bool {
 		if (exactlyOnce && val.(int) != 1) ||
 			(!exactlyOnce && val.(int) == 0) {
-			errs = append(errs, fmt.Errorf("team id '%s', count = %d", key, val))
+			errs = append(errs, fmt.Errorf("team id '%s': count %d", key, val))
 		}
 		return true
 	})
