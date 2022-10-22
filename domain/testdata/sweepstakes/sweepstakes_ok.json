@@ -41,6 +41,23 @@
           "participant_name": "Sid V / Glen M"
         }
       ]
+    },
+    {
+      "id": "test-sweepstake-2",
+      "name": "Test Sweepstake 2",
+      "imageURL": "http://sweepstake2.jpg",
+      "tournament_id": "TestTourney2",
+      "build": true,
+      "participants": [
+        {
+          "team_id": "ABC",
+          "participant_name": "Dara"
+        },
+        {
+          "team_id": "DEF",
+          "participant_name": "Ed"
+        }
+      ]
     }
   ]
 }

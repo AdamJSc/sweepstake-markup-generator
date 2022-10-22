@@ -16,7 +16,7 @@ import (
 )
 
 func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
-	testTourney := &domain.Tournament{
+	testTourney1 := &domain.Tournament{
 		ID: "TestTourney1",
 		Teams: domain.TeamCollection{
 			{ID: "BPFC"},
@@ -30,8 +30,17 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 		},
 	}
 
+	testTourney2 := &domain.Tournament{
+		ID: "TestTourney2",
+		Teams: domain.TeamCollection{
+			{ID: "ABC"},
+			{ID: "DEF"},
+		},
+	}
+
 	defaultTestTournaments := domain.TournamentCollection{
-		testTourney,
+		testTourney1,
+		testTourney2,
 	}
 
 	tt := []struct {
@@ -50,7 +59,7 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 					ID:         "test-sweepstake-1",
 					Name:       "Test Sweepstake 1",
 					ImageURL:   "http://sweepstake1.jpg",
-					Tournament: testTourney,
+					Tournament: testTourney1,
 					Participants: []*domain.Participant{
 						{TeamID: "BPFC", Name: "John L"},
 						{TeamID: "DTFC", Name: "Paul M"},
@@ -63,6 +72,17 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 					},
 					Build:           true,
 					WithLastUpdated: true,
+				},
+				{
+					ID:         "test-sweepstake-2",
+					Name:       "Test Sweepstake 2",
+					ImageURL:   "http://sweepstake2.jpg",
+					Tournament: testTourney2,
+					Participants: []*domain.Participant{
+						{TeamID: "ABC", Name: "Dara"},
+						{TeamID: "DEF", Name: "Ed"},
+					},
+					Build: true,
 				},
 			},
 		},
@@ -110,6 +130,14 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 				"participant index 0: unrecognised participant team id: NOT_BPFC",
 				"team id 'BPFC': count 0",
 				"team id 'WTFC': count 2",
+			}),
+		},
+		{
+			name:           "sweepstakes with duplicate id must produce the expected error",
+			tournaments:    defaultTestTournaments,
+			configFilename: "sweepstakes_duplicate_id.json",
+			wantErr: newMultiError([]string{
+				"id 'test-sweepstake-1': is duplicate",
 			}),
 		},
 	}

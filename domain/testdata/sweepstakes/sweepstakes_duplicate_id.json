@@ -1,0 +1,37 @@
+{
+  "sweepstakes": [
+    {
+      "id": "test-sweepstake-1",
+      "name": "Test Sweepstake 1",
+      "imageURL": "http://sweepstake1.jpg",
+      "tournament_id": "TestTourney2",
+      "participants": [
+        {
+          "team_id": "ABC",
+          "participant_name": "Dara"
+        },
+        {
+          "team_id": "DEF",
+          "participant_name": "Ed"
+        }
+      ]
+    },
+    {
+      "id": "test-sweepstake-1",
+      "name": "Test Sweepstake ALT",
+      "imageURL": "http://sweepstakeALT.jpg",
+      "tournament_id": "TestTourney2",
+      "build": true,
+      "participants": [
+        {
+          "team_id": "ABC",
+          "participant_name": "ALT"
+        },
+        {
+          "team_id": "DEF",
+          "participant_name": "ALT"
+        }
+      ]
+    }
+  ]
+}
