@@ -15,7 +15,7 @@ import (
 	"github.com/sweepstake.adamjs.net/domain"
 )
 
-func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
+func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 	testTourney := &domain.Tournament{
 		ID: "TestTourney1",
 		Teams: domain.TeamCollection{
@@ -35,33 +35,35 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 	}
 
 	tt := []struct {
-		name           string
-		tournaments    domain.TournamentCollection
-		configFilename string
-		wantSweepstake *domain.Sweepstake
-		wantErr        error
+		name            string
+		tournaments     domain.TournamentCollection
+		configFilename  string
+		wantSweepstakes domain.SweepstakeCollection
+		wantErr         error
 	}{
 		{
 			name:           "valid sweepstake json must be loaded successfully",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_ok.json",
-			wantSweepstake: &domain.Sweepstake{
-				ID:         "test-sweepstake-1",
-				Name:       "Test Sweepstake 1",
-				ImageURL:   "http://sweepstake1.jpg",
-				Tournament: testTourney,
-				Participants: []*domain.Participant{
-					{TeamID: "BPFC", Name: "John L"},
-					{TeamID: "DTFC", Name: "Paul M"},
-					{TeamID: "DYFC", Name: "George H"},
-					{TeamID: "HUFC", Name: "Ringo S"},
-					{TeamID: "PTFC", Name: "Jon L"},
-					{TeamID: "SJRFC", Name: "Steve J"},
-					{TeamID: "STHFC", Name: "Paul C"},
-					{TeamID: "WTFC", Name: "Sid V / Glen M"},
+			configFilename: "sweepstakes_ok.json",
+			wantSweepstakes: domain.SweepstakeCollection{
+				{
+					ID:         "test-sweepstake-1",
+					Name:       "Test Sweepstake 1",
+					ImageURL:   "http://sweepstake1.jpg",
+					Tournament: testTourney,
+					Participants: []*domain.Participant{
+						{TeamID: "BPFC", Name: "John L"},
+						{TeamID: "DTFC", Name: "Paul M"},
+						{TeamID: "DYFC", Name: "George H"},
+						{TeamID: "HUFC", Name: "Ringo S"},
+						{TeamID: "PTFC", Name: "Jon L"},
+						{TeamID: "SJRFC", Name: "Steve J"},
+						{TeamID: "STHFC", Name: "Paul C"},
+						{TeamID: "WTFC", Name: "Sid V / Glen M"},
+					},
+					Build:           true,
+					WithLastUpdated: true,
 				},
-				Build:           true,
-				WithLastUpdated: true,
 			},
 		},
 		{
@@ -84,24 +86,23 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 		{
 			name:           "invalid sweepstake format must produce the expected error",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_unmarshalable.json",
-			wantErr: fmt.Errorf("cannot unmarshal sweepstake: %w", &json.UnmarshalTypeError{
-				Value:  "number",
-				Struct: "Sweepstake",
-				Type:   reflect.TypeOf("string"),
-				Field:  "id",
+			configFilename: "sweepstakes_unmarshalable.json",
+			wantErr: fmt.Errorf("cannot unmarshal sweepstakes: %w", &json.UnmarshalTypeError{
+				Value: "number",
+				Type:  reflect.TypeOf("string"),
+				Field: "sweepstakes.id",
 			}),
 		},
 		{
 			name:           "non-existent tournament id must produce the expected error",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_non_existent_tournament_id.json",
+			configFilename: "sweepstakes_non_existent_tournament_id.json",
 			wantErr:        domain.ErrNotFound,
 		},
 		{
 			name:           "invalid sweepstake must produce the expected error",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_invalid.json",
+			configFilename: "sweepstakes_invalid.json",
 			wantErr: newMultiError([]string{
 				"id: is empty",
 				"name: is empty",
@@ -122,14 +123,14 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 				configPath = filepath.Join(testdataDir, sweepstakesDir, tc.configFilename)
 			}
 
-			loader := (&domain.SweepstakeJSONLoader{}).
+			loader := (&domain.SweepstakesJSONLoader{}).
 				WithFileSystem(testdataFilesystem).
 				WithTournamentCollection(tc.tournaments).
 				WithConfigPath(configPath)
 
-			gotSweepstake, gotErr := loader.LoadSweepstake(ctx)
+			gotSweepstakes, gotErr := loader.LoadSweepstakes(ctx)
 			cmpError(t, tc.wantErr, gotErr)
-			cmpDiff(t, tc.wantSweepstake, gotSweepstake)
+			cmpDiff(t, tc.wantSweepstakes, gotSweepstakes)
 		})
 	}
 }

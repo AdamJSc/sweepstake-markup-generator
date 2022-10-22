@@ -90,14 +90,14 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 	}
 
 	// read tournament config file
-	b, err := readFile(t.fSys, t.configPath)
+	rawConfigJSON, err := readFile(t.fSys, t.configPath)
 	if err != nil {
 		return nil, err
 	}
 
 	// parse file contents
 	tournament := &Tournament{}
-	if err = json.Unmarshal(b, tournament); err != nil {
+	if err = json.Unmarshal(rawConfigJSON, tournament); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal tournament: %w", err)
 	}
 

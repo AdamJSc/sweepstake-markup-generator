@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/fs"
 	"strings"
+	"sync"
 )
 
 type Sweepstake struct {
@@ -23,28 +24,30 @@ type Participant struct {
 	Name   string `json:"participant_name"`
 }
 
-type SweepstakeJSONLoader struct {
+type SweepstakeCollection []*Sweepstake
+
+type SweepstakesJSONLoader struct {
 	fSys        fs.FS
 	tournaments TournamentCollection
 	configPath  string
 }
 
-func (s *SweepstakeJSONLoader) WithFileSystem(fSys fs.FS) *SweepstakeJSONLoader {
+func (s *SweepstakesJSONLoader) WithFileSystem(fSys fs.FS) *SweepstakesJSONLoader {
 	s.fSys = fSys
 	return s
 }
 
-func (s *SweepstakeJSONLoader) WithTournamentCollection(tournaments TournamentCollection) *SweepstakeJSONLoader {
+func (s *SweepstakesJSONLoader) WithTournamentCollection(tournaments TournamentCollection) *SweepstakesJSONLoader {
 	s.tournaments = tournaments
 	return s
 }
 
-func (s *SweepstakeJSONLoader) WithConfigPath(path string) *SweepstakeJSONLoader {
+func (s *SweepstakesJSONLoader) WithConfigPath(path string) *SweepstakesJSONLoader {
 	s.configPath = path
 	return s
 }
 
-func (s *SweepstakeJSONLoader) init() error {
+func (s *SweepstakesJSONLoader) init() error {
 	if s.fSys == nil {
 		s.fSys = defaultFileSystem
 	}
@@ -60,7 +63,7 @@ func (s *SweepstakeJSONLoader) init() error {
 	return nil
 }
 
-func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, error) {
+func (s *SweepstakesJSONLoader) LoadSweepstakes(_ context.Context) (SweepstakeCollection, error) {
 	if err := s.init(); err != nil {
 		return nil, err
 	}
@@ -71,33 +74,60 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 		return nil, err
 	}
 
-	// parse as sweepstake
-	sweepstake := &Sweepstake{}
-	if err = json.Unmarshal(rawConfigJSON, sweepstake); err != nil {
-		return nil, fmt.Errorf("cannot unmarshal sweepstake: %w", err)
-	}
-
-	// inflate tournament
+	// parse as sweepstakes
 	var content = &struct {
-		TournamentID string `json:"tournament_id"`
+		Sweepstakes []struct {
+			*Sweepstake
+			TournamentID string `json:"tournament_id"`
+		} `json:"sweepstakes"`
 	}{}
-	if err = json.Unmarshal(rawConfigJSON, &content); err != nil {
-		return nil, fmt.Errorf("cannot unmarshal tournament id: %w", err)
+	if err = json.Unmarshal(rawConfigJSON, content); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal sweepstakes: %w", err)
 	}
 
-	tournament := s.tournaments.GetByID(content.TournamentID)
-	if tournament == nil {
-		return nil, fmt.Errorf("tournament id '%s': %w", content.TournamentID, ErrNotFound)
+	collection := make(SweepstakeCollection, 0)
+	for idx := range content.Sweepstakes {
+		sweepstake := content.Sweepstakes[idx].Sweepstake
+		tournamentID := content.Sweepstakes[idx].TournamentID
+
+		// inflate tournament
+		tournament := s.tournaments.GetByID(tournamentID)
+		if tournament == nil {
+			return nil, fmt.Errorf("sweepstake index %d: tournament id '%s': %w", idx, tournamentID, ErrNotFound)
+		}
+		sweepstake.Tournament = tournament
+
+		collection = append(collection, sweepstake)
 	}
 
-	sweepstake.Tournament = tournament
-
-	return validateSweepstake(sweepstake)
+	return validateSweepstakes(collection)
 }
 
-func validateSweepstake(sweepstake *Sweepstake) (*Sweepstake, error) {
+func validateSweepstakes(sweepstakes SweepstakeCollection) (SweepstakeCollection, error) {
+	ids := &sync.Map{}
 	mErr := NewMultiError()
 
+	for _, sweepstake := range sweepstakes {
+		mErrIdx := mErr.WithPrefix(fmt.Sprintf("id '%s'", sweepstake.ID))
+
+		// check if this sweepstake id already exists in the collection
+		if _, ok := ids.Load(sweepstake.ID); ok {
+			mErrIdx.Add(ErrIsDuplicate)
+		}
+		ids.Store(sweepstake.ID, struct{}{})
+
+		// run remaining validation
+		validateSweepstake(sweepstake, mErr)
+	}
+
+	if !mErr.IsEmpty() {
+		return nil, mErr
+	}
+
+	return sweepstakes, nil
+}
+
+func validateSweepstake(sweepstake *Sweepstake, mErr MultiError) *Sweepstake {
 	sweepstake.ID = strings.Trim(sweepstake.ID, " ")
 	sweepstake.Name = strings.Trim(sweepstake.Name, " ")
 	sweepstake.ImageURL = strings.Trim(sweepstake.ImageURL, " ")
@@ -128,9 +158,5 @@ func validateSweepstake(sweepstake *Sweepstake) (*Sweepstake, error) {
 
 	audit.validate(mErr, true)
 
-	if !mErr.IsEmpty() {
-		return nil, mErr
-	}
-
-	return sweepstake, nil
+	return sweepstake
 }
