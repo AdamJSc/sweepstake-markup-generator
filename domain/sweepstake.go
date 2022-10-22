@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"io/fs"
 	"strings"
 )
@@ -15,9 +14,8 @@ type Sweepstake struct {
 	ImageURL        string `json:"imageURL"`
 	Tournament      *Tournament
 	Participants    []*Participant `json:"participants"`
-	Template        *template.Template
-	Build           bool `json:"build"`
-	WithLastUpdated bool `json:"with_last_updated"`
+	Build           bool           `json:"build"`
+	WithLastUpdated bool           `json:"with_last_updated"`
 }
 
 type Participant struct {
@@ -29,7 +27,6 @@ type SweepstakeJSONLoader struct {
 	fSys        fs.FS
 	tournaments TournamentCollection
 	configPath  string
-	markupPath  string
 }
 
 func (s *SweepstakeJSONLoader) WithFileSystem(fSys fs.FS) *SweepstakeJSONLoader {
@@ -47,11 +44,6 @@ func (s *SweepstakeJSONLoader) WithConfigPath(path string) *SweepstakeJSONLoader
 	return s
 }
 
-func (s *SweepstakeJSONLoader) WithMarkupPath(path string) *SweepstakeJSONLoader {
-	s.markupPath = path
-	return s
-}
-
 func (s *SweepstakeJSONLoader) init() error {
 	if s.fSys == nil {
 		s.fSys = defaultFileSystem
@@ -63,10 +55,6 @@ func (s *SweepstakeJSONLoader) init() error {
 
 	if s.configPath == "" {
 		return fmt.Errorf("config path: %w", ErrIsEmpty)
-	}
-
-	if s.markupPath == "" {
-		return fmt.Errorf("markup path: %w", ErrIsEmpty)
 	}
 
 	return nil
@@ -103,19 +91,6 @@ func (s *SweepstakeJSONLoader) LoadSweepstake(_ context.Context) (*Sweepstake, e
 	}
 
 	sweepstake.Tournament = tournament
-
-	// parse markup as template
-	rawMarkup, err := readFile(s.fSys, s.markupPath)
-	if err != nil {
-		return nil, err
-	}
-
-	tpl, err := template.New("tpl").Parse(string(rawMarkup))
-	if err != nil {
-		return nil, fmt.Errorf("cannot parse template: %w", err)
-	}
-
-	sweepstake.Template = tpl
 
 	return validateSweepstake(sweepstake)
 }

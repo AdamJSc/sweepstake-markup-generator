@@ -38,15 +38,13 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 		name           string
 		tournaments    domain.TournamentCollection
 		configFilename string
-		markupFilename string
 		wantSweepstake *domain.Sweepstake
 		wantErr        error
 	}{
 		{
 			name:           "valid sweepstake json must be loaded successfully",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_config_ok.json",
-			markupFilename: "sweepstake_markup_ok.gohtml",
+			configFilename: "sweepstake_ok.json",
 			wantSweepstake: &domain.Sweepstake{
 				ID:         "test-sweepstake-1",
 				Name:       "Test Sweepstake 1",
@@ -62,7 +60,6 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 					{TeamID: "STHFC", Name: "Paul C"},
 					{TeamID: "WTFC", Name: "Sid V / Glen M"},
 				},
-				Template:        parseTemplate(t, "<h1>Hello World</h1>"),
 				Build:           true,
 				WithLastUpdated: true,
 			},
@@ -73,31 +70,21 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 			// tournaments are empty
 		},
 		{
-			name:           "empty config filename must produce the expected error",
-			tournaments:    defaultTestTournaments,
-			markupFilename: "hello world",
-			wantErr:        domain.ErrIsEmpty,
+			name:        "empty config filename must produce the expected error",
+			tournaments: defaultTestTournaments,
+			wantErr:     domain.ErrIsEmpty,
 			// configFilename is empty
-		},
-		{
-			name:           "empty markup filename must produce the expected error",
-			tournaments:    defaultTestTournaments,
-			configFilename: "hello world",
-			wantErr:        domain.ErrIsEmpty,
-			// markupFilename is empty
 		},
 		{
 			name:           "non-existent config file must produce the expected error",
 			tournaments:    defaultTestTournaments,
 			configFilename: "non-existent.json",
-			markupFilename: "sweepstake_markup_ok.gohtml",
 			wantErr:        fs.ErrNotExist,
 		},
 		{
 			name:           "invalid sweepstake format must produce the expected error",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_config_unmarshalable.json",
-			markupFilename: "sweepstake_markup_ok.gohtml",
+			configFilename: "sweepstake_unmarshalable.json",
 			wantErr: fmt.Errorf("cannot unmarshal sweepstake: %w", &json.UnmarshalTypeError{
 				Value:  "number",
 				Struct: "Sweepstake",
@@ -108,22 +95,13 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 		{
 			name:           "non-existent tournament id must produce the expected error",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_config_non_existent_tournament_id.json",
-			markupFilename: "sweepstake_markup_ok.gohtml",
+			configFilename: "sweepstake_non_existent_tournament_id.json",
 			wantErr:        domain.ErrNotFound,
-		},
-		{
-			name:           "non-existent markup file must produce the expected error",
-			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_config_ok.json",
-			markupFilename: "non-existent.gohtml",
-			wantErr:        fs.ErrNotExist,
 		},
 		{
 			name:           "invalid sweepstake must produce the expected error",
 			tournaments:    defaultTestTournaments,
-			configFilename: "sweepstake_config_invalid.json",
-			markupFilename: "sweepstake_markup_ok.gohtml",
+			configFilename: "sweepstake_invalid.json",
 			wantErr: newMultiError([]string{
 				"id: is empty",
 				"name: is empty",
@@ -139,19 +117,15 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
 
-			var configPath, markupPath string
+			var configPath string
 			if tc.configFilename != "" {
 				configPath = filepath.Join(testdataDir, sweepstakesDir, tc.configFilename)
-			}
-			if tc.markupFilename != "" {
-				markupPath = filepath.Join(testdataDir, sweepstakesDir, tc.markupFilename)
 			}
 
 			loader := (&domain.SweepstakeJSONLoader{}).
 				WithFileSystem(testdataFilesystem).
 				WithTournamentCollection(tc.tournaments).
-				WithConfigPath(configPath).
-				WithMarkupPath(markupPath)
+				WithConfigPath(configPath)
 
 			gotSweepstake, gotErr := loader.LoadSweepstake(ctx)
 			cmpError(t, tc.wantErr, gotErr)
