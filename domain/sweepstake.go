@@ -148,15 +148,12 @@ func validateSweepstake(sweepstake *Sweepstake) (*Sweepstake, error) {
 
 		mErrIdx := mErr.WithPrefix(fmt.Sprintf("participant index %d", idx))
 
-		val, ok := teamsMap.load(participant.TeamID)
-		if !ok {
+		if ok := teamsMap.inc(participant.TeamID); !ok {
 			mErrIdx.Add(fmt.Errorf("unrecognised participant team id: %s", participant.TeamID))
 		}
-
-		teamsMap.store(participant.TeamID, val+1)
 	}
 
-	teamsMap.validate(mErr)
+	teamsMap.validateExactlyOne(mErr)
 
 	if !mErr.IsEmpty() {
 		return nil, mErr
@@ -176,21 +173,27 @@ func (i *idMap) init() {
 	}
 }
 
+func (i *idMap) inc(key string) bool {
+	i.init()
+	var valInt int
+
+	val, ok := i.Map.Load(key)
+	if !ok {
+		return false
+	}
+
+	valInt = val.(int)
+	i.store(key, valInt+1)
+
+	return true
+}
+
 func (i *idMap) store(key string, val int) {
 	i.init()
 	i.Map.Store(key, val)
 }
 
-func (i *idMap) load(key string) (int, bool) {
-	i.init()
-	val, ok := i.Map.Load(key)
-	if !ok {
-		return 0, false
-	}
-	return val.(int), ok
-}
-
-func (i *idMap) validate(mErr MultiError) {
+func (i *idMap) validateExactlyOne(mErr MultiError) {
 	prefix := "id"
 	if i.name != "" {
 		prefix = i.name + " id"
