@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
-	"sort"
 	"strings"
-	"sync"
 )
 
 type Sweepstake struct {
@@ -141,88 +139,23 @@ func validateSweepstake(sweepstake *Sweepstake) (*Sweepstake, error) {
 		mErr.Add(fmt.Errorf("image url: %w", ErrIsEmpty))
 	}
 
-	teamsMap := newTeamsIDMap(sweepstake.Tournament.Teams, "tournament team")
+	audit := &teamAudit{teams: sweepstake.Tournament.Teams}
 	for idx, participant := range sweepstake.Participants {
 		participant.TeamID = strings.Trim(participant.TeamID, " ")
 		participant.Name = strings.Trim(participant.Name, " ")
 
 		mErrIdx := mErr.WithPrefix(fmt.Sprintf("participant index %d", idx))
 
-		if ok := teamsMap.inc(participant.TeamID); !ok {
+		if ok := audit.ack(&Team{ID: participant.TeamID}); !ok {
 			mErrIdx.Add(fmt.Errorf("unrecognised participant team id: %s", participant.TeamID))
 		}
 	}
 
-	teamsMap.validateExactlyOne(mErr)
+	audit.validate(mErr, true)
 
 	if !mErr.IsEmpty() {
 		return nil, mErr
 	}
 
 	return sweepstake, nil
-}
-
-type idMap struct {
-	*sync.Map
-	name string
-}
-
-func (i *idMap) init() {
-	if i.Map == nil {
-		i.Map = &sync.Map{}
-	}
-}
-
-func (i *idMap) inc(key string) bool {
-	i.init()
-	var valInt int
-
-	val, ok := i.Map.Load(key)
-	if !ok {
-		return false
-	}
-
-	valInt = val.(int)
-	i.store(key, valInt+1)
-
-	return true
-}
-
-func (i *idMap) store(key string, val int) {
-	i.init()
-	i.Map.Store(key, val)
-}
-
-func (i *idMap) validateExactlyOne(mErr MultiError) {
-	prefix := "id"
-	if i.name != "" {
-		prefix = i.name + " id"
-	}
-
-	var errs []error
-	i.Map.Range(func(key, val any) bool {
-		if val.(int) != 1 {
-			errs = append(errs, fmt.Errorf("%s '%s', count = %d", prefix, key, val))
-		}
-		return true
-	})
-
-	// guarantee error order
-	sort.SliceStable(errs, func(i, j int) bool {
-		return errs[i].Error() < errs[j].Error()
-	})
-
-	for _, err := range errs {
-		mErr.Add(err)
-	}
-}
-
-func newTeamsIDMap(teams TeamCollection, name string) *idMap {
-	mp := &idMap{name: name}
-
-	for _, team := range teams {
-		mp.store(team.ID, 0)
-	}
-
-	return mp
 }

@@ -129,8 +129,8 @@ func TestSweepstakeJSONLoader_LoadSweepstake(t *testing.T) {
 				"name: is empty",
 				"image url: is empty",
 				"participant index 0: unrecognised participant team id: NOT_BPFC",
-				"tournament team id 'BPFC', count = 0",
-				"tournament team id 'WTFC', count = 2",
+				"team id 'BPFC', count = 0",
+				"team id 'WTFC', count = 2",
 			}),
 		},
 	}

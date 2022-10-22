@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"sort"
 	"strings"
 	"sync"
 )
@@ -135,4 +136,70 @@ func validateTeam(team *Team) error {
 	}
 
 	return nil
+}
+
+type teamAudit struct {
+	teams TeamCollection
+	mp    *sync.Map
+}
+
+func (t *teamAudit) init() {
+	if t.mp == nil {
+		t.mp = &sync.Map{}
+	}
+
+	for _, team := range t.teams {
+		if team == nil {
+			continue
+		}
+
+		if _, ok := t.mp.Load(team.ID); !ok {
+			t.mp.Store(team.ID, 0)
+		}
+	}
+}
+
+func (t *teamAudit) set(team *Team, val int) bool {
+	if team == nil {
+		return false
+	}
+
+	t.init()
+	t.mp.Store(team.ID, val)
+
+	return true
+}
+
+func (t *teamAudit) ack(team *Team) bool {
+	if team == nil {
+		return false
+	}
+
+	t.init()
+	val, ok := t.mp.Load(team.ID)
+	if !ok {
+		return false
+	}
+
+	return t.set(team, val.(int)+1)
+}
+
+func (t *teamAudit) validate(mErr MultiError, exactlyOnce bool) {
+	var errs []error
+	t.mp.Range(func(key, val any) bool {
+		if (exactlyOnce && val.(int) != 1) ||
+			(!exactlyOnce && val.(int) == 0) {
+			errs = append(errs, fmt.Errorf("team id '%s', count = %d", key, val))
+		}
+		return true
+	})
+
+	// guarantee error order
+	sort.SliceStable(errs, func(i, j int) bool {
+		return errs[i].Error() < errs[j].Error()
+	})
+
+	for _, err := range errs {
+		mErr.Add(err)
+	}
 }
