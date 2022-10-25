@@ -67,6 +67,16 @@ type MatchEvent struct {
 
 type MatchCollection []*Match
 
+func (mc MatchCollection) GetByID(id string) *Match {
+	for _, match := range mc {
+		if match != nil && match.ID == id {
+			return match
+		}
+	}
+
+	return nil
+}
+
 type MatchesCSVLoader struct {
 	fSys fs.FS
 	path string

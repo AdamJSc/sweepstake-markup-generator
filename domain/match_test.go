@@ -11,6 +11,55 @@ import (
 	"github.com/sweepstake.adamjs.net/domain"
 )
 
+func TestMatchCollection_GetByID(t *testing.T) {
+	matchA1 := &domain.Match{
+		ID: "matchA",
+	}
+
+	matchB := &domain.Match{
+		ID: "matchB",
+	}
+
+	matchA2 := &domain.Match{
+		ID: "matchA",
+	}
+
+	collection := domain.MatchCollection{
+		matchA1,
+		matchB,
+		matchA2, // duplicate id, should never be returned (matchA1 should match first)
+	}
+
+	tt := []struct {
+		name      string
+		id        string
+		wantMatch *domain.Match
+	}{
+		{
+			name:      "duplicate match id must return first matched item",
+			id:        "matchA",
+			wantMatch: matchA1,
+		},
+		{
+			name:      "unique match id must return only matching item",
+			id:        "matchB",
+			wantMatch: matchB,
+		},
+		{
+			name: "non-matching item must return nil",
+			id:   "matchC",
+			// want nil team
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotTeam := collection.GetByID(tc.id)
+			cmpDiff(t, tc.wantMatch, gotTeam)
+		})
+	}
+}
+
 func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 	tt := []struct {
 		name        string
