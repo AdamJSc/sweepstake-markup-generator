@@ -77,6 +77,16 @@ func (mc MatchCollection) GetByID(id string) *Match {
 	return nil
 }
 
+func (mc MatchCollection) GetWinnerByMatchID(id string) *Team {
+	match := mc.GetByID(id)
+
+	if match == nil || !match.Completed {
+		return nil
+	}
+
+	return match.Winner
+}
+
 type MatchesCSVLoader struct {
 	fSys fs.FS
 	path string

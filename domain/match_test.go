@@ -54,8 +54,74 @@ func TestMatchCollection_GetByID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			gotTeam := collection.GetByID(tc.id)
-			cmpDiff(t, tc.wantMatch, gotTeam)
+			gotMatch := collection.GetByID(tc.id)
+			cmpDiff(t, tc.wantMatch, gotMatch)
+		})
+	}
+}
+
+func TestMatchCollection_GetWinnerByMatchID(t *testing.T) {
+	matchID := "test-match"
+
+	team := &domain.Team{
+		ID: "test-team",
+	}
+
+	tt := []struct {
+		name            string
+		matchCollection domain.MatchCollection
+		wantTeam        *domain.Team
+	}{
+		{
+			name: "existent match id and completed match and non-nil winner must produce the expected team",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "test-match",
+					Completed: true,
+					Winner:    team,
+				},
+			},
+			wantTeam: team,
+		},
+		{
+			name: "non-existent match id must return nil",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "not-test-match",
+					Completed: true,
+					Winner:    team,
+				},
+			},
+			// wantTeam is nil
+		},
+		{
+			name: "match that is not completed must return nil",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:     "test-match",
+					Winner: team,
+					// completed is false
+				},
+			},
+			// wantTeam is nil
+		},
+		{
+			name: "empty team must return nil",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "test-match",
+					Completed: true,
+					// winner is nil
+				},
+			},
+			// wantTeam is nil
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotTeam := tc.matchCollection.GetWinnerByMatchID(matchID)
+			cmpDiff(t, tc.wantTeam, gotTeam)
 		})
 	}
 }
