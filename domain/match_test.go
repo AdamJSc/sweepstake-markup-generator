@@ -48,7 +48,7 @@ func TestMatchCollection_GetByID(t *testing.T) {
 		{
 			name: "non-matching item must return nil",
 			id:   "matchC",
-			// want nil team
+			// want nil match
 		},
 	}
 

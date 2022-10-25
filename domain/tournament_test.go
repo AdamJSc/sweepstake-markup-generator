@@ -278,7 +278,7 @@ func TestTournamentCollection_GetByID(t *testing.T) {
 		{
 			name: "non-matching item must return nil",
 			id:   "tourneyC",
-			// want nil team
+			// want nil tournament
 		},
 	}
 

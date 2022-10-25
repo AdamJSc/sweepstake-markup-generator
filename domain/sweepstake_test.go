@@ -15,6 +15,55 @@ import (
 	"github.com/sweepstake.adamjs.net/domain"
 )
 
+func TestParticipantCollection_GetByTeamID(t *testing.T) {
+	participantA1 := &domain.Participant{
+		TeamID: "teamA",
+	}
+
+	participantB := &domain.Participant{
+		TeamID: "teamB",
+	}
+
+	participantA2 := &domain.Participant{
+		TeamID: "teamA",
+	}
+
+	collection := domain.ParticipantCollection{
+		participantA1,
+		participantB,
+		participantA2, // duplicate id, should never be returned (participantA1 should match first)
+	}
+
+	tt := []struct {
+		name            string
+		id              string
+		wantParticipant *domain.Participant
+	}{
+		{
+			name:            "duplicate participant id must return first matched item",
+			id:              "teamA",
+			wantParticipant: participantA1,
+		},
+		{
+			name:            "unique participant id must return only matching item",
+			id:              "teamB",
+			wantParticipant: participantB,
+		},
+		{
+			name: "non-matching item must return nil",
+			id:   "teamC",
+			// want nil participant
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotMatch := collection.GetByTeamID(tc.id)
+			cmpDiff(t, tc.wantParticipant, gotMatch)
+		})
+	}
+}
+
 func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 	testTourney1 := &domain.Tournament{
 		ID: "TestTourney1",

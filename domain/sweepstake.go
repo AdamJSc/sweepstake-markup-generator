@@ -14,14 +14,26 @@ type Sweepstake struct {
 	Name            string `json:"name"`
 	ImageURL        string `json:"imageURL"`
 	Tournament      *Tournament
-	Participants    []*Participant `json:"participants"`
-	Build           bool           `json:"build"`
-	WithLastUpdated bool           `json:"with_last_updated"`
+	Participants    ParticipantCollection `json:"participants"`
+	Build           bool                  `json:"build"`
+	WithLastUpdated bool                  `json:"with_last_updated"`
 }
 
 type Participant struct {
 	TeamID string `json:"team_id"`
 	Name   string `json:"participant_name"`
+}
+
+type ParticipantCollection []*Participant
+
+func (pc ParticipantCollection) GetByTeamID(id string) *Participant {
+	for _, participant := range pc {
+		if participant != nil && participant.TeamID == id {
+			return participant
+		}
+	}
+
+	return nil
 }
 
 type SweepstakeCollection []*Sweepstake
