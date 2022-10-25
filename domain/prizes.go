@@ -48,3 +48,25 @@ func getSummary(team *Team, participant *Participant) string {
 
 	return fmt.Sprintf("%s (%s)", participant.Name, team.Name)
 }
+
+// TournamentRunnerUp determines the runner-up of the provided Sweepstake
+var TournamentRunnerUp = func(s *Sweepstake) OutrightPrize {
+	if s == nil {
+		return defaultOutright
+	}
+
+	// get match runner-up
+	runnerUpTeam := s.Tournament.Matches.GetRunnerUpByMatchID(finalMatchID)
+	if runnerUpTeam == nil {
+		return defaultOutright
+	}
+
+	// get participant who represents the match runner-up
+	participant := s.Participants.GetByTeamID(runnerUpTeam.ID)
+	winnerName := getSummary(runnerUpTeam, participant)
+
+	return OutrightPrize{
+		WinnerName: winnerName,
+		ImageURL:   runnerUpTeam.ImageURL,
+	}
+}
