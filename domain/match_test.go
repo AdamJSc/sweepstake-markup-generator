@@ -126,6 +126,132 @@ func TestMatchCollection_GetWinnerByMatchID(t *testing.T) {
 	}
 }
 
+func TestMatchCollection_GetRunnerUpByMatchID(t *testing.T) {
+	matchID := "test-match"
+
+	teamA := &domain.Team{
+		ID: "teamA",
+	}
+
+	teamB := &domain.Team{
+		ID: "teamB",
+	}
+
+	tt := []struct {
+		name            string
+		matchCollection domain.MatchCollection
+		wantTeam        *domain.Team
+	}{
+		{
+			name: "existent match id and completed match and home team winner must return away team",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "test-match",
+					Completed: true,
+					Winner:    teamA,
+					Home: domain.MatchCompetitor{
+						Team: teamA,
+					},
+					Away: domain.MatchCompetitor{
+						Team: teamB,
+					},
+				},
+			},
+			wantTeam: teamB,
+		},
+		{
+			name: "existent match id and completed match and away team winner must return home team",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "test-match",
+					Completed: true,
+					Winner:    teamB,
+					Home: domain.MatchCompetitor{
+						Team: teamA,
+					},
+					Away: domain.MatchCompetitor{
+						Team: teamB,
+					},
+				},
+			},
+			wantTeam: teamA,
+		},
+		{
+			name: "existent match id and completed match and nil non-winning team must return nil",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "test-match",
+					Completed: true,
+					Winner:    teamA,
+					Home: domain.MatchCompetitor{
+						Team: teamA,
+					},
+					// no away team
+				},
+			},
+			// wantTeam is nil
+		},
+		{
+			name: "non-existent match id must return nil",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "not-test-match",
+					Completed: true,
+					Winner:    teamA,
+					Home: domain.MatchCompetitor{
+						Team: teamA,
+					},
+					Away: domain.MatchCompetitor{
+						Team: teamB,
+					},
+				},
+			},
+			// wantTeam is nil
+		},
+		{
+			name: "match that is not completed must return nil",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:     "test-match",
+					Winner: teamA,
+					Home: domain.MatchCompetitor{
+						Team: teamA,
+					},
+					Away: domain.MatchCompetitor{
+						Team: teamB,
+					},
+					// completed is false
+				},
+			},
+			// wantTeam is nil
+		},
+		{
+			name: "empty winning team must return nil",
+			matchCollection: domain.MatchCollection{
+				{
+					ID:        "test-match",
+					Completed: true,
+					Home: domain.MatchCompetitor{
+						Team: teamA,
+					},
+					Away: domain.MatchCompetitor{
+						Team: teamB,
+					},
+					// winner is nil
+				},
+			},
+			// wantTeam is nil
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotTeam := tc.matchCollection.GetRunnerUpByMatchID(matchID)
+			cmpDiff(t, tc.wantTeam, gotTeam)
+		})
+	}
+}
+
 func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 	tt := []struct {
 		name        string
