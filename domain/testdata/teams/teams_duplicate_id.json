@@ -3,17 +3,17 @@
     {
       "id": "PTFC",
       "name": "Poole Town",
-      "imageURL": "http://ptfc.jpg"
+      "image_url": "http://ptfc.jpg"
     },
     {
       "id": "WTFC",
       "name": "Wimborne Town",
-      "imageURL": "http://wtfc.jpg"
+      "image_url": "http://wtfc.jpg"
     },
     {
       "id": "PTFC",
       "name": "Partick Thistle",
-      "imageURL": "http://partick-thistle.jpg"
+      "image_url": "http://partick-thistle.jpg"
     }
   ]
 }

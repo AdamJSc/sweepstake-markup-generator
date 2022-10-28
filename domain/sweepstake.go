@@ -13,7 +13,7 @@ import (
 type Sweepstake struct {
 	ID              string `json:"id"`
 	Name            string `json:"name"`
-	ImageURL        string `json:"imageURL"`
+	ImageURL        string `json:"image_url"`
 	Tournament      *Tournament
 	Participants    ParticipantCollection `json:"participants"`
 	Prizes          PrizeSettings         `json:"prizes"`

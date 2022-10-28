@@ -13,7 +13,7 @@ import (
 type Tournament struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
-	ImageURL string `json:"imageURL"`
+	ImageURL string `json:"image_url"`
 	Teams    TeamCollection
 	Matches  MatchCollection
 	Template *template.Template

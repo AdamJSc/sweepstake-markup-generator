@@ -12,13 +12,14 @@ import (
 )
 
 var (
+	// go:embed data
 	defaultFileSystem fs.FS // TODO: load files via go:embed
 )
 
 type Team struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
-	ImageURL string `json:"imageURL"`
+	ImageURL string `json:"image_url"`
 }
 
 type TeamCollection []*Team

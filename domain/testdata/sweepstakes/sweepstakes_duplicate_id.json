@@ -3,7 +3,7 @@
     {
       "id": "test-sweepstake-1",
       "name": "Test Sweepstake 1",
-      "imageURL": "http://sweepstake1.jpg",
+      "image_url": "http://sweepstake1.jpg",
       "tournament_id": "TestTourney2",
       "participants": [
         {
@@ -19,7 +19,7 @@
     {
       "id": "test-sweepstake-1",
       "name": "Test Sweepstake ALT",
-      "imageURL": "http://sweepstakeALT.jpg",
+      "image_url": "http://sweepstakeALT.jpg",
       "tournament_id": "TestTourney2",
       "build": true,
       "participants": [
