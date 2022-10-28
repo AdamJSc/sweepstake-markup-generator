@@ -6,7 +6,7 @@ import "fmt"
 const finalMatchID = "F"
 
 // defaultOutright defines a default outright prize
-var defaultOutright = OutrightPrize{
+var defaultOutright = &OutrightPrize{
 	WinnerName: "TBC",
 }
 
@@ -17,10 +17,10 @@ type OutrightPrize struct {
 }
 
 // OutrightPrizeGenerator defines a function that generates an outright prize from the provided Sweepstake
-type OutrightPrizeGenerator func(sweepstake *Sweepstake) OutrightPrize
+type OutrightPrizeGenerator func(sweepstake *Sweepstake) *OutrightPrize
 
 // TournamentWinner determines the winner of the provided Sweepstake
-var TournamentWinner = func(s *Sweepstake) OutrightPrize {
+var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 	if s == nil {
 		return defaultOutright
 	}
@@ -35,7 +35,7 @@ var TournamentWinner = func(s *Sweepstake) OutrightPrize {
 	participant := s.Participants.GetByTeamID(winningTeam.ID)
 	winnerName := getSummary(winningTeam, participant)
 
-	return OutrightPrize{
+	return &OutrightPrize{
 		WinnerName: winnerName,
 		ImageURL:   winningTeam.ImageURL,
 	}
@@ -50,7 +50,7 @@ func getSummary(team *Team, participant *Participant) string {
 }
 
 // TournamentRunnerUp determines the runner-up of the provided Sweepstake
-var TournamentRunnerUp = func(s *Sweepstake) OutrightPrize {
+var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 	if s == nil {
 		return defaultOutright
 	}
@@ -65,8 +65,24 @@ var TournamentRunnerUp = func(s *Sweepstake) OutrightPrize {
 	participant := s.Participants.GetByTeamID(runnerUpTeam.ID)
 	winnerName := getSummary(runnerUpTeam, participant)
 
-	return OutrightPrize{
+	return &OutrightPrize{
 		WinnerName: winnerName,
 		ImageURL:   runnerUpTeam.ImageURL,
 	}
+}
+
+// TODO: prize - most goals conceded
+// TODO: prize - most yellow cards
+// TODO: prize - quickest own goal
+// TODO: prize - quickest red card
+
+type RankedPrize struct {
+	Result []Rank
+}
+
+type Rank struct {
+	Position uint8
+	ImageURL string
+	Name     string
+	Value    uint8
 }

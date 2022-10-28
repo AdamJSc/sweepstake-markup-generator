@@ -119,6 +119,10 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 						{TeamID: "STHFC", Name: "Paul C"},
 						{TeamID: "WTFC", Name: "Sid V / Glen M"},
 					},
+					Prizes: domain.PrizeSettings{
+						Winner:   true,
+						RunnerUp: true,
+					},
 					Build:           true,
 					WithLastUpdated: true,
 				},

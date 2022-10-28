@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -15,8 +16,44 @@ type Sweepstake struct {
 	ImageURL        string `json:"imageURL"`
 	Tournament      *Tournament
 	Participants    ParticipantCollection `json:"participants"`
+	Prizes          PrizeSettings         `json:"prizes"`
 	Build           bool                  `json:"build"`
 	WithLastUpdated bool                  `json:"with_last_updated"`
+}
+
+func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
+	// TODO: test this method using actual tournament data to check for regressions
+	buf := &bytes.Buffer{}
+
+	var winner, runnerUp *OutrightPrize
+	if s.Prizes.Winner {
+		winner = TournamentWinner(s)
+	}
+	if s.Prizes.RunnerUp {
+		runnerUp = TournamentRunnerUp(s)
+	}
+
+	type prizeData struct {
+		Winner   *OutrightPrize
+		RunnerUp *OutrightPrize
+	}
+
+	data := struct {
+		Prizes     prizeData
+		Sweepstake *Sweepstake
+	}{
+		Prizes: prizeData{
+			Winner:   winner,
+			RunnerUp: runnerUp,
+		},
+		Sweepstake: s,
+	}
+
+	if err := s.Tournament.Template.Execute(buf, data); err != nil {
+		return nil, fmt.Errorf("cannot execute template: %w", err)
+	}
+
+	return buf.Bytes(), nil
 }
 
 type Participant struct {
@@ -34,6 +71,11 @@ func (pc ParticipantCollection) GetByTeamID(id string) *Participant {
 	}
 
 	return nil
+}
+
+type PrizeSettings struct {
+	Winner   bool `json:"winner"`
+	RunnerUp bool `json:"runner_up"`
 }
 
 type SweepstakeCollection []*Sweepstake

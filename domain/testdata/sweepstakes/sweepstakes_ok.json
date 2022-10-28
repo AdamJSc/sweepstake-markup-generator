@@ -5,6 +5,10 @@
       "name": "Test Sweepstake 1 ",
       "imageURL": "http://sweepstake1.jpg ",
       "tournament_id": "TestTourney1",
+      "prizes": {
+        "winner": true,
+        "runner_up": true
+      },
       "build": true,
       "with_last_updated": true,
       "participants": [

@@ -7,13 +7,13 @@ import (
 )
 
 func TestTournamentWinner(t *testing.T) {
-	defaultPrize := domain.OutrightPrize{WinnerName: "TBC"}
+	defaultPrize := &domain.OutrightPrize{WinnerName: "TBC"}
 	teamA := &domain.Team{ID: "teamA", Name: "Team A", ImageURL: "http://teamA.jpg"}
 
 	tt := []struct {
 		name       string
 		sweepstake *domain.Sweepstake
-		wantPrize  domain.OutrightPrize
+		wantPrize  *domain.OutrightPrize
 	}{
 		{
 			name: "completed final match with winning team and participant name must return prize with participant name and team name",
@@ -34,7 +34,7 @@ func TestTournamentWinner(t *testing.T) {
 					},
 				},
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Marc Pugh (Team A)",
 				ImageURL:   "http://teamA.jpg",
 			},
@@ -58,7 +58,7 @@ func TestTournamentWinner(t *testing.T) {
 					},
 				},
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Team A",
 				ImageURL:   "http://teamA.jpg",
 			},
@@ -77,7 +77,7 @@ func TestTournamentWinner(t *testing.T) {
 				},
 				// no participants
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Team A",
 				ImageURL:   "http://teamA.jpg",
 			},
@@ -161,7 +161,7 @@ func TestTournamentWinner(t *testing.T) {
 }
 
 func TestTournamentRunnerUp(t *testing.T) {
-	defaultPrize := domain.OutrightPrize{WinnerName: "TBC"}
+	defaultPrize := &domain.OutrightPrize{WinnerName: "TBC"}
 
 	teamA := &domain.Team{ID: "teamA", Name: "Team A", ImageURL: "http://teamA.jpg"}
 	teamB := &domain.Team{ID: "teamB", Name: "Team B", ImageURL: "http://teamB.jpg"}
@@ -180,7 +180,7 @@ func TestTournamentRunnerUp(t *testing.T) {
 	tt := []struct {
 		name       string
 		sweepstake *domain.Sweepstake
-		wantPrize  domain.OutrightPrize
+		wantPrize  *domain.OutrightPrize
 	}{
 		{
 			name: "completed final match with confirmed winning teamA and participant name must return prize with participant name and team name",
@@ -202,7 +202,7 @@ func TestTournamentRunnerUp(t *testing.T) {
 				},
 				Participants: participants,
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Steve Fletcher (Team B)",
 				ImageURL:   "http://teamB.jpg",
 			},
@@ -227,7 +227,7 @@ func TestTournamentRunnerUp(t *testing.T) {
 				},
 				Participants: participants,
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Marc Pugh (Team A)",
 				ImageURL:   "http://teamA.jpg",
 			},
@@ -261,7 +261,7 @@ func TestTournamentRunnerUp(t *testing.T) {
 					},
 				},
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Team B",
 				ImageURL:   "http://teamB.jpg",
 			},
@@ -295,7 +295,7 @@ func TestTournamentRunnerUp(t *testing.T) {
 					},
 				},
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Team A",
 				ImageURL:   "http://teamA.jpg",
 			},
@@ -320,7 +320,7 @@ func TestTournamentRunnerUp(t *testing.T) {
 				},
 				// no participants
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Team B",
 				ImageURL:   "http://teamB.jpg",
 			},
@@ -345,7 +345,7 @@ func TestTournamentRunnerUp(t *testing.T) {
 				},
 				// no participants
 			},
-			wantPrize: domain.OutrightPrize{
+			wantPrize: &domain.OutrightPrize{
 				WinnerName: "Team A",
 				ImageURL:   "http://teamA.jpg",
 			},
