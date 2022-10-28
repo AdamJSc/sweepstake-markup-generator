@@ -1,0 +1,65 @@
+MATCH_ID,DATE,TIME,STAGE,COMPLETED,WINNER_TEAM_ID,HOME_TEAM_ID,AWAY_TEAM_ID,HOME_GOALS,AWAY_GOALS,HOME_YELLOW_CARDS,AWAY_YELLOW_CARDS,HOME_OG,AWAY_OG,HOME_RED_CARDS,AWAY_RED_CARDS,NOTES
+1_A,20/11/2022,19:00,GROUP,,,QAT,ECU,,,,,,,,,
+3_B,21/11/2022,16:00,GROUP,,,ENG,IRN,,,,,,,,,
+2_A,21/11/2022,19:00,GROUP,,,SEN,NLD,,,,,,,,,
+4_B,21/11/2022,22:00,GROUP,,,USA,WAL,,,,,,,,,
+8_C,22/11/2022,13:00,GROUP,,,ARG,SAU,,,,,,,,,
+6_D,22/11/2022,16:00,GROUP,,,DNK,TUN,,,,,,,,,
+7_C,22/11/2022,19:00,GROUP,,,MEX,POL,,,,,,,,,
+5_D,22/11/2022,22:00,GROUP,,,FRA,AUS,,,,,,,,,
+12_F,23/11/2022,13:00,GROUP,,,MAR,HRV,,,,,,,,,
+11_E,23/11/2022,16:00,GROUP,,,DEU,JPN,,,,,,,,,
+10_E,23/11/2022,19:00,GROUP,,,ESP,CRI,,,,,,,,,
+9_F,23/11/2022,22:00,GROUP,,,BEL,CAN,,,,,,,,,
+13_G,24/11/2022,13:00,GROUP,,,CHE,CMR,,,,,,,,,
+14_H,24/11/2022,16:00,GROUP,,,URY,KOR,,,,,,,,,
+15_H,24/11/2022,19:00,GROUP,,,PRT,GHA,,,,,,,,,
+16_G,24/11/2022,22:00,GROUP,,,BRA,SRB,,,,,,,,,
+17_B,25/11/2022,13:00,GROUP,,,WAL,IRN,,,,,,,,,
+18_A,25/11/2022,16:00,GROUP,,,QAT,SEN,,,,,,,,,
+19_A,25/11/2022,19:00,GROUP,,,NLD,ECU,,,,,,,,,
+20_B,25/11/2022,22:00,GROUP,,,ENG,USA,,,,,,,,,
+21_D,26/11/2022,13:00,GROUP,,,TUN,AUS,,,,,,,,,
+22_C,26/11/2022,16:00,GROUP,,,POL,SAU,,,,,,,,,
+23_D,26/11/2022,19:00,GROUP,,,FRA,DNK,,,,,,,,,
+24_C,26/11/2022,22:00,GROUP,,,ARG,MEX,,,,,,,,,
+25_E,27/11/2022,13:00,GROUP,,,JPN,CRI,,,,,,,,,
+26_F,27/11/2022,16:00,GROUP,,,BEL,MAR,,,,,,,,,
+27_F,27/11/2022,19:00,GROUP,,,HRV,CAN,,,,,,,,,
+28_E,27/11/2022,22:00,GROUP,,,ESP,DEU,,,,,,,,,
+29_G,28/11/2022,13:00,GROUP,,,CMR,SRB,,,,,,,,,
+30_H,28/11/2022,16:00,GROUP,,,KOR,GHA,,,,,,,,,
+31_G,28/11/2022,19:00,GROUP,,,BRA,CHE,,,,,,,,,
+32_H,28/11/2022,22:00,GROUP,,,PRT,URY,,,,,,,,,
+35_A,29/11/2022,18:00,GROUP,,,ECU,SEN,,,,,,,,,
+36_A,29/11/2022,18:00,GROUP,,,NLD,QAT,,,,,,,,,
+33_B,29/11/2022,22:00,GROUP,,,WAL,ENG,,,,,,,,,
+34_B,29/11/2022,22:00,GROUP,,,IRN,USA,,,,,,,,,
+37_D,30/11/2022,18:00,GROUP,,,AUS,DNK,,,,,,,,,
+38_D,30/11/2022,18:00,GROUP,,,TUN,FRA,,,,,,,,,
+39_C,30/11/2022,22:00,GROUP,,,POL,ARG,,,,,,,,,
+40_C,30/11/2022,22:00,GROUP,,,SAU,MEX,,,,,,,,,
+41_F,01/12/2022,18:00,GROUP,,,HRV,BEL,,,,,,,,,
+42_F,01/12/2022,18:00,GROUP,,,CAN,MAR,,,,,,,,,
+43_E,01/12/2022,22:00,GROUP,,,JPN,ESP,,,,,,,,,
+44_E,01/12/2022,22:00,GROUP,,,CRI,DEU,,,,,,,,,
+45_H,02/12/2022,18:00,GROUP,,,GHA,URY,,,,,,,,,
+46_H,02/12/2022,18:00,GROUP,,,KOR,PRT,,,,,,,,,
+47_G,02/12/2022,22:00,GROUP,,,SRB,CHE,,,,,,,,,
+48_G,02/12/2022,22:00,GROUP,,,CMR,BRA,,,,,,,,,
+49_R16,03/12/2022,18:00,KO,,,,,,,,,,,,,Group A Winner vs Group B Runner Up
+50_R16,03/12/2022,22:00,KO,,,,,,,,,,,,,Group C Winner vs Group D Runner Up
+52_R16,04/12/2022,18:00,KO,,,,,,,,,,,,,Group D Winner vs Group C Runner Up
+51_R16,04/12/2022,22:00,KO,,,,,,,,,,,,,Group B Winner vs Group A Runner Up
+53_R16,05/12/2022,18:00,KO,,,,,,,,,,,,,Group E Winner vs Group F Runner Up
+54_R16,05/12/2022,22:00,KO,,,,,,,,,,,,,Group G Winner vs Group H Runner Up
+55_R16,06/12/2022,18:00,KO,,,,,,,,,,,,,Group F Winner vs Group E Runner Up
+56_R16,06/12/2022,22:00,KO,,,,,,,,,,,,,Group H Winner vs Group G Runner Up
+58_QF,09/12/2022,18:00,KO,,,,,,,,,,,,,Match 53 Winner vs Match 54 Winner
+57_QF,09/12/2022,22:00,KO,,,,,,,,,,,,,Match 49 Winner vs Match 50 Winner
+60_QF,10/12/2022,18:00,KO,,,,,,,,,,,,,Match 55 Winner vs Match 56 Winner
+59_QF,10/12/2022,22:00,KO,,,,,,,,,,,,,Match 51 Winner vs Match 52 Winner
+61_SF,13/12/2022,22:00,KO,,,,,,,,,,,,,Match 57 Winner vs Match 58 Winner
+62_SF,14/12/2022,22:00,KO,,,,,,,,,,,,,Match 59 Winner vs Match 60 Winner
+63_3rd,17/12/2022,18:00,KO,,,,,,,,,,,,,Match 61 Loser vs Match 62 Loser
+F,18/12/2022,18:00,KO,,,,,,,,,,,,,Match 61 Winner vs Match 62 Winner
