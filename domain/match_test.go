@@ -268,7 +268,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Timestamp: time.Date(2018, 5, 26, 14, 0, 0, 0, time.UTC),
 					Stage:     domain.GroupStage,
 					Home: domain.MatchCompetitor{
-						Team:     &domain.Team{ID: "SWTFC"},
+						Team:     &domain.Team{ID: "STHFC"},
 						Goals:    2,
 						OwnGoals: []domain.MatchEvent{{Name: "O'Brien", Minute: 12}},
 						RedCards: []domain.MatchEvent{{Name: "Prichard", Minute: 22}},
@@ -279,7 +279,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						OwnGoals:    []domain.MatchEvent{{Name: "Thiessen", Minute: 54}},
 					},
 					Winner: &domain.Team{
-						ID: "SWTFC",
+						ID: "STHFC",
 					},
 					Completed: true,
 				},
@@ -330,7 +330,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						OwnGoals: []domain.MatchEvent{{Name: "Jones", Minute: 7}},
 					},
 					Away: domain.MatchCompetitor{
-						Team:        &domain.Team{ID: "STHFC"},
+						Team:        &domain.Team{ID: "WTFC"},
 						YellowCards: 2,
 						OwnGoals:    []domain.MatchEvent{{Name: "Moriarty", Minute: 21}},
 					},
@@ -350,7 +350,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						RedCards:    []domain.MatchEvent{{Name: "Sheahan", Minute: 8}},
 					},
 					Away: domain.MatchCompetitor{
-						Team:     &domain.Team{ID: "SWTFC"},
+						Team:     &domain.Team{ID: "STHFC"},
 						Goals:    1,
 						OwnGoals: []domain.MatchEvent{{Name: "Racoosin", Minute: 33}, {Name: "Broadfoot", Minute: 90, Offset: 2}},
 					},
@@ -406,7 +406,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						YellowCards: 2,
 					},
 					Away: domain.MatchCompetitor{
-						Team:     &domain.Team{ID: "STHFC"},
+						Team:     &domain.Team{ID: "WTFC"},
 						Goals:    1,
 						OwnGoals: []domain.MatchEvent{{Name: "Landenna", Minute: 20}, {Name: "Dongoski", Minute: 24}},
 					},
@@ -443,7 +443,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						OwnGoals: []domain.MatchEvent{{Name: "McCartney", Minute: 12}},
 					},
 					Away: domain.MatchCompetitor{
-						Team:        &domain.Team{ID: "SWTFC"},
+						Team:        &domain.Team{ID: "STHFC"},
 						YellowCards: 2,
 						OwnGoals:    []domain.MatchEvent{{Name: "Margaitis", Minute: 59}},
 					},
@@ -463,7 +463,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 						RedCards:    []domain.MatchEvent{{Name: "Bhide", Minute: 55}},
 					},
 					Away: domain.MatchCompetitor{
-						Team:     &domain.Team{ID: "STHFC"},
+						Team:     &domain.Team{ID: "WTFC"},
 						Goals:    1,
 						OwnGoals: []domain.MatchEvent{{Name: "Daboni", Minute: 76}, {Name: "T.Wegman", Minute: 77}},
 					},
@@ -658,12 +658,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			var testPath []string
-			if tc.testFile != "" {
-				testPath = []string{matchesDir, tc.testFile}
-			}
-
-			loader := newMatchesCSVLoader(testPath...)
+			loader := newMatchesCSVLoader(tc.testFile)
 			gotMatches, gotErr := loader.LoadMatches(nil)
 
 			cmpError(t, tc.wantErr, gotErr)
@@ -672,12 +667,14 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 	}
 }
 
-func newMatchesCSVLoader(path ...string) *domain.MatchesCSVLoader {
-	if len(path) > 0 {
-		path = append([]string{testdataDir}, path...)
+func newMatchesCSVLoader(path string) *domain.MatchesCSVLoader {
+	if path != "" {
+		path = filepath.Join(testdataDir, matchesDir, path)
 	}
-	fullPath := filepath.Join(path...)
-	return (&domain.MatchesCSVLoader{}).WithFileSystem(testdataFilesystem).WithPath(fullPath)
+
+	return (&domain.MatchesCSVLoader{}).
+		WithFileSystem(testdataFilesystem).
+		WithPath(path)
 }
 
 func newMultiError(messages []string) error {

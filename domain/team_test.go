@@ -146,12 +146,7 @@ func TestTeamsJSONLoader_LoadTeams(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			var testPath []string
-			if tc.testFile != "" {
-				testPath = []string{teamsDir, tc.testFile}
-			}
-
-			loader := newTeamsJSONLoader(testPath...)
+			loader := newTeamsJSONLoader(tc.testFile)
 			gotTeams, gotErr := loader.LoadTeams(nil)
 
 			cmpError(t, tc.wantErr, gotErr)
@@ -160,12 +155,14 @@ func TestTeamsJSONLoader_LoadTeams(t *testing.T) {
 	}
 }
 
-func newTeamsJSONLoader(path ...string) *domain.TeamsJSONLoader {
-	if len(path) > 0 {
-		path = append([]string{testdataDir}, path...)
+func newTeamsJSONLoader(path string) *domain.TeamsJSONLoader {
+	if path != "" {
+		path = filepath.Join(testdataDir, teamsDir, path)
 	}
-	fullPath := filepath.Join(path...)
-	return (&domain.TeamsJSONLoader{}).WithFileSystem(testdataFilesystem).WithPath(fullPath)
+
+	return (&domain.TeamsJSONLoader{}).
+		WithFileSystem(testdataFilesystem).
+		WithPath(path)
 }
 
 func cmpDiff(t *testing.T, want, got interface{}) {

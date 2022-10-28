@@ -176,7 +176,7 @@ func validateTournament(tournament *Tournament, mErr MultiError) {
 		audit.ack(match.Away.Team)
 	}
 
-	audit.validate(mErr, true)
+	audit.validate(mErr, false)
 }
 
 func populateTeamByID(team *Team, collection TeamCollection) error {

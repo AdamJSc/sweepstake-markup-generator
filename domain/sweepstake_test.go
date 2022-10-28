@@ -195,21 +195,24 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
 
-			var configPath string
-			if tc.configFilename != "" {
-				configPath = filepath.Join(testdataDir, sweepstakesDir, tc.configFilename)
-			}
-
-			loader := (&domain.SweepstakesJSONLoader{}).
-				WithFileSystem(testdataFilesystem).
-				WithTournamentCollection(tc.tournaments).
-				WithConfigPath(configPath)
+			loader := newSweepstakesJSONLoader(tc.configFilename).
+				WithTournamentCollection(tc.tournaments)
 
 			gotSweepstakes, gotErr := loader.LoadSweepstakes(ctx)
 			cmpError(t, tc.wantErr, gotErr)
 			cmpDiff(t, tc.wantSweepstakes, gotSweepstakes)
 		})
 	}
+}
+
+func newSweepstakesJSONLoader(path string) *domain.SweepstakesJSONLoader {
+	if path != "" {
+		path = filepath.Join(testdataDir, sweepstakesDir, path)
+	}
+
+	return (&domain.SweepstakesJSONLoader{}).
+		WithFileSystem(testdataFilesystem).
+		WithConfigPath(path)
 }
 
 func parseTemplate(t *testing.T, raw string) *template.Template {

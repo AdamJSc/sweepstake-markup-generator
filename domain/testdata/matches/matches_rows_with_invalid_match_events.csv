@@ -1,7 +1,7 @@
 MATCH_ID,DATE,TIME,STAGE,COMPLETED,WINNER_TEAM_ID,HOME_TEAM_ID,AWAY_TEAM_ID,HOME_GOALS,AWAY_GOALS,HOME_YELLOW_CARDS,AWAY_YELLOW_CARDS,HOME_OG,AWAY_OG,HOME_RED_CARDS,AWAY_RED_CARDS
-A1,26/05/2018,14:00,GROUP,Y,SWTFC,SWTFC,PTFC,2,0,0,2,hello,world,foo,bar
-A2,26/05/2018,14:00,GROUP,Y,SWTFC,SWTFC,PTFC,2,0,0,2,1,2;firstEvent,3;firstEvent;secondEvent,4;firstEvent;secondEvent;thirdEvent
-A3,26/05/2018,14:00,GROUP,Y,SWTFC,SWTFC,PTFC,2,0,0,2,1;invalidFormat,1;Thiessen:invalidNumber,2;Thiessen:123;invalidFormat,2;Thiessen:123;Thiessen:invalidNumber
-A4,26/05/2018,14:00,GROUP,Y,SWTFC,SWTFC,PTFC,2,0,0,2,,1;Thiessen:0,,
-A5,26/05/2018,14:00,GROUP,Y,SWTFC,SWTFC,PTFC,2,0,0,2,,,1;Thiessen:90+invalidNumber,
-A6,26/05/2018,14:00,GROUP,Y,SWTFC,SWTFC,PTFC,2,0,0,2,,,,1;Thiessen:90+0
+A1,26/05/2018,14:00,GROUP,Y,STHFC,STHFC,PTFC,2,0,0,2,hello,world,foo,bar
+A2,26/05/2018,14:00,GROUP,Y,STHFC,STHFC,PTFC,2,0,0,2,1,2;firstEvent,3;firstEvent;secondEvent,4;firstEvent;secondEvent;thirdEvent
+A3,26/05/2018,14:00,GROUP,Y,STHFC,STHFC,PTFC,2,0,0,2,1;invalidFormat,1;Thiessen:invalidNumber,2;Thiessen:123;invalidFormat,2;Thiessen:123;Thiessen:invalidNumber
+A4,26/05/2018,14:00,GROUP,Y,STHFC,STHFC,PTFC,2,0,0,2,,1;Thiessen:0,,
+A5,26/05/2018,14:00,GROUP,Y,STHFC,STHFC,PTFC,2,0,0,2,,,1;Thiessen:90+invalidNumber,
+A6,26/05/2018,14:00,GROUP,Y,STHFC,STHFC,PTFC,2,0,0,2,,,,1;Thiessen:90+0
