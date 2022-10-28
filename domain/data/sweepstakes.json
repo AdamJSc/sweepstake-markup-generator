@@ -1,0 +1,145 @@
+{
+  "sweepstakes": [
+    {
+      "id": "example-wc2022",
+      "name": "Example World Cup 2022",
+      "tournament_id": "2022-fifa-world-cup",
+      "prizes": {
+        "winner": true,
+        "runner_up": true
+      },
+      "build": true,
+      "with_last_updated": true,
+      "participants": [
+        {
+          "team_id": "QAT",
+          "participant_name": "Mr Qatar"
+        },
+        {
+          "team_id": "ECU",
+          "participant_name": "Mrs Ecuador"
+        },
+        {
+          "team_id": "SEN",
+          "participant_name": "Ms Senegal"
+        },
+        {
+          "team_id": "NLD",
+          "participant_name": "Miss Netherlands"
+        },
+        {
+          "team_id": "ENG",
+          "participant_name": "Mr England"
+        },
+        {
+          "team_id": "IRN",
+          "participant_name": "Mrs Iran"
+        },
+        {
+          "team_id": "USA",
+          "participant_name": "Ms USA"
+        },
+        {
+          "team_id": "WAL",
+          "participant_name": "Miss Wales"
+        },
+        {
+          "team_id": "ARG",
+          "participant_name": "Mr Argentina"
+        },
+        {
+          "team_id": "SAU",
+          "participant_name": "Mrs Saudi Arabia"
+        },
+        {
+          "team_id": "MEX",
+          "participant_name": "Ms Mexico"
+        },
+        {
+          "team_id": "POL",
+          "participant_name": "Miss Poland"
+        },
+        {
+          "team_id": "FRA",
+          "participant_name": "Mr France"
+        },
+        {
+          "team_id": "DNK",
+          "participant_name": "Mrs Denmark"
+        },
+        {
+          "team_id": "TUN",
+          "participant_name": "Ms Tunisia"
+        },
+        {
+          "team_id": "AUS",
+          "participant_name": "Miss Australia"
+        },
+        {
+          "team_id": "ESP",
+          "participant_name": "Mr Spain"
+        },
+        {
+          "team_id": "DEU",
+          "participant_name": "Mrs Germany"
+        },
+        {
+          "team_id": "JPN",
+          "participant_name": "Ms Japan"
+        },
+        {
+          "team_id": "CRI",
+          "participant_name": "Miss Costa Rica"
+        },
+        {
+          "team_id": "BEL",
+          "participant_name": "Mr Belgium"
+        },
+        {
+          "team_id": "CAN",
+          "participant_name": "Mrs Canada"
+        },
+        {
+          "team_id": "MAR",
+          "participant_name": "Ms Morocco"
+        },
+        {
+          "team_id": "HRV",
+          "participant_name": "Miss Croatia"
+        },
+        {
+          "team_id": "BRA",
+          "participant_name": "Mr Brazil"
+        },
+        {
+          "team_id": "SRB",
+          "participant_name": "Mrs Serbia"
+        },
+        {
+          "team_id": "CHE",
+          "participant_name": "Ms Switzerland"
+        },
+        {
+          "team_id": "CMR",
+          "participant_name": "Miss Cameroon"
+        },
+        {
+          "team_id": "PRT",
+          "participant_name": "Mr Portugal"
+        },
+        {
+          "team_id": "GHA",
+          "participant_name": "Mrs Ghana"
+        },
+        {
+          "team_id": "URY",
+          "participant_name": "Ms Uruguay"
+        },
+        {
+          "team_id": "KOR",
+          "participant_name": "Miss Korea Republic"
+        }
+      ]
+    }
+  ]
+}
