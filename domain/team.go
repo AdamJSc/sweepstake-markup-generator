@@ -13,7 +13,7 @@ import (
 
 var (
 	// go:embed data
-	defaultFileSystem fs.FS // TODO: load files via go:embed
+	defaultFileSystem fs.FS
 )
 
 type Team struct {

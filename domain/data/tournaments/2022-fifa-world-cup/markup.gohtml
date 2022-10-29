@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Hello World</title>
+    </head>
+    <body>
+        <h1>Hello World</h1>
+        {{- with .Prizes.Winner -}}
+            {{- if . -}}
+                {{ if .ImageURL }}<img src="{{ .ImageURL }}" />{{ end }}
+                <h2>Winner = {{ .WinnerName }}</h2>
+            {{- end -}}
+        {{- end -}}
+    </body>
+</html>

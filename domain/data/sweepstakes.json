@@ -3,6 +3,7 @@
     {
       "id": "example-wc2022",
       "name": "Example World Cup 2022",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/e/e3/2022_FIFA_World_Cup.svg",
       "tournament_id": "2022-fifa-world-cup",
       "prizes": {
         "winner": true,
