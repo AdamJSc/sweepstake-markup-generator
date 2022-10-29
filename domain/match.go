@@ -21,6 +21,7 @@ type Match struct {
 	Home      MatchCompetitor
 	Away      MatchCompetitor
 	Winner    *Team
+	Notes     string
 	Completed bool
 }
 
@@ -49,6 +50,7 @@ var matchesCSVHeader = []string{
 	"AWAY_OG",
 	"HOME_RED_CARDS",
 	"AWAY_RED_CARDS",
+	"NOTES",
 }
 
 type MatchCompetitor struct {
@@ -201,6 +203,7 @@ func transformCSVRowToMatch(row []string, mErr MultiError) *Match {
 	rawAwayOG := row[13]          // AWAY_OG
 	rawHomeRedCards := row[14]    // HOME_RED_CARDS
 	rawAwayRedCards := row[15]    // AWAY_RED_CARDS
+	notes := row[16]              // NOTES
 
 	match := &Match{
 		ID:        matchID,
@@ -218,6 +221,7 @@ func transformCSVRowToMatch(row []string, mErr MultiError) *Match {
 			OwnGoals:    parseMatchEvents(rawAwayOG, mErr.WithPrefix("away own goals")),
 			RedCards:    parseMatchEvents(rawAwayRedCards, mErr.WithPrefix("away red cards")),
 		},
+		Notes:     notes,
 		Completed: rawCompleted == "Y",
 	}
 

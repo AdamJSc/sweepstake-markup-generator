@@ -281,6 +281,7 @@ func TestMatchesCSVLoader_LoadMatches(t *testing.T) {
 					Winner: &domain.Team{
 						ID: "STHFC",
 					},
+					Notes:     "hello world",
 					Completed: true,
 				},
 				{
