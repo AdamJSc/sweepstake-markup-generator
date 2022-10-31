@@ -2,16 +2,16 @@ package domain
 
 import "fmt"
 
-// finalMatchID defines the id of the match considered to be the final
-const finalMatchID = "F"
-
-// defaultOutright defines a default outright prize
-var defaultOutright = &OutrightPrize{
-	WinnerName: "TBC",
-}
+const (
+	// finalMatchID defines the id of the match considered to be the final
+	finalMatchID       = "F"
+	tournamentRunnerUp = "Tournament Runner-Up"
+	tournamentWinner   = "Tournament Winner"
+)
 
 // OutrightPrize represents a prize with a single outright winner
 type OutrightPrize struct {
+	Name       string
 	WinnerName string
 	ImageURL   string
 }
@@ -21,14 +21,19 @@ type OutrightPrizeGenerator func(sweepstake *Sweepstake) *OutrightPrize
 
 // TournamentWinner determines the winner of the provided Sweepstake
 var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
+	defaultPrize := &OutrightPrize{
+		Name:       tournamentWinner,
+		WinnerName: "TBC",
+	}
+
 	if s == nil {
-		return defaultOutright
+		return defaultPrize
 	}
 
 	// get match winner
 	winningTeam := s.Tournament.Matches.GetWinnerByMatchID(finalMatchID)
 	if winningTeam == nil {
-		return defaultOutright
+		return defaultPrize
 	}
 
 	// get participant who represents the match winner
@@ -36,6 +41,7 @@ var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 	winnerName := getSummary(winningTeam, participant)
 
 	return &OutrightPrize{
+		Name:       tournamentWinner,
 		WinnerName: winnerName,
 		ImageURL:   winningTeam.ImageURL,
 	}
@@ -51,14 +57,19 @@ func getSummary(team *Team, participant *Participant) string {
 
 // TournamentRunnerUp determines the runner-up of the provided Sweepstake
 var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
+	defaultPrize := &OutrightPrize{
+		Name:       tournamentRunnerUp,
+		WinnerName: "TBC",
+	}
+
 	if s == nil {
-		return defaultOutright
+		return defaultPrize
 	}
 
 	// get match runner-up
 	runnerUpTeam := s.Tournament.Matches.GetRunnerUpByMatchID(finalMatchID)
 	if runnerUpTeam == nil {
-		return defaultOutright
+		return defaultPrize
 	}
 
 	// get participant who represents the match runner-up
@@ -66,6 +77,7 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 	winnerName := getSummary(runnerUpTeam, participant)
 
 	return &OutrightPrize{
+		Name:       tournamentRunnerUp,
 		WinnerName: winnerName,
 		ImageURL:   runnerUpTeam.ImageURL,
 	}
