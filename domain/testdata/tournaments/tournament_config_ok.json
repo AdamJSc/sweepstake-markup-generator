@@ -1,5 +1,6 @@
 {
   "id": "TestTourney1 ",
   "name": "Test Tournament 1 ",
-  "image_url": "http://tourney.jpg "
+  "image_url": "http://tourney.jpg ",
+  "with_last_updated": true
 }

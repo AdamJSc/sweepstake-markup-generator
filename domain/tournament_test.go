@@ -57,12 +57,13 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 			teamsLoader:    defaultMockTeamsLoader,
 			matchesLoader:  defaultMockMatchesLoader,
 			wantTournament: &domain.Tournament{
-				ID:       "TestTourney1",
-				Name:     "Test Tournament 1",
-				ImageURL: "http://tourney.jpg",
-				Teams:    defaultTeamCollection,
-				Matches:  defaultMatchCollection,
-				Template: parseTemplate(t, "<h1>Hello World</h1>"),
+				ID:              "TestTourney1",
+				Name:            "Test Tournament 1",
+				ImageURL:        "http://tourney.jpg",
+				Teams:           defaultTeamCollection,
+				Matches:         defaultMatchCollection,
+				Template:        parseTemplate(t, "<h1>Hello World</h1>"),
+				WithLastUpdated: true,
 			},
 		},
 		{
@@ -170,7 +171,8 @@ func TestTournamentFSLoader_LoadTournament(t *testing.T) {
 						Winner: &domain.Team{ID: "123", Name: "Team123", ImageURL: "http://team123.jpg"},                               // fully-enriched team
 					},
 				},
-				Template: parseTemplate(t, "<h1>Hello World</h1>"),
+				Template:        parseTemplate(t, "<h1>Hello World</h1>"),
+				WithLastUpdated: true,
 			},
 		},
 		{

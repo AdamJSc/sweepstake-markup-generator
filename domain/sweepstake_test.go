@@ -123,8 +123,7 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 						Winner:   true,
 						RunnerUp: true,
 					},
-					Build:           true,
-					WithLastUpdated: true,
+					Build: true,
 				},
 				{
 					ID:         "test-sweepstake-2",

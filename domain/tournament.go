@@ -11,12 +11,13 @@ import (
 )
 
 type Tournament struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	ImageURL string `json:"image_url"`
-	Teams    TeamCollection
-	Matches  MatchCollection
-	Template *template.Template
+	ID              string `json:"id"`
+	Name            string `json:"name"`
+	ImageURL        string `json:"image_url"`
+	Teams           TeamCollection
+	Matches         MatchCollection
+	Template        *template.Template
+	WithLastUpdated bool `json:"with_last_updated"`
 }
 
 type TeamsLoader interface {

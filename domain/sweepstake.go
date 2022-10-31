@@ -11,14 +11,13 @@ import (
 )
 
 type Sweepstake struct {
-	ID              string `json:"id"`
-	Name            string `json:"name"`
-	ImageURL        string `json:"image_url"`
-	Tournament      *Tournament
-	Participants    ParticipantCollection `json:"participants"`
-	Prizes          PrizeSettings         `json:"prizes"`
-	Build           bool                  `json:"build"`
-	WithLastUpdated bool                  `json:"with_last_updated"`
+	ID           string `json:"id"`
+	Name         string `json:"name"`
+	ImageURL     string `json:"image_url"`
+	Tournament   *Tournament
+	Participants ParticipantCollection `json:"participants"`
+	Prizes       PrizeSettings         `json:"prizes"`
+	Build        bool                  `json:"build"`
 }
 
 func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
