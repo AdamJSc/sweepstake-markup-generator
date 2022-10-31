@@ -62,4 +62,4 @@ MATCH_ID,DATE,TIME,STAGE,COMPLETED,WINNER_TEAM_ID,HOME_TEAM_ID,AWAY_TEAM_ID,HOME
 61_SF,13/12/2022,22:00,KO,,,,,,,,,,,,,Match 57 Winner vs Match 58 Winner
 62_SF,14/12/2022,22:00,KO,,,,,,,,,,,,,Match 59 Winner vs Match 60 Winner
 63_3rd,17/12/2022,18:00,KO,,,,,,,,,,,,,Match 61 Loser vs Match 62 Loser
-F,18/12/2022,18:00,KO,,,,,,,,,,,,,Match 61 Winner vs Match 62 Winner
+F,18/12/2022,18:00,KO,Y,DNK,QAT,DNK,,,,,,,,,Match 61 Winner vs Match 62 Winner

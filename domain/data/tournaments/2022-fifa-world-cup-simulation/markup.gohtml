@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Hello World</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poor+Story&display=swap');
+            h1 { font-family: 'Poor Story', cursive; }
+            .center{ text-align: center }
+        </style>
+    </head>
+    <body>
+        <section class="main">
+            <div class="header">
+                <div class="title center">
+                    <h1>{{ .Title }}</h1>
+                </div>
+            </div>
+            {{- with .Prizes.Winner -}}
+                {{- if . -}}
+                    <div class="prize-outright">
+                        <div class="winner-name">
+                            <h3>{{ .WinnerName }}</h3>
+                        </div>
+                        {{- if .ImageURL -}}
+                            <div class="image-container">
+                                <img src="{{ .ImageURL }}" />
+                            </div>
+                        {{- end -}}
+                    </div>
+                {{- end -}}
+            {{- end -}}
+        </section>
+    </body>
+</html>
