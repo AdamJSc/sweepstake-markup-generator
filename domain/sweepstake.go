@@ -33,15 +33,31 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		runnerUp = TournamentRunnerUp(s)
 	}
 
+	// set title as sweepstake name, fallback to tournament name if missing
+	title := s.Name
+	if title == "" {
+		title = s.Tournament.Name
+	}
+
+	// set image url as sweepstake, fallback to tournament if missing
+	imageURL := s.ImageURL
+	if imageURL == "" {
+		imageURL = s.Tournament.ImageURL
+	}
+
 	type prizeData struct {
 		Winner   *OutrightPrize
 		RunnerUp *OutrightPrize
 	}
 
 	data := struct {
+		Title      string
+		ImageURL   string
 		Prizes     prizeData
 		Sweepstake *Sweepstake
 	}{
+		Title:    title,
+		ImageURL: imageURL,
 		Prizes: prizeData{
 			Winner:   winner,
 			RunnerUp: runnerUp,
