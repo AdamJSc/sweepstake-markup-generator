@@ -1,34 +1,71 @@
+{{ define "tpl" }}
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>Hello World</title>
+        <title>Results | {{ .Title }}</title>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Poor+Story&display=swap');
-            h1 { font-family: 'Poor Story', cursive; }
-            .center{ text-align: center }
+            @import url('https://fonts.googleapis.com/css2?family=Mukta&family=Poor+Story&display=swap');
+            body{ background: #9a1032; font-family: 'Mukta', sans-serif; margin: 0; padding: 0.5rem; }
+            h1{ font-family: 'Poor Story', cursive; }
+            h1, h2, h3{ margin: 0; }
+            h1{ font-size: 4rem; }
+            html{ font-size: 18px; }
+            .center{ text-align: center; }
+            .flex-container{ align-items: center; display: flex; justify-content: space-around; }
+            .header{ padding: 1rem 0; }
+            .header .image-container{ max-width: 100px; }
+            .image-container img{ height: 100%; width: 100%; }
+            .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
+            .prizes-container.flex-container{ align-items: start; }
+            .prize-outright{ max-width: 300px; text-align: center; }
+            .prize-outright .image-container{ margin: 0 auto; height: 70px; width: 50px; }
+            @media screen and (min-width: 550px){
+                body{ padding: 1rem; }
+            }
+            @media screen and (min-width: 768px){
+                body{ padding: 1.5rem; }
+            }
+            @media screen and (min-width: 992px){
+                .main{ width: 950px; }
+            }
+            @media screen and (min-width: 1200px){
+                .main{ width: 1150px; }
+            }
         </style>
     </head>
     <body>
         <section class="main">
-            <div class="header">
+            <div class="header flex-container">
                 <div class="title center">
                     <h1>{{ .Title }}</h1>
                 </div>
+                <div class="image-container">
+                    <img src="{{ .ImageURL }}" />
+                </div>
             </div>
-            {{- with .Prizes.Winner -}}
-                {{- if . -}}
-                    <div class="prize-outright">
-                        <div class="winner-name">
-                            <h3>{{ .WinnerName }}</h3>
-                        </div>
-                        {{- if .ImageURL -}}
-                            <div class="image-container">
-                                <img src="{{ .ImageURL }}" />
-                            </div>
-                        {{- end -}}
-                    </div>
-                {{- end -}}
-            {{- end -}}
+            <div class="prizes-container flex-container">
+                {{- template "outright-prize" .Prizes.Winner -}}
+                {{- template "outright-prize" .Prizes.RunnerUp -}}
+            </div>
         </section>
     </body>
 </html>
+{{ end }}
+
+{{ define "outright-prize" }}
+    {{- if . -}}
+        <div class="prize-outright">
+            <div class="prize-name">
+                <h2>{{ .Name }}</h2>
+            </div>
+            {{- if .ImageURL -}}
+                <div class="image-container">
+                    <img src="{{ .ImageURL }}" />
+                </div>
+            {{- end -}}
+            <div class="winner-name">
+                <h3>{{ .WinnerName }}</h3>
+            </div>
+        </div>
+    {{- end -}}
+{{ end }}

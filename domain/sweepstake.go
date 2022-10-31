@@ -64,7 +64,7 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		Sweepstake: s,
 	}
 
-	if err := s.Tournament.Template.Execute(buf, data); err != nil {
+	if err := s.Tournament.Template.ExecuteTemplate(buf, "tpl", data); err != nil {
 		return nil, fmt.Errorf("cannot execute template: %w", err)
 	}
 
