@@ -13,15 +13,16 @@
             h1{ font-size: 4rem; }
             html{ font-size: 18px; }
             .center{ text-align: center; }
-            .flex-container{ align-items: center; display: flex; justify-content: space-around; }
+            .flex-container{ align-items: center; display: flex; justify-content: space-around; column-gap: 20px; }
             .header{ padding: 1rem 0; }
             .header .image-container{ max-width: 100px; }
+            .image-container{ margin: 0 auto; }
             .image-container img{ height: 100%; width: 100%; }
-            .inline{ display: inline-block; }
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
-            .prizes-container.flex-container{ align-items: start; }
-            .prizes-container .image-container{ margin: 0 auto; height: 70px; width: 50px; }
-            .prize-outright{ max-width: 300px; text-align: center; }
+            .prize.outright{ max-width: 300px; text-align: center; }
+            .prize.outright .image-container{ height: 140px; width: 210px; }
+            .prize.ranked .image-container{ height: 40px; width: 60px; }
+            .prizes-container.flex-container{ align-items: start;  }
             @media screen and (min-width: 550px){
                 body{ padding: 1rem; }
             }
@@ -63,7 +64,7 @@
 
 {{ define "outright-prize" }}
     {{- if . -}}
-        <div class="prize-outright">
+        <div class="prize outright">
             <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
             {{- if .ImageURL -}}
                 <div class="image-container"><img src="{{ .ImageURL }}" /></div>
@@ -75,20 +76,22 @@
 
 {{ define "ranked-prize" }}
     {{- if . -}}
-        <div class="prize-ranked">
+        <div class="prize ranked">
             <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
             <div class="rankings-container">
                 {{- if .Rankings -}}
-                    {{- range .Rankings -}}
-                        <div class="rank-container">
-                            <div class="rank-pos inline">{{ .Position }}</div>
-                            <div class="image-container inline"><img src="{{ .ImageURL }}" /></div>
-                            <div class="summary inline">
-                                <span class="participant-name">{{ .ParticipantName }}</span>
-                                <span class="rank-value">{{ .Value }}</span>
-                            </div>
-                        </div>
-                    {{- end -}}
+                    <table>
+                        {{- range .Rankings -}}
+                            <tr class="rank">
+                                <td class="rank-pos">{{ .Position }}</td>
+                                <td class="rank-image"><div class="image-container"><img src="{{ .ImageURL }}" /></div></td>
+                                <td class="rank-summary">
+                                    <span class="rank-participant-name">{{ .ParticipantName }}</span>
+                                    <span class="rank-value">{{ .Value }}</span>
+                                </td>
+                            </tr>
+                        {{- end -}}
+                    </table>
                 {{- else -}}
                     <h3>None yet!</h3>
                 {{- end -}}
