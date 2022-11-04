@@ -11,9 +11,9 @@ const (
 
 // OutrightPrize represents a prize with a single outright winner
 type OutrightPrize struct {
-	Name       string
-	WinnerName string
-	ImageURL   string
+	PrizeName          string
+	ParticipantSummary string
+	ImageURL           string
 }
 
 // OutrightPrizeGenerator defines a function that generates an outright prize from the provided Sweepstake
@@ -22,8 +22,8 @@ type OutrightPrizeGenerator func(sweepstake *Sweepstake) *OutrightPrize
 // TournamentWinner determines the winner of the provided Sweepstake
 var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 	defaultPrize := &OutrightPrize{
-		Name:       tournamentWinner,
-		WinnerName: "TBC",
+		PrizeName:          tournamentWinner,
+		ParticipantSummary: "TBC",
 	}
 
 	if s == nil {
@@ -41,9 +41,9 @@ var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 	winnerName := getSummary(winningTeam, participant)
 
 	return &OutrightPrize{
-		Name:       tournamentWinner,
-		WinnerName: winnerName,
-		ImageURL:   winningTeam.ImageURL,
+		PrizeName:          tournamentWinner,
+		ParticipantSummary: winnerName,
+		ImageURL:           winningTeam.ImageURL,
 	}
 }
 
@@ -58,8 +58,8 @@ func getSummary(team *Team, participant *Participant) string {
 // TournamentRunnerUp determines the runner-up of the provided Sweepstake
 var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 	defaultPrize := &OutrightPrize{
-		Name:       tournamentRunnerUp,
-		WinnerName: "TBC",
+		PrizeName:          tournamentRunnerUp,
+		ParticipantSummary: "TBC",
 	}
 
 	if s == nil {
@@ -74,12 +74,12 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 
 	// get participant who represents the match runner-up
 	participant := s.Participants.GetByTeamID(runnerUpTeam.ID)
-	winnerName := getSummary(runnerUpTeam, participant)
+	participantSummary := getSummary(runnerUpTeam, participant)
 
 	return &OutrightPrize{
-		Name:       tournamentRunnerUp,
-		WinnerName: winnerName,
-		ImageURL:   runnerUpTeam.ImageURL,
+		PrizeName:          tournamentRunnerUp,
+		ParticipantSummary: participantSummary,
+		ImageURL:           runnerUpTeam.ImageURL,
 	}
 }
 
