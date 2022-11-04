@@ -7,7 +7,11 @@
       "tournament_id": "TestTourney1",
       "prizes": {
         "winner": true,
-        "runner_up": true
+        "runner_up": true,
+        "most_goals_conceded": true,
+        "most_yellow_cards": true,
+        "quickest_own_goal": true,
+        "quickest_red_card": true
       },
       "build": true,
       "participants": [

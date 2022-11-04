@@ -89,8 +89,12 @@ func (pc ParticipantCollection) GetByTeamID(id string) *Participant {
 }
 
 type PrizeSettings struct {
-	Winner   bool `json:"winner"`
-	RunnerUp bool `json:"runner_up"`
+	Winner            bool `json:"winner"`
+	RunnerUp          bool `json:"runner_up"`
+	MostGoalsConceded bool `json:"most_goals_conceded"`
+	MostYellowCards   bool `json:"most_yellow_cards"`
+	QuickestOwnGoal   bool `json:"quickest_own_goal"`
+	QuickestRedCard   bool `json:"quickest_red_card"`
 }
 
 type SweepstakeCollection []*Sweepstake
