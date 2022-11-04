@@ -11,9 +11,9 @@ const (
 
 // OutrightPrize represents a prize with a single outright winner
 type OutrightPrize struct {
-	PrizeName          string
-	ParticipantSummary string
-	ImageURL           string
+	PrizeName       string
+	ParticipantName string
+	ImageURL        string
 }
 
 // OutrightPrizeGenerator defines a function that generates an outright prize from the provided Sweepstake
@@ -22,8 +22,8 @@ type OutrightPrizeGenerator func(sweepstake *Sweepstake) *OutrightPrize
 // TournamentWinner determines the winner of the provided Sweepstake
 var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 	defaultPrize := &OutrightPrize{
-		PrizeName:          tournamentWinner,
-		ParticipantSummary: "TBC",
+		PrizeName:       tournamentWinner,
+		ParticipantName: "TBC",
 	}
 
 	if s == nil {
@@ -41,9 +41,9 @@ var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 	winnerName := getSummary(winningTeam, participant)
 
 	return &OutrightPrize{
-		PrizeName:          tournamentWinner,
-		ParticipantSummary: winnerName,
-		ImageURL:           winningTeam.ImageURL,
+		PrizeName:       tournamentWinner,
+		ParticipantName: winnerName,
+		ImageURL:        winningTeam.ImageURL,
 	}
 }
 
@@ -58,8 +58,8 @@ func getSummary(team *Team, participant *Participant) string {
 // TournamentRunnerUp determines the runner-up of the provided Sweepstake
 var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 	defaultPrize := &OutrightPrize{
-		PrizeName:          tournamentRunnerUp,
-		ParticipantSummary: "TBC",
+		PrizeName:       tournamentRunnerUp,
+		ParticipantName: "TBC",
 	}
 
 	if s == nil {
@@ -77,9 +77,9 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 	participantSummary := getSummary(runnerUpTeam, participant)
 
 	return &OutrightPrize{
-		PrizeName:          tournamentRunnerUp,
-		ParticipantSummary: participantSummary,
-		ImageURL:           runnerUpTeam.ImageURL,
+		PrizeName:       tournamentRunnerUp,
+		ParticipantName: participantSummary,
+		ImageURL:        runnerUpTeam.ImageURL,
 	}
 }
 
@@ -89,12 +89,13 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 // TODO: prize - quickest red card
 
 type RankedPrize struct {
-	Result []Rank
+	PrizeName string
+	Rankings  []Rank
 }
 
 type Rank struct {
-	Position uint8
-	ImageURL string
-	Name     string
-	Value    uint8
+	Position        uint8  // numerical position of rank
+	ImageURL        string // image url
+	ParticipantName string // participant name
+	Value           string // match minute or qty (e.g. "45'+2" or "2 goals")
 }

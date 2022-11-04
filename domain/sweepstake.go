@@ -24,12 +24,70 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	// TODO: test this method using actual tournament data to check for regressions
 	buf := &bytes.Buffer{}
 
+	// generate outright prize data
 	var winner, runnerUp *OutrightPrize
 	if s.Prizes.Winner {
 		winner = TournamentWinner(s)
 	}
 	if s.Prizes.RunnerUp {
 		runnerUp = TournamentRunnerUp(s)
+	}
+
+	// generate ranked prize data
+	var mostGoalsConceded, mostYellowCards, quickestOwnGoal, quickestRedCard *RankedPrize
+	if s.Prizes.MostGoalsConceded {
+		// TODO: replace with most goals conceded prize generator
+		mostGoalsConceded = &RankedPrize{PrizeName: "Most Goals Conceded", Rankings: []Rank{
+			{
+				Position:        1,
+				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg",
+				ParticipantName: "Mr Argentina (ARG)",
+				Value:           "⚽️ 10",
+			},
+			{
+				Position:        2,
+				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/8/88/Flag_of_Australia_%28converted%29.svg",
+				ParticipantName: "Mr Australia (AUS)",
+				Value:           "⚽️ 5",
+			},
+			{
+				Position:        3,
+				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg",
+				ParticipantName: "Mr Croatia (HRV)",
+				Value:           "⚽️ 2",
+			},
+		}}
+	}
+	if s.Prizes.MostYellowCards {
+		// TODO: replace with most yellow cards prize generator
+		mostYellowCards = &RankedPrize{PrizeName: "Most Yellow Cards"}
+	}
+	if s.Prizes.QuickestOwnGoal {
+		// TODO: replace with quickest own goal prize generator
+		quickestOwnGoal = &RankedPrize{PrizeName: "Quickest Own Goal", Rankings: []Rank{
+			{
+				Position:        1,
+				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg",
+				ParticipantName: "Mr Argentina (ARG)",
+				Value:           "⚽️ 45'+2 (vs Canada)",
+			},
+			{
+				Position:        2,
+				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/8/88/Flag_of_Australia_%28converted%29.svg",
+				ParticipantName: "Mr Australia (AUS)",
+				Value:           "⚽️ 76' (vs Canada)",
+			},
+			{
+				Position:        3,
+				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg",
+				ParticipantName: "Mr Croatia (HRV)",
+				Value:           "⚽️ 87' (vs Morocco)",
+			},
+		}}
+	}
+	if s.Prizes.QuickestRedCard {
+		// TODO: replace with quickest red card prize generator
+		quickestRedCard = &RankedPrize{PrizeName: "Quickest Red Card"}
 	}
 
 	// set title as sweepstake name, fallback to tournament name if missing
@@ -45,8 +103,12 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	}
 
 	type prizeData struct {
-		Winner   *OutrightPrize
-		RunnerUp *OutrightPrize
+		Winner            *OutrightPrize
+		RunnerUp          *OutrightPrize
+		MostGoalsConceded *RankedPrize
+		MostYellowCards   *RankedPrize
+		QuickestOwnGoal   *RankedPrize
+		QuickestRedCard   *RankedPrize
 	}
 
 	data := struct {
@@ -58,8 +120,12 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		Title:    title,
 		ImageURL: imageURL,
 		Prizes: prizeData{
-			Winner:   winner,
-			RunnerUp: runnerUp,
+			Winner:            winner,
+			RunnerUp:          runnerUp,
+			MostGoalsConceded: mostGoalsConceded,
+			MostYellowCards:   mostYellowCards,
+			QuickestOwnGoal:   quickestOwnGoal,
+			QuickestRedCard:   quickestRedCard,
 		},
 		Sweepstake: s,
 	}

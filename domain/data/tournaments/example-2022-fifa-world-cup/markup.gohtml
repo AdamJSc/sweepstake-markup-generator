@@ -3,6 +3,8 @@
 <html>
     <head>
         <title>Results | {{ .Title }}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Mukta&family=Poor+Story&display=swap');
             body{ background: #9a1032; font-family: 'Mukta', sans-serif; margin: 0; padding: 0.5rem; }
@@ -15,10 +17,11 @@
             .header{ padding: 1rem 0; }
             .header .image-container{ max-width: 100px; }
             .image-container img{ height: 100%; width: 100%; }
+            .inline{ display: inline-block; }
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
             .prizes-container.flex-container{ align-items: start; }
+            .prizes-container .image-container{ margin: 0 auto; height: 70px; width: 50px; }
             .prize-outright{ max-width: 300px; text-align: center; }
-            .prize-outright .image-container{ margin: 0 auto; height: 70px; width: 50px; }
             @media screen and (min-width: 550px){
                 body{ padding: 1rem; }
             }
@@ -43,9 +46,15 @@
                     <img src="{{ .ImageURL }}" />
                 </div>
             </div>
-            <div class="prizes-container flex-container">
+            <div class="outright prizes-container flex-container">
                 {{- template "outright-prize" .Prizes.Winner -}}
                 {{- template "outright-prize" .Prizes.RunnerUp -}}
+            </div>
+            <div class="ranked prizes-container flex-container">
+                {{- template "ranked-prize" .Prizes.MostGoalsConceded -}}
+                {{- template "ranked-prize" .Prizes.MostYellowCards -}}
+                {{- template "ranked-prize" .Prizes.QuickestOwnGoal -}}
+                {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
             </div>
         </section>
     </body>
@@ -55,16 +64,34 @@
 {{ define "outright-prize" }}
     {{- if . -}}
         <div class="prize-outright">
-            <div class="prize-name">
-                <h2>{{ .Name }}</h2>
-            </div>
+            <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
             {{- if .ImageURL -}}
-                <div class="image-container">
-                    <img src="{{ .ImageURL }}" />
-                </div>
+                <div class="image-container"><img src="{{ .ImageURL }}" /></div>
             {{- end -}}
-            <div class="winner-name">
-                <h3>{{ .WinnerName }}</h3>
+            <div class="participant-name"><h3>{{ .ParticipantName }}</h3></div>
+        </div>
+    {{- end -}}
+{{ end }}
+
+{{ define "ranked-prize" }}
+    {{- if . -}}
+        <div class="prize-ranked">
+            <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
+            <div class="rankings-container">
+                {{- if .Rankings -}}
+                    {{- range .Rankings -}}
+                        <div class="rank-container">
+                            <div class="rank-pos inline">{{ .Position }}</div>
+                            <div class="image-container inline"><img src="{{ .ImageURL }}" /></div>
+                            <div class="summary inline">
+                                <span class="participant-name">{{ .ParticipantName }}</span>
+                                <span class="rank-value">{{ .Value }}</span>
+                            </div>
+                        </div>
+                    {{- end -}}
+                {{- else -}}
+                    <h3>None yet!</h3>
+                {{- end -}}
             </div>
         </div>
     {{- end -}}
