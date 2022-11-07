@@ -23,19 +23,21 @@
             h2{ font-size: 1.5rem; }
             h2{ font-size: 1.3rem; }
             .center{ text-align: center; }
-            .divider{ border-top: 3px solid #bbb; }
+            .divider{ border-top: 2px solid #ddd; }
             .flex-container{ align-items: center; display: flex; flex-wrap: wrap; justify-content: space-evenly; column-gap: 20px; }
             .header{ padding: 1rem; }
             .header .image-container{ margin: 0; max-width: 100px; }
             .image-container{ margin: 0 auto; }
             .image-container img{ height: 100%; width: 100%; }
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
-            .prize{ border: 3px solid #aaa; border-radius: 5px; margin: 1rem 0; padding: 0.5rem 2rem; }
-            .prize.outright{ max-width: 300px; }
+            .participant-name{ margin-top: 0.5rem; }
+            .prize{ border: 2px solid #ddd; border-radius: 5px; box-shadow: 4px 4px #9a1032; margin: 1rem 0; }
+            .prize.outright{ max-width: 300px; padding: 0.5rem 2rem; }
             .prize.outright .image-container{ height: 140px; width: 210px; }
+            .prize.ranked{ padding: 0.5rem 1rem; }
             .prize.ranked .image-container{ height: 40px; width: 60px; }
             .prizes-container.flex-container{ align-items: start; padding: 1rem; }
-            .prize-name{ border-bottom: 3px solid #aaa; margin-bottom: 1rem; }
+            .prize-name{ border-bottom: 3px solid #aaa; margin-bottom: 1rem; padding-right: 1.5rem; }
             @media screen and (min-width: 550px){
                 body{ padding: 1rem; }
             }
@@ -70,8 +72,8 @@
             <div class="divider"></div>
             <div class="ranked prizes-container flex-container">
                 {{- template "ranked-prize" .Prizes.MostGoalsConceded -}}
-                {{- template "ranked-prize" .Prizes.MostYellowCards -}}
                 {{- template "ranked-prize" .Prizes.QuickestOwnGoal -}}
+                {{- template "ranked-prize" .Prizes.MostYellowCards -}}
                 {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
             </div>
         </section>
