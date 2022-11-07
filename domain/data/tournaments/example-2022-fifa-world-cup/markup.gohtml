@@ -7,22 +7,35 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Mukta&family=Poor+Story&display=swap');
-            body{ background: #9a1032; font-family: 'Mukta', sans-serif; margin: 0; padding: 0.5rem; }
-            h1{ font-family: 'Poor Story', cursive; }
-            h1, h2, h3{ margin: 0; }
-            h1{ font-size: 4rem; }
             html{ font-size: 18px; }
+            html, body{ height: 100%; margin: 0; }
+            body{
+                background: #9a1032 fixed linear-gradient(301deg, rgba(56,34,39,1) 0%, rgba(193,46,82,1) 50%, rgba(154,16,50,1) 100%);
+                font-family: 'Mukta', sans-serif;
+                margin: 0;
+                padding: 0.5rem;
+            }
+            footer{ color: #eee; font-size: 0.8rem; padding-top: 2rem; }
+            footer a{ color: #eee; text-decoration: none; }
+            footer a:hover{ color: #aaa; text-decoration: underline; }
+            h1, h2, h3{ margin: 0; }
+            h1{ font-family: 'Poor Story', cursive; font-size: 2.8rem; }
+            h2{ font-size: 1.5rem; }
+            h2{ font-size: 1.3rem; }
             .center{ text-align: center; }
-            .flex-container{ align-items: center; display: flex; justify-content: space-around; column-gap: 20px; }
-            .header{ padding: 1rem 0; }
-            .header .image-container{ max-width: 100px; }
+            .divider{ border-top: 3px solid #bbb; }
+            .flex-container{ align-items: center; display: flex; flex-wrap: wrap; justify-content: space-evenly; column-gap: 20px; }
+            .header{ padding: 1rem; }
+            .header .image-container{ margin: 0; max-width: 100px; }
             .image-container{ margin: 0 auto; }
             .image-container img{ height: 100%; width: 100%; }
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
-            .prize.outright{ max-width: 300px; text-align: center; }
+            .prize{ border: 3px solid #aaa; border-radius: 5px; margin: 1rem 0; padding: 0.5rem 2rem; }
+            .prize.outright{ max-width: 300px; }
             .prize.outright .image-container{ height: 140px; width: 210px; }
             .prize.ranked .image-container{ height: 40px; width: 60px; }
-            .prizes-container.flex-container{ align-items: start;  }
+            .prizes-container.flex-container{ align-items: start; padding: 2rem 1rem; }
+            .prize-name{ border-bottom: 3px solid #aaa; margin-bottom: 1rem; }
             @media screen and (min-width: 550px){
                 body{ padding: 1rem; }
             }
@@ -40,7 +53,7 @@
     <body>
         <section class="main">
             <div class="header flex-container">
-                <div class="title center">
+                <div class="title">
                     <h1>{{ .Title }}</h1>
                 </div>
                 <div class="image-container">
@@ -51,6 +64,7 @@
                 {{- template "outright-prize" .Prizes.Winner -}}
                 {{- template "outright-prize" .Prizes.RunnerUp -}}
             </div>
+            <div class="divider"></div>
             <div class="ranked prizes-container flex-container">
                 {{- template "ranked-prize" .Prizes.MostGoalsConceded -}}
                 {{- template "ranked-prize" .Prizes.MostYellowCards -}}
@@ -58,6 +72,9 @@
                 {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
             </div>
         </section>
+        <footer class="center">
+            Made with ♥ by <a href="https://adamjs.net">Adam</a>
+        </footer>
     </body>
 </html>
 {{ end }}
@@ -69,7 +86,7 @@
             {{- if .ImageURL -}}
                 <div class="image-container"><img src="{{ .ImageURL }}" /></div>
             {{- end -}}
-            <div class="participant-name"><h3>{{ .ParticipantName }}</h3></div>
+            <div class="participant-name center"><h3>{{ .ParticipantName }}</h3></div>
         </div>
     {{- end -}}
 {{ end }}
