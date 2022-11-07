@@ -121,7 +121,18 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 		return nil, err
 	}
 
-	tpl, err := template.New("tpl").Parse(string(rawMarkup))
+	tpl, err := template.
+		New("tpl").
+		Funcs(map[string]any{
+			"get_summary": func(t *Team, p *Participant) string {
+				return getSummary(t, p)
+			},
+			"get_team_by_id": func(collection TeamCollection, id string) *Team {
+				return collection.GetByID(id)
+			},
+		}).
+		Parse(string(rawMarkup))
+
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse template: %w", err)
 	}

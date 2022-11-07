@@ -26,6 +26,7 @@
             tr.rank:nth-child(even) td{  }
             .center{ text-align: center; }
             .divider{ border-top: 2px solid #ddd; }
+            .entrant.flex-container{ column-gap: 5px; justify-content: flex-start; }
             .flex-container{ align-items: center; display: flex; flex-wrap: wrap; justify-content: space-evenly; column-gap: 20px; }
             .header{ padding: 1rem; }
             .header .image-container{ margin: 0; max-width: 100px; }
@@ -43,6 +44,8 @@
             .rank td{ padding: 0.5rem; }
             .rank-pos{ text-align: right; }
             .rankings-container table{ border-collapse: collapse; }
+            .whos-who{ padding: 2rem; }
+            .whos-who .image-container{ height: 20px; width: 30px; }
             @media screen and (min-width: 550px){
                 body{ padding: 1rem; }
             }
@@ -80,6 +83,23 @@
                 {{- template "ranked-prize" .Prizes.QuickestOwnGoal -}}
                 {{- template "ranked-prize" .Prizes.MostYellowCards -}}
                 {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
+            </div>
+            <div class="divider"></div>
+            <div class="whos-who center">
+                <h2>Who's Who...</h2>
+                <div class="flex-container">
+                    {{- $sweepstake := .Sweepstake -}}
+                    {{- range $participant := .Sweepstake.Participants -}}
+                        {{- $team := (get_team_by_id $sweepstake.Tournament.Teams $participant.TeamID) -}}
+                        {{- $summary := (get_summary $team $participant) -}}
+                        <div class="entrant flex-container">
+                            <div class="image-container">
+                                <img src="{{ $team.ImageURL }}" />
+                            </div>
+                            <div class="participant-name">{{ $summary }}</div>
+                        </div>
+                    {{- end -}}
+                </div>
             </div>
         </section>
         <footer class="center">
