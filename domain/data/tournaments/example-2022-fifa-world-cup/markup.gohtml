@@ -17,11 +17,13 @@
             }
             footer{ color: #eee; font-size: 0.8rem; padding-top: 2rem; }
             footer a{ color: #eee; text-decoration: none; }
-            footer a:hover{ color: #aaa; text-decoration: underline; }
+            footer a:hover{ color: #ddd; text-decoration: underline; }
             h1, h2, h3{ margin: 0; }
             h1{ font-family: 'Poor Story', cursive; font-size: 2.8rem; }
             h2{ font-size: 1.5rem; }
             h2{ font-size: 1.3rem; }
+            tr.rank:nth-child(odd){ background: #ddd; }
+            tr.rank:nth-child(even) td{  }
             .center{ text-align: center; }
             .divider{ border-top: 2px solid #ddd; }
             .flex-container{ align-items: center; display: flex; flex-wrap: wrap; justify-content: space-evenly; column-gap: 20px; }
@@ -37,7 +39,10 @@
             .prize.ranked{ padding: 0.5rem 1rem; }
             .prize.ranked .image-container{ height: 40px; width: 60px; }
             .prizes-container.flex-container{ align-items: start; padding: 1rem; }
-            .prize-name{ border-bottom: 3px solid #aaa; margin-bottom: 1rem; padding-right: 1.5rem; }
+            .prize-name{ border-bottom: 3px solid #ddd; margin-bottom: 1rem; padding-right: 1.5rem; }
+            .rank td{ padding: 0.5rem; }
+            .rank-pos{ text-align: right; }
+            .rankings-container table{ border-collapse: collapse; }
             @media screen and (min-width: 550px){
                 body{ padding: 1rem; }
             }
@@ -107,10 +112,8 @@
                             <tr class="rank">
                                 <td class="rank-pos">{{ .Position }}</td>
                                 <td class="rank-image"><div class="image-container"><img src="{{ .ImageURL }}" /></div></td>
-                                <td class="rank-summary">
-                                    <span class="rank-participant-name">{{ .ParticipantName }}</span>
-                                    <span class="rank-value">{{ .Value }}</span>
-                                </td>
+                                <td class="rank-participant-name">{{ .ParticipantName }}</td>
+                                <td class="rank-value">{{ .Value }}</td>
                             </tr>
                         {{- end -}}
                     </table>
