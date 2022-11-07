@@ -49,17 +49,18 @@ func main() {
 	}
 
 	// write markup for each sweepstake
+	var skipped int
 	for _, sweepstake := range sweepstakes {
+		if !sweepstake.Build {
+			skipped++
+			continue
+		}
 		mustWriteSweepstakeMarkup(sweepstake)
 	}
 
 	// print status message
-	count := len(sweepstakes)
-	msgFmt := "successfully generated %d sweepstake"
-	if count != 1 {
-		msgFmt += "s"
-	}
-	log.Printf(msgFmt, count)
+	generated := len(sweepstakes) - skipped
+	log.Printf("success! %d generated (%d skipped)", generated, skipped)
 }
 
 func mustLoadTournamentFromPath(ctx context.Context, path string) *domain.Tournament {
