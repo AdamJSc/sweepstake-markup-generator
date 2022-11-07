@@ -34,7 +34,7 @@
             .prize.outright{ max-width: 300px; }
             .prize.outright .image-container{ height: 140px; width: 210px; }
             .prize.ranked .image-container{ height: 40px; width: 60px; }
-            .prizes-container.flex-container{ align-items: start; padding: 2rem 1rem; }
+            .prizes-container.flex-container{ align-items: start; padding: 1rem; }
             .prize-name{ border-bottom: 3px solid #aaa; margin-bottom: 1rem; }
             @media screen and (min-width: 550px){
                 body{ padding: 1rem; }
@@ -60,6 +60,9 @@
                     <img src="{{ .ImageURL }}" />
                 </div>
             </div>
+            {{- if .LastUpdated -}}
+                <div class="last-updated center">Last updated: <strong>{{ .LastUpdated }}</strong></div>
+            {{- end -}}
             <div class="outright prizes-container flex-container">
                 {{- template "outright-prize" .Prizes.Winner -}}
                 {{- template "outright-prize" .Prizes.RunnerUp -}}

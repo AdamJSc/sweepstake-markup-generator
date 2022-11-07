@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Sweepstake struct {
@@ -102,6 +103,11 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		imageURL = s.Tournament.ImageURL
 	}
 
+	var lastUpdated string
+	if s.Tournament.WithLastUpdated {
+		lastUpdated = time.Now().Format("Mon 2 Jan 2006 at 15:04")
+	}
+
 	type prizeData struct {
 		Winner            *OutrightPrize
 		RunnerUp          *OutrightPrize
@@ -112,13 +118,15 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	}
 
 	data := struct {
-		Title      string
-		ImageURL   string
-		Prizes     prizeData
-		Sweepstake *Sweepstake
+		Title       string
+		ImageURL    string
+		LastUpdated string
+		Prizes      prizeData
+		Sweepstake  *Sweepstake
 	}{
-		Title:    title,
-		ImageURL: imageURL,
+		Title:       title,
+		ImageURL:    imageURL,
+		LastUpdated: lastUpdated,
 		Prizes: prizeData{
 			Winner:            winner,
 			RunnerUp:          runnerUp,
