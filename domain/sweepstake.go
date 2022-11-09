@@ -43,31 +43,10 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		mostYellowCards = MostYellowCards(s)
 	}
 	if s.Prizes.QuickestOwnGoal {
-		// TODO: replace with quickest own goal prize generator
-		quickestOwnGoal = &RankedPrize{PrizeName: "Quickest Own Goal", Rankings: []Rank{
-			{
-				Position:        1,
-				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg",
-				ParticipantName: "Mr Argentina (ARG)",
-				Value:           "⚽️ 45'+2 (vs Canada)",
-			},
-			{
-				Position:        2,
-				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/8/88/Flag_of_Australia_%28converted%29.svg",
-				ParticipantName: "Mr Australia (AUS)",
-				Value:           "⚽️ 76' (vs Canada)",
-			},
-			{
-				Position:        3,
-				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg",
-				ParticipantName: "Mr Croatia (HRV)",
-				Value:           "⚽️ 87' (vs Morocco)",
-			},
-		}}
+		quickestOwnGoal = QuickestOwnGoal(s)
 	}
 	if s.Prizes.QuickestRedCard {
-		// TODO: replace with quickest red card prize generator
-		quickestRedCard = &RankedPrize{PrizeName: "Quickest Red Card"}
+		quickestRedCard = QuickestRedCard(s)
 	}
 
 	// set title as sweepstake name, fallback to tournament name if missing
