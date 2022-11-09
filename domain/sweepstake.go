@@ -37,27 +37,7 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	// generate ranked prize data
 	var mostGoalsConceded, mostYellowCards, quickestOwnGoal, quickestRedCard *RankedPrize
 	if s.Prizes.MostGoalsConceded {
-		// TODO: replace with most goals conceded prize generator
-		mostGoalsConceded = &RankedPrize{PrizeName: "Most Goals Conceded", Rankings: []Rank{
-			{
-				Position:        1,
-				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg",
-				ParticipantName: "Mr Argentina (ARG)",
-				Value:           "⚽️ 10",
-			},
-			{
-				Position:        2,
-				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/8/88/Flag_of_Australia_%28converted%29.svg",
-				ParticipantName: "Mr Australia (AUS)",
-				Value:           "⚽️ 5",
-			},
-			{
-				Position:        3,
-				ImageURL:        "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg",
-				ParticipantName: "Mr Croatia (HRV)",
-				Value:           "⚽️ 2",
-			},
-		}}
+		mostGoalsConceded = MostGoalsConceded(s)
 	}
 	if s.Prizes.MostYellowCards {
 		// TODO: replace with most yellow cards prize generator

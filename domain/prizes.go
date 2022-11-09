@@ -1,10 +1,14 @@
 package domain
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 const (
 	// finalMatchID defines the id of the match considered to be the final
 	finalMatchID       = "F"
+	mostGoalsConceded  = "Most Goals Conceded"
 	tournamentRunnerUp = "Tournament Runner-Up"
 	tournamentWinner   = "Tournament Winner"
 )
@@ -38,7 +42,7 @@ var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 
 	// get participant who represents the match winner
 	participant := s.Participants.GetByTeamID(winningTeam.ID)
-	winnerName := getSummary(winningTeam, participant)
+	winnerName := getSummaryFromTeamAndParticipant(winningTeam, participant)
 
 	return &OutrightPrize{
 		PrizeName:       tournamentWinner,
@@ -47,7 +51,7 @@ var TournamentWinner = func(s *Sweepstake) *OutrightPrize {
 	}
 }
 
-func getSummary(team *Team, participant *Participant) string {
+func getSummaryFromTeamAndParticipant(team *Team, participant *Participant) string {
 	if participant == nil || participant.Name == "" {
 		return team.Name
 	}
@@ -74,7 +78,7 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 
 	// get participant who represents the match runner-up
 	participant := s.Participants.GetByTeamID(runnerUpTeam.ID)
-	participantSummary := getSummary(runnerUpTeam, participant)
+	participantSummary := getSummaryFromTeamAndParticipant(runnerUpTeam, participant)
 
 	return &OutrightPrize{
 		PrizeName:       tournamentRunnerUp,
@@ -83,7 +87,72 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 	}
 }
 
-// TODO: prize - most goals conceded
+// MostGoalsConceded returns the teams who have conceded the most goals in descending order
+var MostGoalsConceded = func(s *Sweepstake) *RankedPrize {
+	defaultPrize := &RankedPrize{
+		PrizeName: mostGoalsConceded,
+		Rankings:  make([]Rank, 0),
+	}
+
+	if s == nil {
+		return defaultPrize
+	}
+
+	totals := teamsAudit{teams: s.Tournament.Teams}
+
+	for _, match := range s.Tournament.Matches {
+		if !match.Completed {
+			continue
+		}
+
+		totals.inc(match.Home.Team, int(match.Away.Goals)) // goals scored by away team are conceded by home team
+		totals.inc(match.Away.Team, int(match.Home.Goals)) // goals scored by home team are conceded by away team
+	}
+
+	return &RankedPrize{
+		PrizeName: mostGoalsConceded,
+		Rankings:  getPrizeRankingsFromAudit(totals, s.Participants),
+	}
+}
+
+func getPrizeRankingsFromAudit(audit teamsAudit, participants ParticipantCollection) []Rank {
+	type teamWithValue struct {
+		team  *Team
+		value int
+	}
+
+	results := make([]teamWithValue, 0)
+
+	for _, t := range audit.teams {
+		val, _ := audit.get(t)
+		results = append(results, teamWithValue{
+			team:  t,
+			value: val,
+		})
+	}
+
+	sort.SliceStable(results, func(i, j int) bool {
+		return results[i].value > results[j].value
+	})
+
+	ranks := make([]Rank, 0)
+
+	for idx, result := range results {
+		if result.value == 0 {
+			continue
+		}
+
+		ranks = append(ranks, Rank{
+			Position:        uint8(idx + 1),
+			ImageURL:        result.team.ImageURL,
+			ParticipantName: getSummaryFromTeamAndParticipant(result.team, participants.GetByTeamID(result.team.ID)),
+			Value:           fmt.Sprintf("⚽️ %d", result.value),
+		})
+	}
+
+	return ranks
+}
+
 // TODO: prize - most yellow cards
 // TODO: prize - quickest own goal
 // TODO: prize - quickest red card

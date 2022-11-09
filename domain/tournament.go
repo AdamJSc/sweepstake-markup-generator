@@ -125,7 +125,7 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 		New("tpl").
 		Funcs(map[string]any{
 			"get_summary": func(t *Team, p *Participant) string {
-				return getSummary(t, p)
+				return getSummaryFromTeamAndParticipant(t, p)
 			},
 			"get_team_by_id": func(collection TeamCollection, id string) *Team {
 				return collection.GetByID(id)

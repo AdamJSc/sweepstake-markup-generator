@@ -160,29 +160,41 @@ func (t *teamsAudit) init() {
 	}
 }
 
-func (t *teamsAudit) set(team *Team, val int) bool {
+func (t *teamsAudit) get(team *Team) (int, bool) {
 	if team == nil {
-		return false
-	}
-
-	t.init()
-	t.mp.Store(team.ID, val)
-
-	return true
-}
-
-func (t *teamsAudit) ack(team *Team) bool {
-	if team == nil {
-		return false
+		return 0, false
 	}
 
 	t.init()
 	val, ok := t.mp.Load(team.ID)
 	if !ok {
+		return 0, false
+	}
+
+	return val.(int), true
+}
+
+func (t *teamsAudit) set(team *Team, val int) bool {
+	if _, ok := t.get(team); !ok {
 		return false
 	}
 
-	return t.set(team, val.(int)+1)
+	t.mp.Store(team.ID, val)
+
+	return true
+}
+
+func (t *teamsAudit) inc(team *Team, incVal int) bool {
+	currentVal, ok := t.get(team)
+	if !ok {
+		return false
+	}
+
+	return t.set(team, currentVal+incVal)
+}
+
+func (t *teamsAudit) ack(team *Team) bool {
+	return t.inc(team, 1)
 }
 
 func (t *teamsAudit) validate(mErr MultiError, exactlyOnce bool) {
