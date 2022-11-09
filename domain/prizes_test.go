@@ -8,6 +8,7 @@ import (
 
 const (
 	mostGoalsConceded  = "Most Goals Conceded"
+	mostYellowCards    = "Most Yellow Cards"
 	tournamentRunnerUp = "Tournament Runner-Up"
 	tournamentWinner   = "Tournament Winner"
 )
@@ -530,6 +531,118 @@ func TestMostGoalsConceded(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			gotPrize := domain.MostGoalsConceded(tc.sweepstake)
+			cmpDiff(t, tc.wantPrize, gotPrize)
+		})
+	}
+}
+
+func TestMostYellowCards(t *testing.T) {
+	defaultPrize := &domain.RankedPrize{PrizeName: mostYellowCards, Rankings: []domain.Rank{}}
+
+	teams := domain.TeamCollection{teamA, teamB, teamC, teamD}
+	participants := domain.ParticipantCollection{participantA, participantB, participantC, participantD}
+
+	tt := []struct {
+		name       string
+		sweepstake *domain.Sweepstake
+		wantPrize  *domain.RankedPrize
+	}{
+		{
+			name: "valid sweepstake must produce the expected rankings",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Teams: teams,
+					Matches: domain.MatchCollection{
+						// teamA = 1 (1)
+						// teamB = 2 (2)
+						{
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:        teamA,
+								YellowCards: 1,
+							},
+							Away: domain.MatchCompetitor{
+								Team:        teamB,
+								YellowCards: 2,
+							},
+						},
+						// not completed, should be ignored
+						{
+							// completed is false
+							Home: domain.MatchCompetitor{
+								Team:        teamA,
+								YellowCards: 99,
+							},
+							Away: domain.MatchCompetitor{
+								Team:        teamB,
+								YellowCards: 99,
+							},
+						},
+						// teamB = 3 (5)
+						// teamC = 2 (2)
+						{
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:        teamB,
+								YellowCards: 3,
+							},
+							Away: domain.MatchCompetitor{
+								Team:        teamC,
+								YellowCards: 2,
+							},
+						},
+						// teamB = 1 (6)
+						// teamD = 0 (0)
+						{
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:        teamB,
+								YellowCards: 1,
+							},
+							Away: domain.MatchCompetitor{
+								Team:        teamD,
+								YellowCards: 0,
+							},
+						},
+					},
+				},
+				Participants: participants,
+			},
+			wantPrize: &domain.RankedPrize{
+				PrizeName: mostYellowCards,
+				Rankings: []domain.Rank{
+					{
+						Position:        1,
+						ImageURL:        "http://teamB.jpg",
+						ParticipantName: "Steve Fletcher (Team B)",
+						Value:           "⚽️ 6",
+					},
+					{
+						Position:        2,
+						ImageURL:        "http://teamC.jpg",
+						ParticipantName: "Brett Pitman (Team C)",
+						Value:           "⚽️ 2",
+					},
+					{
+						Position:        3,
+						ImageURL:        "http://teamA.jpg",
+						ParticipantName: "Marc Pugh (Team A)",
+						Value:           "⚽️ 1",
+					},
+					// teamD do not rank
+				},
+			},
+		},
+		{
+			name:      "no sweepstake must return default prize",
+			wantPrize: defaultPrize,
+			// nil sweepstake
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotPrize := domain.MostYellowCards(tc.sweepstake)
 			cmpDiff(t, tc.wantPrize, gotPrize)
 		})
 	}
