@@ -114,11 +114,11 @@ var MostGoalsConceded = func(s *Sweepstake) *RankedPrize {
 
 	return &RankedPrize{
 		PrizeName: mostGoalsConceded,
-		Rankings:  getPrizeRankingsFromAudit(totals, s.Participants),
+		Rankings:  getPrizeRankingsFromAudit("⚽", totals, s.Participants),
 	}
 }
 
-func getPrizeRankingsFromAudit(audit teamsAudit, participants ParticipantCollection) []Rank {
+func getPrizeRankingsFromAudit(prefix string, audit teamsAudit, participants ParticipantCollection) []Rank {
 	type teamWithValue struct {
 		team  *Team
 		value int
@@ -149,7 +149,7 @@ func getPrizeRankingsFromAudit(audit teamsAudit, participants ParticipantCollect
 			Position:        uint8(idx + 1),
 			ImageURL:        result.team.ImageURL,
 			ParticipantName: getSummaryFromTeamAndParticipant(result.team, participants.GetByTeamID(result.team.ID)),
-			Value:           fmt.Sprintf("⚽️ %d", result.value),
+			Value:           fmt.Sprintf("%s️ %d", prefix, result.value),
 		})
 	}
 
@@ -180,7 +180,7 @@ var MostYellowCards = func(s *Sweepstake) *RankedPrize {
 
 	return &RankedPrize{
 		PrizeName: mostYellowCards,
-		Rankings:  getPrizeRankingsFromAudit(totals, s.Participants),
+		Rankings:  getPrizeRankingsFromAudit("🟨", totals, s.Participants),
 	}
 }
 

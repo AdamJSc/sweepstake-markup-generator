@@ -621,19 +621,19 @@ func TestMostYellowCards(t *testing.T) {
 						Position:        1,
 						ImageURL:        "http://teamB.jpg",
 						ParticipantName: "Steve Fletcher (Team B)",
-						Value:           "⚽️ 6",
+						Value:           "\U0001F7E8️ 6",
 					},
 					{
 						Position:        2,
 						ImageURL:        "http://teamC.jpg",
 						ParticipantName: "Brett Pitman (Team C)",
-						Value:           "⚽️ 2",
+						Value:           "\U0001F7E8️ 2",
 					},
 					{
 						Position:        3,
 						ImageURL:        "http://teamA.jpg",
 						ParticipantName: "Marc Pugh (Team A)",
-						Value:           "⚽️ 1",
+						Value:           "\U0001F7E8️ 1",
 					},
 					// teamD do not rank
 				},
