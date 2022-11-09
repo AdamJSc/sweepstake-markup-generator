@@ -7,13 +7,24 @@ import (
 )
 
 const (
+	mostGoalsConceded  = "Most Goals Conceded"
 	tournamentRunnerUp = "Tournament Runner-Up"
 	tournamentWinner   = "Tournament Winner"
 )
 
+var (
+	participantA = &domain.Participant{TeamID: "teamA", Name: "Marc Pugh"}
+	participantB = &domain.Participant{TeamID: "teamB", Name: "Steve Fletcher"}
+	participantC = &domain.Participant{TeamID: "teamC", Name: "Brett Pitman"}
+	participantD = &domain.Participant{TeamID: "teamD", Name: "Shaun McDonald"}
+	teamA        = &domain.Team{ID: "teamA", Name: "Team A", ImageURL: "http://teamA.jpg"}
+	teamB        = &domain.Team{ID: "teamB", Name: "Team B", ImageURL: "http://teamB.jpg"}
+	teamC        = &domain.Team{ID: "teamC", Name: "Team C", ImageURL: "http://teamC.jpg"}
+	teamD        = &domain.Team{ID: "teamD", Name: "Team D", ImageURL: "http://teamD.jpg"}
+)
+
 func TestTournamentWinner(t *testing.T) {
 	defaultPrize := &domain.OutrightPrize{PrizeName: tournamentWinner, ParticipantName: "TBC"}
-	teamA := &domain.Team{ID: "teamA", Name: "Team A", ImageURL: "http://teamA.jpg"}
 
 	tt := []struct {
 		name       string
@@ -32,12 +43,7 @@ func TestTournamentWinner(t *testing.T) {
 						},
 					},
 				},
-				Participants: domain.ParticipantCollection{
-					{
-						TeamID: "teamA",
-						Name:   "Marc Pugh",
-					},
-				},
+				Participants: domain.ParticipantCollection{participantA},
 			},
 			wantPrize: &domain.OutrightPrize{
 				PrizeName:       tournamentWinner,
@@ -102,12 +108,7 @@ func TestTournamentWinner(t *testing.T) {
 						},
 					},
 				},
-				Participants: domain.ParticipantCollection{
-					{
-						TeamID: "teamA",
-						Name:   "Marc Pugh",
-					},
-				},
+				Participants: domain.ParticipantCollection{participantA},
 			},
 			wantPrize: defaultPrize,
 		},
@@ -123,12 +124,7 @@ func TestTournamentWinner(t *testing.T) {
 						},
 					},
 				},
-				Participants: domain.ParticipantCollection{
-					{
-						TeamID: "teamA",
-						Name:   "Marc Pugh",
-					},
-				},
+				Participants: domain.ParticipantCollection{participantA},
 			},
 			wantPrize: defaultPrize,
 		},
@@ -144,12 +140,7 @@ func TestTournamentWinner(t *testing.T) {
 						},
 					},
 				},
-				Participants: domain.ParticipantCollection{
-					{
-						TeamID: "teamA",
-						Name:   "Marc Pugh",
-					},
-				},
+				Participants: domain.ParticipantCollection{participantA},
 			},
 			wantPrize: defaultPrize,
 		},
@@ -170,20 +161,7 @@ func TestTournamentWinner(t *testing.T) {
 
 func TestTournamentRunnerUp(t *testing.T) {
 	defaultPrize := &domain.OutrightPrize{PrizeName: tournamentRunnerUp, ParticipantName: "TBC"}
-
-	teamA := &domain.Team{ID: "teamA", Name: "Team A", ImageURL: "http://teamA.jpg"}
-	teamB := &domain.Team{ID: "teamB", Name: "Team B", ImageURL: "http://teamB.jpg"}
-
-	participants := domain.ParticipantCollection{
-		{
-			TeamID: "teamA",
-			Name:   "Marc Pugh",
-		},
-		{
-			TeamID: "teamB",
-			Name:   "Steve Fletcher",
-		},
-	}
+	participants := domain.ParticipantCollection{participantA, participantB}
 
 	tt := []struct {
 		name       string
@@ -440,6 +418,118 @@ func TestTournamentRunnerUp(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			gotPrize := domain.TournamentRunnerUp(tc.sweepstake)
+			cmpDiff(t, tc.wantPrize, gotPrize)
+		})
+	}
+}
+
+func TestMostGoalsConceded(t *testing.T) {
+	defaultPrize := &domain.RankedPrize{PrizeName: mostGoalsConceded, Rankings: []domain.Rank{}}
+
+	teams := domain.TeamCollection{teamA, teamB, teamC, teamD}
+	participants := domain.ParticipantCollection{participantA, participantB, participantC, participantD}
+
+	tt := []struct {
+		name       string
+		sweepstake *domain.Sweepstake
+		wantPrize  *domain.RankedPrize
+	}{
+		{
+			name: "valid sweepstake must produce the expected rankings",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Teams: teams,
+					Matches: domain.MatchCollection{
+						// teamA = 1 (1)
+						// teamB = 2 (2)
+						{
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:  teamA,
+								Goals: 2,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 1,
+							},
+						},
+						// not completed, should be ignored
+						{
+							// completed is false
+							Home: domain.MatchCompetitor{
+								Team:  teamA,
+								Goals: 99,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 99,
+							},
+						},
+						// teamB = 3 (5)
+						// teamC = 2 (2)
+						{
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 2,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamC,
+								Goals: 3,
+							},
+						},
+						// teamB = 1 (6)
+						// teamD = 0 (0)
+						{
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 0,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamD,
+								Goals: 1,
+							},
+						},
+					},
+				},
+				Participants: participants,
+			},
+			wantPrize: &domain.RankedPrize{
+				PrizeName: mostGoalsConceded,
+				Rankings: []domain.Rank{
+					{
+						Position:        1,
+						ImageURL:        "http://teamB.jpg",
+						ParticipantName: "Steve Fletcher (Team B)",
+						Value:           "⚽️ 6",
+					},
+					{
+						Position:        2,
+						ImageURL:        "http://teamC.jpg",
+						ParticipantName: "Brett Pitman (Team C)",
+						Value:           "⚽️ 2",
+					},
+					{
+						Position:        3,
+						ImageURL:        "http://teamA.jpg",
+						ParticipantName: "Marc Pugh (Team A)",
+						Value:           "⚽️ 1",
+					},
+					// teamD do not rank
+				},
+			},
+		},
+		{
+			name:      "no sweepstake must return default prize",
+			wantPrize: defaultPrize,
+			// nil sweepstake
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotPrize := domain.MostGoalsConceded(tc.sweepstake)
 			cmpDiff(t, tc.wantPrize, gotPrize)
 		})
 	}
