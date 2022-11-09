@@ -12,6 +12,7 @@ const (
 	mostGoalsConceded  = "Most Goals Conceded"
 	mostYellowCards    = "Most Yellow Cards"
 	quickestOwnGoal    = "Quickest Own Goal"
+	quickestRedCard    = "Quickest Red Card"
 	tournamentRunnerUp = "Tournament Runner-Up"
 	tournamentWinner   = "Tournament Winner"
 )
@@ -194,6 +195,7 @@ var QuickestOwnGoal = func(s *Sweepstake) *RankedPrize {
 	if s == nil {
 		return defaultPrize
 	}
+
 	events := make([]matchEventWithTeams, 0)
 
 	for _, match := range s.Tournament.Matches {
@@ -204,6 +206,40 @@ var QuickestOwnGoal = func(s *Sweepstake) *RankedPrize {
 		events = append(events, (&matchEventsExtractor{match: match}).ownGoals()...)
 	}
 
+	return &RankedPrize{
+		PrizeName: quickestOwnGoal,
+		Rankings:  getPrizeRankingsFromMatchEvents("🙈", events, s.Participants),
+	}
+}
+
+// QuickestRedCard returns the teams who have received at least one red card in ascending order of match minute
+var QuickestRedCard = func(s *Sweepstake) *RankedPrize {
+	defaultPrize := &RankedPrize{
+		PrizeName: quickestRedCard,
+		Rankings:  make([]Rank, 0),
+	}
+
+	if s == nil {
+		return defaultPrize
+	}
+
+	events := make([]matchEventWithTeams, 0)
+
+	for _, match := range s.Tournament.Matches {
+		if !match.Completed {
+			continue
+		}
+
+		events = append(events, (&matchEventsExtractor{match: match}).redCards()...)
+	}
+
+	return &RankedPrize{
+		PrizeName: quickestRedCard,
+		Rankings:  getPrizeRankingsFromMatchEvents("🟥", events, s.Participants),
+	}
+}
+
+func getPrizeRankingsFromMatchEvents(prefix string, events []matchEventWithTeams, participants ParticipantCollection) []Rank {
 	sort.SliceStable(events, func(i, j int) bool {
 		// sort by minute (asc) then by offset (asc)
 		switch {
@@ -219,15 +255,12 @@ var QuickestOwnGoal = func(s *Sweepstake) *RankedPrize {
 	for _, ev := range events {
 		rankings = append(rankings, Rank{
 			ImageURL:        ev.For.ImageURL,
-			ParticipantName: getSummaryFromTeamAndParticipant(ev.For, s.Participants.GetByTeamID(ev.For.ID)),
-			Value:           fmt.Sprintf("🙈 %s (vs %s %s)", ev.String(), ev.Against.Name, ev.Timestamp.Format("02/01")),
+			ParticipantName: getSummaryFromTeamAndParticipant(ev.For, participants.GetByTeamID(ev.For.ID)),
+			Value:           fmt.Sprintf("%s %s (vs %s %s)", prefix, ev.String(), ev.Against.Name, ev.Timestamp.Format("02/01")),
 		})
 	}
 
-	return &RankedPrize{
-		PrizeName: quickestOwnGoal,
-		Rankings:  rankings,
-	}
+	return rankings
 }
 
 type matchEventWithTeams struct {
@@ -268,7 +301,32 @@ func (m *matchEventsExtractor) ownGoals() []matchEventWithTeams {
 	return events
 }
 
-// TODO: prize - quickest red card
+func (m *matchEventsExtractor) redCards() []matchEventWithTeams {
+	events := make([]matchEventWithTeams, 0)
+	timestamp := m.match.Timestamp
+	home := m.match.Home
+	away := m.match.Away
+
+	for _, rc := range home.RedCards {
+		events = append(events, matchEventWithTeams{
+			MatchEvent: rc,
+			Timestamp:  timestamp,
+			For:        home.Team,
+			Against:    away.Team,
+		})
+	}
+
+	for _, rc := range away.RedCards {
+		events = append(events, matchEventWithTeams{
+			MatchEvent: rc,
+			Timestamp:  timestamp,
+			For:        away.Team,
+			Against:    home.Team,
+		})
+	}
+
+	return events
+}
 
 type RankedPrize struct {
 	PrizeName string
