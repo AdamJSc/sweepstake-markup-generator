@@ -11,6 +11,7 @@ const (
 	mostGoalsConceded  = "Most Goals Conceded"
 	mostYellowCards    = "Most Yellow Cards"
 	quickestOwnGoal    = "Quickest Own Goal"
+	quickestRedCard    = "Quickest Red Card"
 	tournamentRunnerUp = "Tournament Runner-Up"
 	tournamentWinner   = "Tournament Winner"
 )
@@ -807,6 +808,164 @@ func TestQuickestOwnGoal(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			gotPrize := domain.QuickestOwnGoal(tc.sweepstake)
+			cmpDiff(t, tc.wantPrize, gotPrize)
+		})
+	}
+}
+
+func TestQuickestRedCard(t *testing.T) {
+	defaultPrize := &domain.RankedPrize{PrizeName: quickestRedCard, Rankings: []domain.Rank{}}
+
+	teams := domain.TeamCollection{teamA, teamB, teamC, teamD}
+	participants := domain.ParticipantCollection{participantA, participantB, participantC, participantD}
+
+	tt := []struct {
+		name       string
+		sweepstake *domain.Sweepstake
+		wantPrize  *domain.RankedPrize
+	}{
+		{
+			name: "valid sweepstake must produce the expected rankings",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Teams: teams,
+					Matches: domain.MatchCollection{
+						{
+							Completed: true,
+							Timestamp: date1,
+							Home: domain.MatchCompetitor{
+								Team: teamA,
+								RedCards: []domain.MatchEvent{
+									{
+										Name:   "Lennon",
+										Minute: 90,
+										Offset: 1,
+									},
+									{
+										Name:   "McCartney",
+										Minute: 2,
+									},
+								},
+							},
+							Away: domain.MatchCompetitor{
+								Team: teamB,
+								RedCards: []domain.MatchEvent{
+									{
+										Name:   "G.Harrison",
+										Minute: 90,
+									},
+								},
+							},
+						},
+						// not completed, should be ignored
+						{
+							// completed is false
+							Timestamp: date2,
+							Home: domain.MatchCompetitor{
+								Team: teamA,
+								RedCards: []domain.MatchEvent{
+									{
+										Name:   "Starr",
+										Minute: 123,
+									},
+								},
+							},
+							Away: domain.MatchCompetitor{
+								Team: teamB,
+								RedCards: []domain.MatchEvent{
+									{
+										Name:   "B.Epstein",
+										Minute: 123,
+									},
+								},
+							},
+						}, {
+							Completed: true,
+							Timestamp: date3,
+							Home: domain.MatchCompetitor{
+								Team: teamC,
+								RedCards: []domain.MatchEvent{
+									{
+										Name:   "Johnny",
+										Minute: 46,
+									},
+									{
+										Name:   "Joey",
+										Minute: 45,
+									},
+								},
+							},
+							Away: domain.MatchCompetitor{
+								Team: teamD,
+								RedCards: []domain.MatchEvent{
+									{
+										Name:   "DeeDee",
+										Minute: 45,
+										Offset: 4,
+									},
+									{
+										Name:   "Tommy",
+										Minute: 45,
+										Offset: 5,
+									},
+								},
+							},
+						},
+					},
+				},
+				Participants: participants,
+			},
+			wantPrize: &domain.RankedPrize{
+				PrizeName: quickestRedCard,
+				Rankings: []domain.Rank{
+					{
+						ImageURL:        "http://teamA.jpg",
+						ParticipantName: "Marc Pugh (Team A)",
+						Value:           "🟥 2' McCartney (vs Team B 26/05)",
+					},
+					{
+						ImageURL:        "http://teamC.jpg",
+						ParticipantName: "Brett Pitman (Team C)",
+						Value:           "🟥 45' Joey (vs Team D 28/05)",
+					},
+					{
+						ImageURL:        "http://teamD.jpg",
+						ParticipantName: "Shaun McDonald (Team D)",
+						Value:           "🟥 45'+4 DeeDee (vs Team C 28/05)",
+					},
+					{
+						ImageURL:        "http://teamD.jpg",
+						ParticipantName: "Shaun McDonald (Team D)",
+						Value:           "🟥 45'+5 Tommy (vs Team C 28/05)",
+					},
+					{
+						ImageURL:        "http://teamC.jpg",
+						ParticipantName: "Brett Pitman (Team C)",
+						Value:           "🟥 46' Johnny (vs Team D 28/05)",
+					},
+					{
+						ImageURL:        "http://teamB.jpg",
+						ParticipantName: "Steve Fletcher (Team B)",
+						Value:           "🟥 90' G.Harrison (vs Team A 26/05)",
+					},
+					{
+						ImageURL:        "http://teamA.jpg",
+						ParticipantName: "Marc Pugh (Team A)",
+						Value:           "🟥 90'+1 Lennon (vs Team B 26/05)",
+					},
+				},
+			},
+		},
+		{
+			name:      "no sweepstake must return default prize",
+			wantPrize: defaultPrize,
+			// nil sweepstake
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotPrize := domain.QuickestRedCard(tc.sweepstake)
 			cmpDiff(t, tc.wantPrize, gotPrize)
 		})
 	}
