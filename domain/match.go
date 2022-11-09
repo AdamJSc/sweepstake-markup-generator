@@ -67,6 +67,15 @@ type MatchEvent struct {
 	Offset uint8  // indicates if event took place in stopped time - e.g. 90+2 = offset 2
 }
 
+func (m MatchEvent) String() string {
+	minute := fmt.Sprintf("%d'", m.Minute)
+	if m.Offset > 0 {
+		minute += fmt.Sprintf("+%d", m.Offset)
+	}
+
+	return fmt.Sprintf("%s %s", minute, m.Name)
+}
+
 type MatchCollection []*Match
 
 func (mc MatchCollection) GetByID(id string) *Match {
