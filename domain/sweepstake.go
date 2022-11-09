@@ -40,8 +40,7 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		mostGoalsConceded = MostGoalsConceded(s)
 	}
 	if s.Prizes.MostYellowCards {
-		// TODO: replace with most yellow cards prize generator
-		mostYellowCards = &RankedPrize{PrizeName: "Most Yellow Cards"}
+		mostYellowCards = MostYellowCards(s)
 	}
 	if s.Prizes.QuickestOwnGoal {
 		// TODO: replace with quickest own goal prize generator

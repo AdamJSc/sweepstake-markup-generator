@@ -9,6 +9,7 @@ const (
 	// finalMatchID defines the id of the match considered to be the final
 	finalMatchID       = "F"
 	mostGoalsConceded  = "Most Goals Conceded"
+	mostYellowCards    = "Most Yellow Cards"
 	tournamentRunnerUp = "Tournament Runner-Up"
 	tournamentWinner   = "Tournament Winner"
 )
@@ -153,7 +154,34 @@ func getPrizeRankingsFromAudit(audit teamsAudit, participants ParticipantCollect
 	return ranks
 }
 
-// TODO: prize - most yellow cards
+// MostYellowCards returns the teams who have received the most yellow cards in descending order
+var MostYellowCards = func(s *Sweepstake) *RankedPrize {
+	defaultPrize := &RankedPrize{
+		PrizeName: mostYellowCards,
+		Rankings:  make([]Rank, 0),
+	}
+
+	if s == nil {
+		return defaultPrize
+	}
+
+	totals := teamsAudit{teams: s.Tournament.Teams}
+
+	for _, match := range s.Tournament.Matches {
+		if !match.Completed {
+			continue
+		}
+
+		totals.inc(match.Home.Team, int(match.Home.YellowCards))
+		totals.inc(match.Away.Team, int(match.Away.YellowCards))
+	}
+
+	return &RankedPrize{
+		PrizeName: mostYellowCards,
+		Rankings:  getPrizeRankingsFromAudit(totals, s.Participants),
+	}
+}
+
 // TODO: prize - quickest own goal
 // TODO: prize - quickest red card
 
