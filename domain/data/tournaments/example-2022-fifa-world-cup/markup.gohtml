@@ -89,8 +89,8 @@
                 <h2>Who's Who...</h2>
                 <div class="flex-container">
                     {{- $sweepstake := .Sweepstake -}}
-                    {{- range $participant := .Sweepstake.Participants -}}
-                        {{- $team := (get_team_by_id $sweepstake.Tournament.Teams $participant.TeamID) -}}
+                    {{- range $team := (sort_teams .Sweepstake.Tournament.Teams) -}}
+                        {{- $participant := (get_participant_by_id $sweepstake.Participants $team.ID) -}}
                         {{- $summary := (get_summary $team $participant) -}}
                         <div class="entrant flex-container">
                             <div class="image-container">

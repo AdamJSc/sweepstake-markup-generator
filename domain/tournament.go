@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
+	"sort"
 	"strings"
 	"sync"
 )
@@ -127,8 +128,21 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 			"get_summary": func(t *Team, p *Participant) string {
 				return getSummaryFromTeamAndParticipant(t, p)
 			},
-			"get_team_by_id": func(collection TeamCollection, id string) *Team {
-				return collection.GetByID(id)
+			"get_participant_by_id": func(collection ParticipantCollection, id string) *Participant {
+				return collection.GetByTeamID(id)
+			},
+			"sort_teams": func(collection TeamCollection) TeamCollection {
+				var copied TeamCollection
+
+				for _, t := range collection {
+					copied = append(copied, t)
+				}
+
+				sort.SliceStable(copied, func(i, j int) bool {
+					return copied[i].Name < copied[j].Name
+				})
+
+				return copied
 			},
 		}).
 		Parse(string(rawMarkup))
