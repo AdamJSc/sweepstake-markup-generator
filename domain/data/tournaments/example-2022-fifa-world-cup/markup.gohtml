@@ -16,6 +16,8 @@
                 margin: 0;
                 padding: 0 0.5rem 0.5rem;
             }
+            a{ color: #9a1032; text-decoration: none; }
+            a:hover{ text-decoration: underline; }
             footer{ color: #eee; font-size: 0.8rem; padding-top: 2rem; }
             footer a{ color: #eee; text-decoration: none; }
             footer a:hover{ color: #ddd; text-decoration: underline; }
@@ -24,7 +26,7 @@
             h2{ font-size: 1.5rem; }
             h2{ font-size: 1.3rem; }
             tr.rank:nth-child(odd){ background: #ddd; }
-            tr.rank:nth-child(even) td{  }
+            .back-to-top{ padding-bottom: 1rem; }
             .center{ text-align: center; }
             .divider{ border-top: 2px solid #ddd; }
             .entrant.flex-container{ column-gap: 5px; justify-content: flex-start; }
@@ -34,6 +36,8 @@
             .image-container{ margin: 0 auto; }
             .image-container img{ height: 100%; width: 100%; }
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
+            .menu a{ background: #9a1032; border-radius: 5px; color: #fff; font-family: 'Poor Story', cursive; font-size: 2rem; font-weight: bold; margin-top: 0.5rem; padding: 0.5rem 1rem; }
+            .menu a:hover{ background: #7c001f; text-decoration: none; }
             .participant-name{ margin-top: 0.5rem; }
             .prize{ border: 2px solid #ddd; border-radius: 5px; box-shadow: 4px 4px #9a1032; margin: 1rem 0; }
             .prize.outright{ max-width: 300px; padding: 0.5rem 2rem; }
@@ -45,8 +49,8 @@
             .rank td{ padding: 0.5rem; }
             .rank-pos{ text-align: right; }
             .rankings-container table{ border-collapse: collapse; }
-            .whos-who{ padding: 2rem; }
-            .whos-who .image-container{ height: 20px; width: 30px; }
+            .section-container{ padding: 2rem; }
+            .section-container .image-container{ height: 20px; width: 30px; }
             @media screen and (min-width: 550px){
                 body{ padding: 0 1rem 1rem; }
             }
@@ -71,10 +75,16 @@
                     <img src="{{ .ImageURL }}" />
                 </div>
             </div>
+            <div class="menu section-container flex-container">
+                <a href="#prizes">Prizes</a>
+                <a href="#fixtures">Fixtures</a>
+                <a href="#results">Results</a>
+                <a href="#whos-who">Who's Who</a>
+            </div>
             {{- if .LastUpdated -}}
                 <div class="last-updated center">Last updated: <strong>{{ .LastUpdated }}</strong></div>
             {{- end -}}
-            <div class="outright prizes-container flex-container">
+            <div id="prizes" class="outright prizes-container flex-container">
                 {{- template "outright-prize" .Prizes.Winner -}}
                 {{- template "outright-prize" .Prizes.RunnerUp -}}
             </div>
@@ -86,8 +96,24 @@
                 {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
             </div>
             <div class="divider"></div>
-            <div class="whos-who center">
+            <div id="fixtures" class="fixtures section-container center">
+                <h2>Upcoming Fixtures</h2>
+                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
+                <div class="flex-container">
+                    TBC
+                </div>
+            </div>
+            <div id="results" class="results section-container center">
+                <h2>Results</h2>
+                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
+                <div class="flex-container">
+                    TBC
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div id="whos-who" class="whos-who section-container center">
                 <h2>Who's Who...</h2>
+                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
                 <div class="flex-container">
                     {{- $sweepstake := .Sweepstake -}}
                     {{- range $team := (sort_teams .Sweepstake.Tournament.Teams) -}}
@@ -126,6 +152,7 @@
     {{- if . -}}
         <div class="prize ranked">
             <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
+            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
             <div class="rankings-container">
                 {{- if .Rankings -}}
                     <table>
