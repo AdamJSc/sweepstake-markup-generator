@@ -252,8 +252,9 @@ func getPrizeRankingsFromMatchEvents(prefix string, events []matchEventWithTeams
 
 	rankings := make([]Rank, 0)
 
-	for _, ev := range events {
+	for idx, ev := range events {
 		rankings = append(rankings, Rank{
+			Position:        uint8(idx + 1),
 			ImageURL:        ev.For.ImageURL,
 			ParticipantName: getSummaryFromTeamAndParticipant(ev.For, participants.GetByTeamID(ev.For.ID)),
 			Value:           fmt.Sprintf("%s %s (vs %s %s)", prefix, ev.String(), ev.Against.Name, ev.Timestamp.Format("02/01")),
