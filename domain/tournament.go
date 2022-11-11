@@ -125,6 +125,17 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 	tpl, err := template.
 		New("tpl").
 		Funcs(map[string]any{
+			"filter_matches": func(completed bool, collection MatchCollection) MatchCollection {
+				var filtered MatchCollection
+
+				for _, m := range collection {
+					if m.Completed == completed {
+						filtered = append(filtered, m)
+					}
+				}
+
+				return filtered
+			},
 			"get_summary": func(t *Team, p *Participant) string {
 				return getSummaryFromTeamAndParticipant(t, p)
 			},
@@ -132,17 +143,17 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 				return collection.GetByTeamID(id)
 			},
 			"sort_teams": func(collection TeamCollection) TeamCollection {
-				var copied TeamCollection
+				var sorted TeamCollection
 
 				for _, t := range collection {
-					copied = append(copied, t)
+					sorted = append(sorted, t)
 				}
 
-				sort.SliceStable(copied, func(i, j int) bool {
-					return copied[i].Name < copied[j].Name
+				sort.SliceStable(sorted, func(i, j int) bool {
+					return sorted[i].Name < sorted[j].Name
 				})
 
-				return copied
+				return sorted
 			},
 		}).
 		Parse(string(rawMarkup))

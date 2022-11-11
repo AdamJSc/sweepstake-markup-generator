@@ -25,7 +25,7 @@
             h1{ font-family: 'Poor Story', cursive; font-size: 2.8rem; }
             h2{ font-size: 1.5rem; }
             h2{ font-size: 1.3rem; }
-            tr.rank:nth-child(odd){ background: #ddd; }
+            tr:nth-child(odd){ background: #ddd; }
             .back-to-top{ padding-bottom: 1rem; }
             .center{ text-align: center; }
             .divider{ border-top: 2px solid #ddd; }
@@ -100,14 +100,14 @@
                 <h2>Upcoming Fixtures</h2>
                 <div class="back-to-top center"><a href="#">[Back to top]</a></div>
                 <div class="flex-container">
-                    TBC
+                    {{- template "match-table" (filter_matches false .Sweepstake.Tournament.Matches) -}}
                 </div>
             </div>
             <div id="results" class="results section-container center">
                 <h2>Results</h2>
                 <div class="back-to-top center"><a href="#">[Back to top]</a></div>
                 <div class="flex-container">
-                    TBC
+                    {{- template "match-table" (filter_matches true .Sweepstake.Tournament.Matches) -}}
                 </div>
             </div>
             <div class="divider"></div>
@@ -170,5 +170,22 @@
                 {{- end -}}
             </div>
         </div>
+    {{- end -}}
+{{ end }}
+
+{{ define "match-table" }}
+    {{- if . -}}
+        <table>
+            {{- range . }}
+                <tr class="match">
+                    <td class="rank-pos">TBC</td>
+                    <td class="rank-image"><div class="image-container"><img src="TBC" /></div></td>
+                    <td class="rank-participant-name">TBC</td>
+                    <td class="rank-value">TBC</td>
+                </tr>
+            {{- end -}}
+        </table>
+    {{- else -}}
+        <h3>None!</h3>
     {{- end -}}
 {{ end }}
