@@ -6,11 +6,15 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
 	"time"
 )
+
+// rx provides a regex pattern matcher that targets the content between a set of [ ] square brackets
+var rx = regexp.MustCompile(`(\[.*\])+`)
 
 type Tournament struct {
 	ID              string `json:"id"`
@@ -158,9 +162,9 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 
 				return filtered
 			},
-			"filter_text": func(input string) string {
-				// TODO: filter out content inside []
-				return input
+			"strip_text": func(input string) string {
+				replaced := rx.ReplaceAll([]byte(input), []byte(""))
+				return strings.Trim(string(replaced), " ")
 			},
 			"get_summary": func(t *Team, p *Participant) string {
 				return getSummaryFromTeamAndParticipant(t, p)

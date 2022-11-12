@@ -38,6 +38,7 @@
             .header .image-container{ margin: 0; max-width: 100px; }
             .image-container{ margin: 0 auto; }
             .image-container img{ height: 100%; width: 100%; }
+            .info{ font-size: 0.6rem; font-style: italic; }
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
             .match{ text-align: left; }
             .match .home{ text-align: right; }
@@ -188,7 +189,7 @@
             {{- range $matches }}
                 {{- $match := . -}}
                 <tr class="match">
-                    <td class="id">{{ filter_text $match.ID }}</td>
+                    <td class="id">{{ strip_text $match.ID }}</td>
                     <td class="date">{{ short_date $match.Timestamp }}</td>
 
                     {{- if $match.Home.Team -}}
@@ -202,7 +203,7 @@
                             {{- if $match.Completed -}}{{ $match.Home.Goals }}{{- end -}}
                         </td>
                     {{- else -}}
-                        <td class="home tbc" colspan="2">TBC</td>
+                        <td class="home tbc" colspan="3">TBC</td>
                     {{- end -}}
 
                     <td>
@@ -224,13 +225,10 @@
                         </td>
                         <td class="away participant-name">{{ $participant.Name }}</td>
                     {{- else -}}
-                        <td class="away tbc" colspan="2">TBC</td>
+                        <td class="away tbc" colspan="3">TBC</td>
                     {{- end -}}
 
-                    {{- $notes := filter_text $match.Notes -}}
-                    {{- if $notes -}}
-                        <td class="info"><button onclick="alert('{{ $notes }}');">X</button></td>
-                    {{- end -}}
+                    <td class="info">{{- strip_text $match.Notes -}}</td>
                 </tr>
             {{- end -}}
         </table>
