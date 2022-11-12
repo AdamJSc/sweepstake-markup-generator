@@ -761,36 +761,43 @@ func TestQuickestOwnGoal(t *testing.T) {
 				PrizeName: quickestOwnGoal,
 				Rankings: []domain.Rank{
 					{
+						Position:        1,
 						ImageURL:        "http://teamA.jpg",
 						ParticipantName: "Marc Pugh (Team A)",
 						Value:           "🙈 2' McCartney (vs Team B 26/05)",
 					},
 					{
+						Position:        2,
 						ImageURL:        "http://teamC.jpg",
 						ParticipantName: "Brett Pitman (Team C)",
 						Value:           "🙈 45' Joey (vs Team D 28/05)",
 					},
 					{
+						Position:        3,
 						ImageURL:        "http://teamD.jpg",
 						ParticipantName: "Shaun McDonald (Team D)",
 						Value:           "🙈 45'+4 DeeDee (vs Team C 28/05)",
 					},
 					{
+						Position:        4,
 						ImageURL:        "http://teamD.jpg",
 						ParticipantName: "Shaun McDonald (Team D)",
 						Value:           "🙈 45'+5 Tommy (vs Team C 28/05)",
 					},
 					{
+						Position:        5,
 						ImageURL:        "http://teamC.jpg",
 						ParticipantName: "Brett Pitman (Team C)",
 						Value:           "🙈 46' Johnny (vs Team D 28/05)",
 					},
 					{
+						Position:        6,
 						ImageURL:        "http://teamB.jpg",
 						ParticipantName: "Steve Fletcher (Team B)",
 						Value:           "🙈 90' G.Harrison (vs Team A 26/05)",
 					},
 					{
+						Position:        7,
 						ImageURL:        "http://teamA.jpg",
 						ParticipantName: "Marc Pugh (Team A)",
 						Value:           "🙈 90'+1 Lennon (vs Team B 26/05)",
@@ -919,36 +926,43 @@ func TestQuickestRedCard(t *testing.T) {
 				PrizeName: quickestRedCard,
 				Rankings: []domain.Rank{
 					{
+						Position:        1,
 						ImageURL:        "http://teamA.jpg",
 						ParticipantName: "Marc Pugh (Team A)",
 						Value:           "🟥 2' McCartney (vs Team B 26/05)",
 					},
 					{
+						Position:        2,
 						ImageURL:        "http://teamC.jpg",
 						ParticipantName: "Brett Pitman (Team C)",
 						Value:           "🟥 45' Joey (vs Team D 28/05)",
 					},
 					{
+						Position:        3,
 						ImageURL:        "http://teamD.jpg",
 						ParticipantName: "Shaun McDonald (Team D)",
 						Value:           "🟥 45'+4 DeeDee (vs Team C 28/05)",
 					},
 					{
+						Position:        4,
 						ImageURL:        "http://teamD.jpg",
 						ParticipantName: "Shaun McDonald (Team D)",
 						Value:           "🟥 45'+5 Tommy (vs Team C 28/05)",
 					},
 					{
+						Position:        5,
 						ImageURL:        "http://teamC.jpg",
 						ParticipantName: "Brett Pitman (Team C)",
 						Value:           "🟥 46' Johnny (vs Team D 28/05)",
 					},
 					{
+						Position:        6,
 						ImageURL:        "http://teamB.jpg",
 						ParticipantName: "Steve Fletcher (Team B)",
 						Value:           "🟥 90' G.Harrison (vs Team A 26/05)",
 					},
 					{
+						Position:        7,
 						ImageURL:        "http://teamA.jpg",
 						ParticipantName: "Marc Pugh (Team A)",
 						Value:           "🟥 90'+1 Lennon (vs Team B 26/05)",
