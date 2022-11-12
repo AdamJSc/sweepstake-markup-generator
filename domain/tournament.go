@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Tournament struct {
@@ -125,6 +126,21 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 	tpl, err := template.
 		New("tpl").
 		Funcs(map[string]any{
+			"dict": func(args ...interface{}) map[string]interface{} {
+				dict := make(map[string]interface{})
+				if len(args)%2 != 0 {
+					return dict
+				}
+
+				for i := 0; i < len(args); i = i + 2 {
+					key, ok := args[i].(string)
+					if ok {
+						dict[key] = args[i+1]
+					}
+				}
+
+				return dict
+			},
 			"filter_matches": func(completed bool, collection MatchCollection) MatchCollection {
 				var filtered MatchCollection
 
@@ -134,13 +150,26 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 					}
 				}
 
+				sort.SliceStable(filtered, func(i, j int) bool {
+					// completed (results) = sort by timestamp desc
+					// not completed (fixtures) = sort by timestamp asc
+					return filtered[i].Timestamp.Before(filtered[j].Timestamp) != completed
+				})
+
 				return filtered
+			},
+			"filter_text": func(input string) string {
+				// TODO: filter out content inside []
+				return input
 			},
 			"get_summary": func(t *Team, p *Participant) string {
 				return getSummaryFromTeamAndParticipant(t, p)
 			},
 			"get_participant_by_id": func(collection ParticipantCollection, id string) *Participant {
 				return collection.GetByTeamID(id)
+			},
+			"short_date": func(t time.Time) string {
+				return t.Format("02/01")
 			},
 			"sort_teams": func(collection TeamCollection) TeamCollection {
 				var sorted TeamCollection

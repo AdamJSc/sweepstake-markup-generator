@@ -25,6 +25,9 @@
             h1{ font-family: 'Poor Story', cursive; font-size: 2.8rem; }
             h2{ font-size: 1.5rem; }
             h2{ font-size: 1.3rem; }
+            table{ border-collapse: collapse; }
+            table.matches{ font-size: 0.8rem; }
+            td{ padding: 0.5rem; }
             tr:nth-child(odd){ background: #ddd; }
             .back-to-top{ padding-bottom: 1rem; }
             .center{ text-align: center; }
@@ -36,6 +39,9 @@
             .image-container{ margin: 0 auto; }
             .image-container img{ height: 100%; width: 100%; }
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
+            .match{ text-align: left; }
+            .match .home{ text-align: right; }
+            .match .participant-name{ display: none; }
             .menu a{ background: #9a1032; border-radius: 5px; color: #fff; font-family: 'Poor Story', cursive; font-size: 2rem; font-weight: bold; margin-top: 0.5rem; padding: 0.5rem 1rem; }
             .menu a:hover{ background: #7c001f; text-decoration: none; }
             .participant-name{ margin-top: 0.5rem; }
@@ -46,13 +52,12 @@
             .prize.ranked .image-container{ height: 40px; width: 60px; }
             .prizes-container.flex-container{ align-items: start; padding: 1rem; }
             .prize-name{ border-bottom: 3px solid #ddd; margin-bottom: 1rem; padding-right: 1.5rem; }
-            .rank td{ padding: 0.5rem; }
             .rank-pos{ text-align: right; }
-            .rankings-container table{ border-collapse: collapse; }
             .section-container{ padding: 2rem; }
             .section-container .image-container{ height: 20px; width: 30px; }
             @media screen and (min-width: 550px){
                 body{ padding: 0 1rem 1rem; }
+                .match td.participant-name{ display: table-cell; }
             }
             @media screen and (min-width: 768px){
                 body{ padding: 0 1.5rem 1.5rem; }
@@ -77,8 +82,8 @@
             </div>
             <div class="menu section-container flex-container">
                 <a href="#prizes">Prizes</a>
-                <a href="#fixtures">Fixtures</a>
                 <a href="#results">Results</a>
+                <a href="#fixtures">Fixtures</a>
                 <a href="#whos-who">Who's Who</a>
             </div>
             {{- if .LastUpdated -}}
@@ -96,18 +101,20 @@
                 {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
             </div>
             <div class="divider"></div>
-            <div id="fixtures" class="fixtures section-container center">
-                <h2>Upcoming Fixtures</h2>
-                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-                <div class="flex-container">
-                    {{- template "match-table" (filter_matches false .Sweepstake.Tournament.Matches) -}}
-                </div>
-            </div>
             <div id="results" class="results section-container center">
                 <h2>Results</h2>
                 <div class="back-to-top center"><a href="#">[Back to top]</a></div>
                 <div class="flex-container">
-                    {{- template "match-table" (filter_matches true .Sweepstake.Tournament.Matches) -}}
+                    {{ $results := (filter_matches true .Sweepstake.Tournament.Matches) }}
+                    {{- template "match-table" (dict "Matches" $results "Participants" .Sweepstake.Participants) -}}
+                </div>
+            </div>
+            <div id="fixtures" class="fixtures section-container center">
+                <h2>Upcoming Fixtures</h2>
+                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
+                <div class="flex-container">
+                    {{ $fixtures := (filter_matches false .Sweepstake.Tournament.Matches) }}
+                    {{- template "match-table" (dict "Matches" $fixtures "Participants" .Sweepstake.Participants) -}}
                 </div>
             </div>
             <div class="divider"></div>
@@ -174,14 +181,56 @@
 {{ end }}
 
 {{ define "match-table" }}
-    {{- if . -}}
-        <table>
-            {{- range . }}
+    {{- $matches := .Matches -}}
+    {{- $participants := .Participants -}}
+    {{- if $matches -}}
+        <table class="matches">
+            {{- range $matches }}
+                {{- $match := . -}}
                 <tr class="match">
-                    <td class="rank-pos">TBC</td>
-                    <td class="rank-image"><div class="image-container"><img src="TBC" /></div></td>
-                    <td class="rank-participant-name">TBC</td>
-                    <td class="rank-value">TBC</td>
+                    <td class="id">{{ filter_text $match.ID }}</td>
+                    <td class="date">{{ short_date $match.Timestamp }}</td>
+
+                    {{- if $match.Home.Team -}}
+                        {{- $team := $match.Home.Team -}}
+                        {{- $participant := (get_participant_by_id $participants $team.ID) -}}
+                        <td class="home participant-name">{{ $participant.Name }}</td>
+                        <td class="home image">
+                            <div class="image-container"><img src="{{ $team.ImageURL }}" /></div>
+                        </td>
+                        <td class="home score">
+                            {{- if $match.Completed -}}{{ $match.Home.Goals }}{{- end -}}
+                        </td>
+                    {{- else -}}
+                        <td class="home tbc" colspan="2">TBC</td>
+                    {{- end -}}
+
+                    <td>
+                        {{- if $match.Completed -}}
+                            -
+                        {{- else -}}
+                            v
+                        {{- end -}}
+                    </td>
+
+                    {{- if $match.Away.Team -}}
+                        {{- $team := $match.Away.Team -}}
+                        {{- $participant := (get_participant_by_id $participants $team.ID) -}}
+                        <td class="away score">
+                            {{- if $match.Completed -}}{{ $match.Away.Goals }}{{- end -}}
+                        </td>
+                        <td class="away image">
+                            <div class="image-container"><img src="{{ $team.ImageURL }}" /></div>
+                        </td>
+                        <td class="away participant-name">{{ $participant.Name }}</td>
+                    {{- else -}}
+                        <td class="away tbc" colspan="2">TBC</td>
+                    {{- end -}}
+
+                    {{- $notes := filter_text $match.Notes -}}
+                    {{- if $notes -}}
+                        <td class="info"><button onclick="alert('{{ $notes }}');">X</button></td>
+                    {{- end -}}
                 </tr>
             {{- end -}}
         </table>
