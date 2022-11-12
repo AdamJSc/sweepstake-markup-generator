@@ -107,7 +107,7 @@
                 <div class="back-to-top center"><a href="#">[Back to top]</a></div>
                 <div class="flex-container">
                     {{ $results := (filter_matches true .Sweepstake.Tournament.Matches) }}
-                    {{- template "match-table" (dict "Matches" $results "Participants" .Sweepstake.Participants "EmptyMessage" "Coming soon!") -}}
+                    {{- template "match-table" (dict "Matches" $results "Participants" .Sweepstake.Participants "EmptyMessage" "Coming soon...") -}}
                 </div>
             </div>
             <div id="fixtures" class="fixtures section-container center">
@@ -115,7 +115,7 @@
                 <div class="back-to-top center"><a href="#">[Back to top]</a></div>
                 <div class="flex-container">
                     {{ $fixtures := (filter_matches false .Sweepstake.Tournament.Matches) }}
-                    {{- template "match-table" (dict "Matches" $fixtures "Participants" .Sweepstake.Participants "EmptyMessage" "Already played!") -}}
+                    {{- template "match-table" (dict "Matches" $fixtures "Participants" .Sweepstake.Participants "EmptyMessage" "All played!") -}}
                 </div>
             </div>
             <div class="divider"></div>

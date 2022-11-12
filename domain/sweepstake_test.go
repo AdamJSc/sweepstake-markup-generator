@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/fs"
@@ -143,14 +144,14 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 			},
 		},
 		{
-			name:    "empty config filename must produce the expected error",
+			name:    "empty tournaments must produce the expected error",
 			wantErr: domain.ErrIsEmpty,
 			// tournaments are empty
 		},
 		{
 			name:        "empty config filename must produce the expected error",
 			tournaments: defaultTestTournaments,
-			wantErr:     domain.ErrIsEmpty,
+			wantErr:     errors.New("cannot open file '': open : file does not exist"),
 			// configFilename is empty
 		},
 		{
@@ -218,8 +219,7 @@ func newSweepstakesJSONLoader(path string) *domain.SweepstakesJSONLoader {
 	}
 
 	return (&domain.SweepstakesJSONLoader{}).
-		WithFileSystem(testdataFilesystem).
-		WithConfigPath(path)
+		WithBytesFunc(domain.BytesFromFileSystem(testdataFilesystem, path))
 }
 
 func parseTemplate(t *testing.T, raw string) *template.Template {

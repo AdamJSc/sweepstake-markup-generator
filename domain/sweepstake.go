@@ -131,14 +131,23 @@ type PrizeSettings struct {
 
 type SweepstakeCollection []*Sweepstake
 
-type SweepstakesJSONLoader struct {
-	fSys        fs.FS
-	tournaments TournamentCollection
-	configPath  string
+// BytesFunc returns a slice of bytes
+type BytesFunc func() ([]byte, error)
+
+// BytesFromFileSystem returns the contents of the file at the provided path within the provided file system
+func BytesFromFileSystem(fSys fs.FS, configPath string) BytesFunc {
+	return func() ([]byte, error) {
+		return readFile(fSys, configPath)
+	}
 }
 
-func (s *SweepstakesJSONLoader) WithFileSystem(fSys fs.FS) *SweepstakesJSONLoader {
-	s.fSys = fSys
+type SweepstakesJSONLoader struct {
+	bytesFn     BytesFunc
+	tournaments TournamentCollection
+}
+
+func (s *SweepstakesJSONLoader) WithBytesFunc(bytesFn BytesFunc) *SweepstakesJSONLoader {
+	s.bytesFn = bytesFn
 	return s
 }
 
@@ -147,22 +156,13 @@ func (s *SweepstakesJSONLoader) WithTournamentCollection(tournaments TournamentC
 	return s
 }
 
-func (s *SweepstakesJSONLoader) WithConfigPath(path string) *SweepstakesJSONLoader {
-	s.configPath = path
-	return s
-}
-
 func (s *SweepstakesJSONLoader) init() error {
-	if s.fSys == nil {
-		s.fSys = defaultFileSystem
-	}
-
 	if s.tournaments == nil {
 		return fmt.Errorf("tournaments: %w", ErrIsEmpty)
 	}
 
-	if s.configPath == "" {
-		return fmt.Errorf("config path: %w", ErrIsEmpty)
+	if s.bytesFn == nil {
+		return fmt.Errorf("bytes func: %w", ErrIsEmpty)
 	}
 
 	return nil
@@ -174,7 +174,7 @@ func (s *SweepstakesJSONLoader) LoadSweepstakes(_ context.Context) (SweepstakeCo
 	}
 
 	// read sweepstake config file
-	rawConfigJSON, err := readFile(s.fSys, s.configPath)
+	raw, err := s.bytesFn()
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +186,7 @@ func (s *SweepstakesJSONLoader) LoadSweepstakes(_ context.Context) (SweepstakeCo
 			TournamentID string `json:"tournament_id"`
 		} `json:"sweepstakes"`
 	}{}
-	if err = json.Unmarshal(rawConfigJSON, content); err != nil {
+	if err = json.Unmarshal(raw, content); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal sweepstakes: %w", err)
 	}
 

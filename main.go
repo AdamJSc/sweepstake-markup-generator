@@ -38,11 +38,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	bytesFn := domain.BytesFromFileSystem(defaultFilesystem, "sweepstakes.json")
+
 	// load sweepstakes
 	sweepstakes, err := (&domain.SweepstakesJSONLoader{}).
-		WithFileSystem(defaultFilesystem).
+		WithBytesFunc(bytesFn).
 		WithTournamentCollection(tournaments).
-		WithConfigPath("sweepstakes.json").
 		LoadSweepstakes(ctx)
 	if err != nil {
 		log.Fatal(err)
