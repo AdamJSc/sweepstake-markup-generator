@@ -40,6 +40,11 @@ func main() {
 
 	bytesFn := domain.BytesFromFileSystem(defaultFilesystem, "sweepstakes.json")
 
+	if url := os.Getenv("SWEEPSTAKES_URL"); url != "" {
+		basicAuth := os.Getenv("SWEEPSTAKES_BASICAUTH")
+		bytesFn = domain.BytesFromURL(url, basicAuth, nil)
+	}
+
 	// load sweepstakes
 	sweepstakes, err := (&domain.SweepstakesJSONLoader{}).
 		WithSource(bytesFn).
