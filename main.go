@@ -2,11 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"io"
 	"io/fs"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -107,45 +104,4 @@ func mustWriteSweepstakeMarkup(sweepstake *domain.Sweepstake) {
 	if err := os.WriteFile(markupPath, b, 0644); err != nil {
 		log.Fatalf("cannot write markup for sweepstake '%s': %s", sweepstake.ID, err.Error())
 	}
-}
-
-func dadJoke() {
-	req, err := http.NewRequest(http.MethodGet, "https://icanhazdadjoke.com", nil)
-	if err != nil {
-		panic(any(err))
-	}
-
-	req.Header.Set("User-Agent", "curl/7.64.1")
-	req.Header.Set("Accept", "*/*")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(any(err))
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		panic(any(fmt.Sprintf("status code %d", resp.StatusCode)))
-	}
-
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		panic(any(err))
-	}
-
-	os.Mkdir("public", 0755)
-	filename := filepath.Join("public", "index.html")
-	os.Create(filename)
-
-	f, err := os.OpenFile(filename, os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		panic(any(err))
-	}
-
-	if _, err := fmt.Fprintf(f, "<p>icanhazdadjoke.com says...</p>\n<h1>%s</h1>\n", string(b)); err != nil {
-		panic(any(err))
-	}
-
-	log.Println("completed!")
 }
