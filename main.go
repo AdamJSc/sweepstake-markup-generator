@@ -67,6 +67,11 @@ func main() {
 		log.Fatalf("cannot write robots.txt: %s", err.Error())
 	}
 
+	// write index.html
+	if err = os.WriteFile(filepath.Join(siteDir, "index.html"), []byte(getIndexMarkup()), 0644); err != nil {
+		log.Fatalf("cannot write index.html: %s", err.Error())
+	}
+
 	// print status message
 	generated := len(sweepstakes) - skipped
 	log.Printf("success! %d generated (%d skipped)", generated, skipped)
@@ -110,4 +115,23 @@ func mustWriteSweepstakeMarkup(sweepstake *domain.Sweepstake) {
 	if err := os.WriteFile(markupPath, b, 0644); err != nil {
 		log.Fatalf("cannot write markup for sweepstake '%s': %s", sweepstake.ID, err.Error())
 	}
+}
+
+func getIndexMarkup() string {
+	return `<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hello!</title>
+		<meta charset="UTF-8">
+		<style>
+			html{ font-size: 18px; }
+			body{ font-family: Comic Sans MS; }
+			h1{ font-size: 1.2rem; }
+		</style>
+	</head>
+	<body>
+		<h1>Hello 👋</h1>
+	</body>
+</html>
+`
 }
