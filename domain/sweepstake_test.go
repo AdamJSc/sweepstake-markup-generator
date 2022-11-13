@@ -3,11 +3,15 @@ package domain_test
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"io/fs"
+	"net/http"
+	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
@@ -15,6 +19,141 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/sweepstake.adamjs.net/domain"
 )
+
+func TestBytesFromFileSystem(t *testing.T) {
+	tt := []struct {
+		name       string
+		fileSystem fs.FS
+		configPath string
+		wantBytes  []byte
+		wantErr    error
+	}{
+		{
+			name:       "existent file must return the expected bytes",
+			fileSystem: testdataFilesystem,
+			configPath: "sweepstakes_ok.json",
+			wantBytes:  readTestDataFile(t, sweepstakesDir, "sweepstakes_ok.json"),
+			// want no error
+		},
+		{
+			name:       "non-existent file must return the expected error",
+			fileSystem: testdataFilesystem,
+			configPath: "non-existent.json",
+			wantErr:    fs.ErrNotExist,
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			path := tc.configPath
+			if path != "" {
+				path = filepath.Join(testdataDir, sweepstakesDir, path)
+			}
+
+			gotBytes, gotErr := domain.BytesFromFileSystem(tc.fileSystem, path)()
+			cmpError(t, tc.wantErr, gotErr)
+			cmpDiff(t, tc.wantBytes, gotBytes)
+		})
+	}
+}
+
+type doFunc func(r *http.Request) (*http.Response, error)
+
+func (d doFunc) Do(r *http.Request) (*http.Response, error) {
+	return d(r)
+}
+
+func okResponse() *http.Response {
+	header := http.Header{}
+	header.Set("Content-Type", "application/json")
+
+	return &http.Response{
+		StatusCode: http.StatusOK,
+		Header:     header,
+		Body:       io.NopCloser(bytes.NewReader([]byte(`hello world`))),
+	}
+}
+
+type errReader struct{ err error }
+
+func (e errReader) Read(p []byte) (n int, err error) {
+	return 0, e.err
+}
+
+func TestBytesFromURL(t *testing.T) {
+	tt := []struct {
+		name      string
+		url       string
+		basicAuth string
+		doFunc    doFunc
+		wantBytes []byte
+		wantErr   error
+	}{
+		{
+			name:      "successful http response must return the expected bytes",
+			url:       "http://my-url",
+			basicAuth: "hello:world",
+			doFunc: doFunc(func(r *http.Request) (*http.Response, error) {
+				wantURL := "http://my-url"
+				wantAuth := "Basic " + base64.StdEncoding.EncodeToString([]byte("hello:world"))
+				if gotURL := r.URL.String(); gotURL != wantURL {
+					return nil, fmt.Errorf("want url '%s', got '%s'", wantURL, gotURL)
+				}
+				if gotAuth := r.Header.Get("Authorization"); gotAuth != wantAuth {
+					return nil, fmt.Errorf("want basic auth '%s', got '%s'", wantAuth, gotAuth)
+				}
+				return okResponse(), nil
+			}),
+			wantBytes: []byte(`hello world`),
+			// want no error
+		},
+		{
+			name: "failure to perform request must produce the expected error",
+			doFunc: doFunc(func(r *http.Request) (*http.Response, error) {
+				return nil, errors.New("oops")
+			}),
+			wantErr: errors.New("cannot perform request: oops"),
+		},
+		{
+			name: "invalid response status code must produce the expected error",
+			doFunc: doFunc(func(r *http.Request) (*http.Response, error) {
+				resp := okResponse()
+				// set status code to invalid value
+				resp.StatusCode = 123
+				return resp, nil
+			}),
+			wantErr: errors.New("non-200 status code: 123"),
+		},
+		{
+			name: "invalid response content type must produce the expected error",
+			doFunc: doFunc(func(r *http.Request) (*http.Response, error) {
+				resp := okResponse()
+				// override content-type header value
+				resp.Header.Set("Content-Type", "lololol")
+				return resp, nil
+			}),
+			wantErr: errors.New("invalid response content type: lololol"),
+		},
+		{
+			name: "response body that returns error on read must produce the expected error",
+			doFunc: doFunc(func(r *http.Request) (*http.Response, error) {
+				resp := okResponse()
+				// body returns read error
+				resp.Body = io.NopCloser(errReader{err: errors.New("oops")})
+				return resp, nil
+			}),
+			wantErr: errors.New("cannot read request body: oops"),
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotBytes, gotErr := domain.BytesFromURL(tc.url, tc.basicAuth, tc.doFunc)()
+			cmpError(t, tc.wantErr, gotErr)
+			cmpDiff(t, tc.wantBytes, gotBytes)
+		})
+	}
+}
 
 func TestParticipantCollection_GetByTeamID(t *testing.T) {
 	participantA1 := &domain.Participant{
@@ -219,7 +358,7 @@ func newSweepstakesJSONLoader(path string) *domain.SweepstakesJSONLoader {
 	}
 
 	return (&domain.SweepstakesJSONLoader{}).
-		WithBytesFunc(domain.BytesFromFileSystem(testdataFilesystem, path))
+		WithSource(domain.BytesFromFileSystem(testdataFilesystem, path))
 }
 
 func parseTemplate(t *testing.T, raw string) *template.Template {
@@ -252,3 +391,15 @@ var templateComparer = cmp.Comparer(func(want, got *template.Template) bool {
 	}
 	return wantBuf.String() == gotBuf.String()
 })
+
+func readTestDataFile(t *testing.T, path ...string) []byte {
+	t.Helper()
+	path = append([]string{"testdata"}, path...)
+
+	b, err := os.ReadFile(filepath.Join(path...))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return b
+}
