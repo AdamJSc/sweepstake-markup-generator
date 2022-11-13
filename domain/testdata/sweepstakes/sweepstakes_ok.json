@@ -3,7 +3,6 @@
     {
       "id": "test-sweepstake-1 ",
       "name": "Test Sweepstake 1 ",
-      "image_url": "http://sweepstake1.jpg ",
       "tournament_id": "TestTourney1",
       "prizes": {
         "winner": true,
@@ -52,7 +51,6 @@
     {
       "id": "test-sweepstake-2",
       "name": "Test Sweepstake 2",
-      "image_url": "http://sweepstake2.jpg",
       "tournament_id": "TestTourney2",
       "build": true,
       "participants": [

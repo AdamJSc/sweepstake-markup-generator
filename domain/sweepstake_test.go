@@ -247,7 +247,6 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 				{
 					ID:         "test-sweepstake-1",
 					Name:       "Test Sweepstake 1",
-					ImageURL:   "http://sweepstake1.jpg",
 					Tournament: testTourney1,
 					Participants: []*domain.Participant{
 						{TeamID: "BPFC", Name: "John L"},
@@ -272,7 +271,6 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 				{
 					ID:         "test-sweepstake-2",
 					Name:       "Test Sweepstake 2",
-					ImageURL:   "http://sweepstake2.jpg",
 					Tournament: testTourney2,
 					Participants: []*domain.Participant{
 						{TeamID: "ABC", Name: "Dara"},
@@ -328,7 +326,6 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 			wantErr: newMultiError([]string{
 				"id: is empty",
 				"name: is empty",
-				"image url: is empty",
 				"participant index 0: unrecognised participant team id: NOT_BPFC",
 				"team id 'BPFC': count 0",
 				"team id 'WTFC': count 2",

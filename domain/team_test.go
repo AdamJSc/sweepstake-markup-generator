@@ -189,6 +189,8 @@ func cmpError(t *testing.T, wantErr, gotErr error) {
 		}
 
 		defer func() {
+			t.Helper()
+
 			if r := recover(); r != any(nil) {
 				// unable to diff the error objects so just diff the error messages instead
 				doFatalMsg(cmp.Diff(wantErr.Error(), gotErr.Error()))

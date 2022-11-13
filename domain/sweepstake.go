@@ -18,7 +18,6 @@ import (
 type Sweepstake struct {
 	ID           string `json:"id"`
 	Name         string `json:"name"`
-	ImageURL     string `json:"image_url"`
 	Tournament   *Tournament
 	Participants ParticipantCollection `json:"participants"`
 	Prizes       PrizeSettings         `json:"prizes"`
@@ -59,12 +58,6 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		title = s.Tournament.Name
 	}
 
-	// set image url as sweepstake, fallback to tournament if missing
-	imageURL := s.ImageURL
-	if imageURL == "" {
-		imageURL = s.Tournament.ImageURL
-	}
-
 	var lastUpdated string
 	if s.Tournament.WithLastUpdated {
 		lastUpdated = time.Now().Format("Mon 2 Jan 2006 at 15:04")
@@ -87,7 +80,7 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		Sweepstake  *Sweepstake
 	}{
 		Title:       title,
-		ImageURL:    imageURL,
+		ImageURL:    s.Tournament.ImageURL,
 		LastUpdated: lastUpdated,
 		Prizes: prizeData{
 			Winner:            winner,
@@ -288,7 +281,6 @@ func validateSweepstakes(sweepstakes SweepstakeCollection) (SweepstakeCollection
 func validateSweepstake(sweepstake *Sweepstake, mErr MultiError) *Sweepstake {
 	sweepstake.ID = strings.Trim(sweepstake.ID, " ")
 	sweepstake.Name = strings.Trim(sweepstake.Name, " ")
-	sweepstake.ImageURL = strings.Trim(sweepstake.ImageURL, " ")
 
 	if sweepstake.ID == "" {
 		mErr.Add(fmt.Errorf("id: %w", ErrIsEmpty))
@@ -296,10 +288,6 @@ func validateSweepstake(sweepstake *Sweepstake, mErr MultiError) *Sweepstake {
 
 	if sweepstake.Name == "" {
 		mErr.Add(fmt.Errorf("name: %w", ErrIsEmpty))
-	}
-
-	if sweepstake.ImageURL == "" {
-		mErr.Add(fmt.Errorf("image url: %w", ErrIsEmpty))
 	}
 
 	audit := &teamsAudit{teams: sweepstake.Tournament.Teams}
