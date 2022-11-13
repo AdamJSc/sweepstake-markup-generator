@@ -310,6 +310,12 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 			}),
 		},
 		{
+			name:           "no sweepstakes must produce the expected error",
+			tournaments:    defaultTestTournaments,
+			configFilename: "sweepstakes_none.json",
+			wantErr:        errors.New("no sweepstakes found in source data"),
+		},
+		{
 			name:           "non-existent tournament id must produce the expected error",
 			tournaments:    defaultTestTournaments,
 			configFilename: "sweepstakes_non_existent_tournament_id.json",

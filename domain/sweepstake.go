@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -236,6 +237,10 @@ func (s *SweepstakesJSONLoader) LoadSweepstakes(_ context.Context) (SweepstakeCo
 	}{}
 	if err = json.Unmarshal(raw, content); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal sweepstakes: %w", err)
+	}
+
+	if len(content.Sweepstakes) == 0 {
+		return nil, errors.New("no sweepstakes found in source data")
 	}
 
 	collection := make(SweepstakeCollection, 0)
