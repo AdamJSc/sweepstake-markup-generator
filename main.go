@@ -14,7 +14,7 @@ import (
 var (
 	dataBasePath      = filepath.Join("domain", "data")
 	defaultFilesystem = os.DirFS(dataBasePath)
-	publicPath        = "public"
+	siteDir           = "public"
 )
 
 func main() {
@@ -61,6 +61,12 @@ func main() {
 		mustWriteSweepstakeMarkup(sweepstake)
 	}
 
+	// write robots.txt
+	robots := "user-agent: *\ndisallow: *" // disallow all paths for all cralwers
+	if err = os.WriteFile(filepath.Join(siteDir, "robots.txt"), []byte(robots), 0644); err != nil {
+		log.Fatalf("cannot write robots.txt: %s", err.Error())
+	}
+
 	// print status message
 	generated := len(sweepstakes) - skipped
 	log.Printf("success! %d generated (%d skipped)", generated, skipped)
@@ -95,7 +101,7 @@ func mustWriteSweepstakeMarkup(sweepstake *domain.Sweepstake) {
 		log.Fatalf("cannot generate markup for sweepstake '%s': %s", sweepstake.ID, err.Error())
 	}
 
-	sweepstakePath := filepath.Join(publicPath, sweepstake.ID)
+	sweepstakePath := filepath.Join(siteDir, sweepstake.ID)
 	if err := os.MkdirAll(sweepstakePath, 0755); err != nil {
 		log.Fatalf("cannot create directory '%s': %s", sweepstakePath, err.Error())
 	}
