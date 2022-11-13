@@ -3,9 +3,12 @@ package domain
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/fs"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -141,13 +144,58 @@ func BytesFromFileSystem(fSys fs.FS, configPath string) BytesFunc {
 	}
 }
 
+type httpDoer interface {
+	Do(r *http.Request) (*http.Response, error)
+}
+
+// BytesFromURL parses the response body of a GET request to the provided url, using the provided basic auth (optional)
+//
+// If doer is empty (nil), the net/http package's default client is used
+func BytesFromURL(url string, basicAuth string, doer httpDoer) BytesFunc {
+	if doer == nil {
+		doer = http.DefaultClient
+	}
+
+	return func() ([]byte, error) {
+		req, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return nil, fmt.Errorf("cannot create request: %w", err)
+		}
+
+		if basicAuth != "" {
+			req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(basicAuth)))
+		}
+
+		resp, err := doer.Do(req)
+		if err != nil {
+			return nil, fmt.Errorf("cannot perform request: %w", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			return nil, fmt.Errorf("non-200 status code: %d", resp.StatusCode)
+		}
+
+		if contentType := resp.Header.Get("Content-Type"); contentType != "application/json" {
+			return nil, fmt.Errorf("invalid response content type: %s", contentType)
+		}
+
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, fmt.Errorf("cannot read request body: %w", err)
+		}
+
+		return b, nil
+	}
+}
+
 type SweepstakesJSONLoader struct {
-	bytesFn     BytesFunc
+	source      BytesFunc
 	tournaments TournamentCollection
 }
 
-func (s *SweepstakesJSONLoader) WithBytesFunc(bytesFn BytesFunc) *SweepstakesJSONLoader {
-	s.bytesFn = bytesFn
+func (s *SweepstakesJSONLoader) WithSource(bytesFn BytesFunc) *SweepstakesJSONLoader {
+	s.source = bytesFn
 	return s
 }
 
@@ -161,8 +209,8 @@ func (s *SweepstakesJSONLoader) init() error {
 		return fmt.Errorf("tournaments: %w", ErrIsEmpty)
 	}
 
-	if s.bytesFn == nil {
-		return fmt.Errorf("bytes func: %w", ErrIsEmpty)
+	if s.source == nil {
+		return fmt.Errorf("source: %w", ErrIsEmpty)
 	}
 
 	return nil
@@ -174,7 +222,7 @@ func (s *SweepstakesJSONLoader) LoadSweepstakes(_ context.Context) (SweepstakeCo
 	}
 
 	// read sweepstake config file
-	raw, err := s.bytesFn()
+	raw, err := s.source()
 	if err != nil {
 		return nil, err
 	}

@@ -42,7 +42,7 @@ func main() {
 
 	// load sweepstakes
 	sweepstakes, err := (&domain.SweepstakesJSONLoader{}).
-		WithBytesFunc(bytesFn).
+		WithSource(bytesFn).
 		WithTournamentCollection(tournaments).
 		LoadSweepstakes(ctx)
 	if err != nil {
