@@ -1,6 +1,6 @@
 {{ define "tpl" }}
-<!DOCTYPE HTML>
-<html>
+    <!DOCTYPE HTML>
+    <html>
     <head>
         <title>Results | {{ .Title }}</title>
         <meta charset="UTF-8">
@@ -56,6 +56,7 @@
             .rank-pos{ text-align: right; }
             .section-container{ padding: 2rem; }
             .section-container .image-container{ height: 20px; width: 30px; }
+            .title{ padding-bottom: 1rem; }
             @media screen and (min-width: 550px){
                 body{ padding: 0 1rem 1rem; }
                 .match td.participant-name{ display: table-cell; }
@@ -72,76 +73,76 @@
         </style>
     </head>
     <body>
-        <section class="main">
-            <div class="header flex-container">
-                <div class="title">
-                    <h1>{{ .Title }}</h1>
-                </div>
-                <div class="image-container">
-                    <img src="{{ .ImageURL }}" />
-                </div>
+    <section class="main">
+        <div class="header flex-container">
+            <div class="title">
+                <h1>{{ .Title }}</h1>
             </div>
-            <div class="menu section-container flex-container">
-                <a href="#prizes">Prizes</a>
-                <a href="#results">Results</a>
-                <a href="#fixtures">Fixtures</a>
-                <a href="#whos-who">Who's Who</a>
+            <div class="image-container">
+                <img src="{{ .ImageURL }}" />
             </div>
-            {{- if .LastUpdated -}}
-                <div class="last-updated center">Last updated: <strong>{{ .LastUpdated }}</strong></div>
-            {{- end -}}
-            <div id="prizes" class="outright prizes-container flex-container">
-                {{- template "outright-prize" .Prizes.Winner -}}
-                {{- template "outright-prize" .Prizes.RunnerUp -}}
+        </div>
+        <div class="menu section-container flex-container">
+            <a href="#prizes">Prizes</a>
+            <a href="#results">Results</a>
+            <a href="#fixtures">Fixtures</a>
+            <a href="#whos-who">Who's Who</a>
+        </div>
+        {{- if .LastUpdated -}}
+            <div class="last-updated center">Last updated: <strong>{{ .LastUpdated }}</strong></div>
+        {{- end -}}
+        <div id="prizes" class="outright prizes-container flex-container">
+            {{- template "outright-prize" .Prizes.Winner -}}
+            {{- template "outright-prize" .Prizes.RunnerUp -}}
+        </div>
+        <div class="divider"></div>
+        <div class="ranked prizes-container flex-container">
+            {{- template "ranked-prize" .Prizes.MostGoalsConceded -}}
+            {{- template "ranked-prize" .Prizes.QuickestOwnGoal -}}
+            {{- template "ranked-prize" .Prizes.MostYellowCards -}}
+            {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
+        </div>
+        <div class="divider"></div>
+        <div id="results" class="results section-container center">
+            <h2>Results</h2>
+            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
+            <div class="flex-container">
+                {{ $results := (filter_matches true .Sweepstake.Tournament.Matches) }}
+                {{- template "match-table" (dict "Matches" $results "Participants" .Sweepstake.Participants "EmptyMessage" "Coming soon...") -}}
             </div>
-            <div class="divider"></div>
-            <div class="ranked prizes-container flex-container">
-                {{- template "ranked-prize" .Prizes.MostGoalsConceded -}}
-                {{- template "ranked-prize" .Prizes.QuickestOwnGoal -}}
-                {{- template "ranked-prize" .Prizes.MostYellowCards -}}
-                {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
+        </div>
+        <div id="fixtures" class="fixtures section-container center">
+            <h2>Upcoming Fixtures</h2>
+            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
+            <div class="flex-container">
+                {{ $fixtures := (filter_matches false .Sweepstake.Tournament.Matches) }}
+                {{- template "match-table" (dict "Matches" $fixtures "Participants" .Sweepstake.Participants "EmptyMessage" "All played!") -}}
             </div>
-            <div class="divider"></div>
-            <div id="results" class="results section-container center">
-                <h2>Results</h2>
-                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-                <div class="flex-container">
-                    {{ $results := (filter_matches true .Sweepstake.Tournament.Matches) }}
-                    {{- template "match-table" (dict "Matches" $results "Participants" .Sweepstake.Participants "EmptyMessage" "Coming soon...") -}}
-                </div>
-            </div>
-            <div id="fixtures" class="fixtures section-container center">
-                <h2>Upcoming Fixtures</h2>
-                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-                <div class="flex-container">
-                    {{ $fixtures := (filter_matches false .Sweepstake.Tournament.Matches) }}
-                    {{- template "match-table" (dict "Matches" $fixtures "Participants" .Sweepstake.Participants "EmptyMessage" "All played!") -}}
-                </div>
-            </div>
-            <div class="divider"></div>
-            <div id="whos-who" class="whos-who section-container center">
-                <h2>Who's Who...</h2>
-                <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-                <div class="flex-container">
-                    {{- $sweepstake := .Sweepstake -}}
-                    {{- range $team := (sort_teams .Sweepstake.Tournament.Teams) -}}
-                        {{- $participant := (get_participant_by_id $sweepstake.Participants $team.ID) -}}
-                        {{- $summary := (get_summary $team $participant) -}}
-                        <div class="entrant flex-container">
-                            <div class="image-container">
-                                <img src="{{ $team.ImageURL }}" />
-                            </div>
-                            <div class="participant-name">{{ $summary }}</div>
+        </div>
+        <div class="divider"></div>
+        <div id="whos-who" class="whos-who section-container center">
+            <h2>Who's Who...</h2>
+            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
+            <div class="flex-container">
+                {{- $sweepstake := .Sweepstake -}}
+                {{- range $team := (sort_teams .Sweepstake.Tournament.Teams) -}}
+                    {{- $participant := (get_participant_by_id $sweepstake.Participants $team.ID) -}}
+                    {{- $summary := (get_summary $team $participant) -}}
+                    <div class="entrant flex-container">
+                        <div class="image-container">
+                            <img src="{{ $team.ImageURL }}" />
                         </div>
-                    {{- end -}}
-                </div>
+                        <div class="participant-name">{{ $summary }}</div>
+                    </div>
+                {{- end -}}
             </div>
-        </section>
-        <footer class="center">
-            Made with ♥ by <a href="https://adamjs.net">Adam</a>
-        </footer>
+        </div>
+    </section>
+    <footer class="center">
+        Made with ♥ by <a href="https://adamjs.net">Adam</a>
+    </footer>
     </body>
-</html>
+    </html>
 {{ end }}
 
 {{ define "outright-prize" }}
