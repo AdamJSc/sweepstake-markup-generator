@@ -17,7 +17,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/sweepstake.adamjs.net/domain"
+	"github.com/sweepstake-markup-generator/domain"
 )
 
 func TestBytesFromFileSystem(t *testing.T) {

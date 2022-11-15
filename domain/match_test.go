@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sweepstake.adamjs.net/domain"
+	"github.com/sweepstake-markup-generator/domain"
 )
 
 func TestMatchCollection_GetByID(t *testing.T) {

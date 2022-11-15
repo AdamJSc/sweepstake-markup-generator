@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/sweepstake.adamjs.net/domain"
+	"github.com/sweepstake-markup-generator/domain"
 )
 
 var (

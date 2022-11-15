@@ -1,4 +1,4 @@
-module github.com/sweepstake.adamjs.net
+module github.com/sweepstake-markup-generator
 
 go 1.19
 

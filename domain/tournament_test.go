@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/sweepstake.adamjs.net/domain"
+	"github.com/sweepstake-markup-generator/domain"
 )
 
 const (
