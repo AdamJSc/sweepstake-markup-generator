@@ -247,6 +247,7 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 				{
 					ID:         "test-sweepstake-1",
 					Name:       "Test Sweepstake 1",
+					Headline:   "Check out <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">this thing</a>!",
 					Tournament: testTourney1,
 					Participants: []*domain.Participant{
 						{TeamID: "BPFC", Name: "John L"},

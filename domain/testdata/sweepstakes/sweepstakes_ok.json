@@ -3,6 +3,7 @@
     {
       "id": "test-sweepstake-1 ",
       "name": "Test Sweepstake 1 ",
+      "headline": "Check out <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">this thing</a>!",
       "tournament_id": "TestTourney1",
       "prizes": {
         "winner": true,

@@ -3,6 +3,7 @@
     {
       "id": "example-wc2022",
       "name": "Example World Cup 2022",
+      "headline": "Check out <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">this thing</a>!",
       "tournament_id": "example-2022-fifa-world-cup",
       "prizes": {
         "winner": true,

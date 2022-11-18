@@ -36,6 +36,7 @@
             .flex-container{ align-items: center; display: flex; flex-wrap: wrap; justify-content: space-evenly; column-gap: 20px; }
             .header{ padding: 1rem; }
             .header .image-container{ margin: 0; max-width: 100px; }
+            .headline{ font-size: 1.2rem; font-style: italic; font-weight: bold; }
             .image-container{ margin: 0 auto; }
             .image-container img{ height: 100%; width: 100%; }
             .info{ font-size: 0.6rem; font-style: italic; }
@@ -90,6 +91,9 @@
         </div>
         {{- if .LastUpdated -}}
             <div class="last-updated center">Last updated: <strong>{{ .LastUpdated }}</strong></div>
+        {{- end -}}
+        {{- if .Sweepstake.Headline -}}
+            <div class="headline center">{{ .Sweepstake.Headline }}</div>
         {{- end -}}
         <div id="prizes" class="outright prizes-container flex-container">
             {{- template "outright-prize" .Prizes.Winner -}}

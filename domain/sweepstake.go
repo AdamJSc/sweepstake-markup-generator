@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
 	"io/fs"
 	"net/http"
@@ -16,8 +17,9 @@ import (
 )
 
 type Sweepstake struct {
-	ID           string `json:"id"`
-	Name         string `json:"name"`
+	ID           string        `json:"id"`
+	Name         string        `json:"name"`
+	Headline     template.HTML `json:"headline"`
 	Tournament   *Tournament
 	Participants ParticipantCollection `json:"participants"`
 	Prizes       PrizeSettings         `json:"prizes"`
