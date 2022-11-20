@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/joho/godotenv"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/sweepstake-markup-generator/domain"
 )
 
@@ -23,6 +25,19 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	// load env
+	log.Println("loading .env...")
+	if err := godotenv.Load(".env"); err != nil {
+		log.Printf("skipping: %s...", err.Error())
+	}
+
+	// parse env
+	var config struct {
+		SweepstakesURL       string `envconfig:"SWEEPSTAKES_URL"`
+		SweepstakesBasicAuth string `envconfig:"SWEEPSTAKES_BASICAUTH"`
+	}
+	envconfig.MustProcess("", &config)
+
 	// load tournaments from filesystem
 	tournaments := make(domain.TournamentCollection, 0)
 	if err := fs.WalkDir(defaultFilesystem, "tournaments", func(path string, d fs.DirEntry, err error) error {
@@ -35,12 +50,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	bytesFn := domain.BytesFromFileSystem(defaultFilesystem, "sweepstakes.json")
+	source := "sweepstakes.json"
+	bytesFn := domain.BytesFromFileSystem(defaultFilesystem, source)
 
-	if url := os.Getenv("SWEEPSTAKES_URL"); url != "" {
-		basicAuth := os.Getenv("SWEEPSTAKES_BASICAUTH")
-		bytesFn = domain.BytesFromURL(url, basicAuth, nil)
+	if config.SweepstakesURL != "" {
+		source = config.SweepstakesURL
+		bytesFn = domain.BytesFromURL(source, config.SweepstakesBasicAuth, nil)
 	}
+
+	log.Printf("retrieving sweepstakes from %s...", source)
 
 	// load sweepstakes
 	sweepstakes, err := (&domain.SweepstakesJSONLoader{}).

@@ -42,13 +42,24 @@ go test ./...
 
 ## Configuring the Sweepstakes
 
-The entrypoint for the whole build process is the Sweepstakes manifest file.
+### Local manifest
+
+The entrypoint for the entire build process is the Sweepstakes manifest file.
 
 By default, the `domain/data/sweepstakes.json` file will be used.
 
+### Remote manifest
+
 Alternatively, you can define and host your own manifest file elsewhere, away from the project repo.
 
-To acquire this manifest via HTTP, set the environment variable `SWEEPSTAKES_URL` to the URL of the manifest file. If this location requires Basic Auth, please also set `SWEEPSTAKES_BASICAUTH` in the format `username:password`.
+To acquire this manifest via HTTP as part of the build process, set the environment variable `SWEEPSTAKES_URL` to the
+URL of the manifest file.
+If this location requires Basic Auth, please also set `SWEEPSTAKES_BASICAUTH` in the format `username:password`.
+
+For convenience, you can set these values by copying the example env file (`cp .env.example .env`)
+and changing the values in the new file.
+
+### Manifest format
 
 The manifest must be a JSON file that contains an array of objects with the following schema.
 
