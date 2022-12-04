@@ -47,8 +47,8 @@ H5 [45],02/12/2022,18:00,GROUP,Y,URY,GHA,URY,0,2,2,5,,,,,
 H6 [46],02/12/2022,18:00,GROUP,Y,KOR,KOR,PRT,2,1,2,0,,,,,
 G5 [47],02/12/2022,22:00,GROUP,Y,CHE,SRB,CHE,2,3,6,4,,,,,
 G6 [48],02/12/2022,22:00,GROUP,Y,CMR,CMR,BRA,1,0,,,,,1;Aboubakar:90+3,,
-R16_1 [49],03/12/2022,18:00,KO,,,NLD,USA,,,,,,,,,Winner A vs Runner-Up B
-R16_2 [50],03/12/2022,22:00,KO,,,ARG,AUS,,,,,,,,,Winner C vs Runner-Up D
+R16_1 [49],03/12/2022,18:00,KO,Y,NLD,NLD,USA,3,1,2,0,,,,,Winner A vs Runner-Up B
+R16_2 [50],03/12/2022,22:00,KO,Y,ARG,ARG,AUS,2,1,0,2,1;Fernández:77,,,,Winner C vs Runner-Up D
 R16_4 [52],04/12/2022,18:00,KO,,,FRA,POL,,,,,,,,,Winner D vs Runner-Up C
 R16_3 [51],04/12/2022,22:00,KO,,,ENG,SEN,,,,,,,,,Winner B vs Runner-Up A
 R16_5 [53],05/12/2022,18:00,KO,,,JPN,HRV,,,,,,,,,Winner E vs Runner-Up F
@@ -56,7 +56,7 @@ R16_6 [54],05/12/2022,22:00,KO,,,BRA,KOR,,,,,,,,,Winner G vs Runner-Up H
 R16_7 [55],06/12/2022,18:00,KO,,,MAR,ESP,,,,,,,,,Winner F vs Runner-Up E
 R16_8 [56],06/12/2022,22:00,KO,,,PRT,CHE,,,,,,,,,Winner H vs Runner-Up G
 QF2 [58],09/12/2022,18:00,KO,,,,,,,,,,,,,Winner R16_5 vs Winner R16_6
-QF1 [57],09/12/2022,22:00,KO,,,,,,,,,,,,,Winner R16_1 vs Winner R16_2
+QF1 [57],09/12/2022,22:00,KO,,,NLD,ARG,,,,,,,,,Winner R16_1 vs Winner R16_2
 QF4 [60],10/12/2022,18:00,KO,,,,,,,,,,,,,Winner R16_7 vs Winner R16_8
 QF3 [59],10/12/2022,22:00,KO,,,,,,,,,,,,,Winner R16_3 vs Winner R16_4
 SF1 [61],13/12/2022,22:00,KO,,,,,,,,,,,,,Winner QF1 vs Winner QF2
