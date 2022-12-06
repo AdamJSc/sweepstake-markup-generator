@@ -53,11 +53,11 @@ R16_4 [52],04/12/2022,18:00,KO,Y,FRA,FRA,POL,3,1,1,2,,,,,Winner D vs Runner-Up C
 R16_3 [51],04/12/2022,22:00,KO,Y,ENG,ENG,SEN,3,0,0,1,,,,,Winner B vs Runner-Up A
 R16_5 [53],05/12/2022,18:00,KO,Y,HRV,JPN,HRV,1,1,0,2,,,,,Winner E vs Runner-Up F (1-1 AET - Croatia win 3-1 on penalties)
 R16_6 [54],05/12/2022,22:00,KO,Y,BRA,BRA,KOR,4,1,0,1,,,,,Winner G vs Runner-Up H
-R16_7 [55],06/12/2022,18:00,KO,,,MAR,ESP,,,,,,,,,Winner F vs Runner-Up E
-R16_8 [56],06/12/2022,22:00,KO,,,PRT,CHE,,,,,,,,,Winner H vs Runner-Up G
+R16_7 [55],06/12/2022,18:00,KO,Y,MAR,MAR,ESP,0,0,1,1,,,,,Winner F vs Runner-Up E (0-0 AET - Morocco win 3-0 on penalties)
+R16_8 [56],06/12/2022,22:00,KO,Y,PRT,PRT,CHE,6,1,0,2,,,,,Winner H vs Runner-Up G
 QF2 [58],09/12/2022,18:00,KO,,,HRV,BRA,,,,,,,,,Winner R16_5 vs Winner R16_6
 QF1 [57],09/12/2022,22:00,KO,,,NLD,ARG,,,,,,,,,Winner R16_1 vs Winner R16_2
-QF4 [60],10/12/2022,18:00,KO,,,,,,,,,,,,,Winner R16_7 vs Winner R16_8
+QF4 [60],10/12/2022,18:00,KO,,,MAR,PRT,,,,,,,,,Winner R16_7 vs Winner R16_8
 QF3 [59],10/12/2022,22:00,KO,,,ENG,FRA,,,,,,,,,Winner R16_3 vs Winner R16_4
 SF1 [61],13/12/2022,22:00,KO,,,,,,,,,,,,,Winner QF1 vs Winner QF2
 SF2 [62],14/12/2022,22:00,KO,,,,,,,,,,,,,Winner QF3 vs Winner QF4
