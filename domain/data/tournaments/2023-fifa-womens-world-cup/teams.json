@@ -1,0 +1,164 @@
+{
+  "teams": [
+    {
+      "id": "ARG",
+      "name": "Argentina",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"
+    },
+    {
+      "id": "AUS",
+      "name": "Australia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Flag_of_Australia_%28converted%29.svg"
+    },
+    {
+      "id": "BRA",
+      "name": "Brazil",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg"
+    },
+    {
+      "id": "CAN",
+      "name": "Canada",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Canada_%28Pantone%29.svg"
+    },
+    {
+      "id": "CHN",
+      "name": "China",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_the_People%27s_Republic_of_China.svg"
+    },
+    {
+      "id": "COL",
+      "name": "Colombia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Colombia.svg"
+    },
+    {
+      "id": "CRI",
+      "name": "Costa Rica",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Flag_of_Costa_Rica.svg"
+    },
+    {
+      "id": "DNK",
+      "name": "Denmark",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Flag_of_Denmark.svg"
+    },
+    {
+      "id": "ENG",
+      "name": "England",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Flag_of_England.svg"
+    },
+    {
+      "id": "FRA",
+      "name": "France",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+    },
+    {
+      "id": "DEU",
+      "name": "Germany",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg"
+    },
+    {
+      "id": "HTI",
+      "name": "Haiti",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Flag_of_Haiti.svg"
+    },
+    {
+      "id": "ITA",
+      "name": "Italy",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg"
+    },
+    {
+      "id": "JAM",
+      "name": "Jamaica",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Flag_of_Jamaica.svg"
+    },
+    {
+      "id": "JPN",
+      "name": "Japan",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg"
+    },
+    {
+      "id": "MAR",
+      "name": "Morocco",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg"
+    },
+    {
+      "id": "NLD",
+      "name": "Netherlands",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Flag_of_the_Netherlands.svg"
+    },
+    {
+      "id": "NZL",
+      "name": "New Zealand",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Flag_of_New_Zealand.svg"
+    },
+    {
+      "id": "NGA",
+      "name": "Nigeria",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg"
+    },
+    {
+      "id": "NOR",
+      "name": "Norway",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Norway.svg"
+    },
+    {
+      "id": "PAN",
+      "name": "Panama",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Flag_of_Panama.svg"
+    },
+    {
+      "id": "PHL",
+      "name": "Philippines",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_the_Philippines.svg"
+    },
+    {
+      "id": "PRT",
+      "name": "Portugal",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg"
+    },
+    {
+      "id": "IRL",
+      "name": "Republic of Ireland",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Flag_of_Ireland.svg"
+    },
+    {
+      "id": "KOR",
+      "name": "South Korea",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg"
+    },
+    {
+      "id": "ZAF",
+      "name": "South Africa",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Flag_of_South_Africa.svg"
+    },
+    {
+      "id": "ESP",
+      "name": "Spain",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg"
+    },
+    {
+      "id": "SWE",
+      "name": "Sweden",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/4/4c/Flag_of_Sweden.svg"
+    },
+    {
+      "id": "CHE",
+      "name": "Switzerland",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Flag_of_Switzerland_%28Pantone%29.svg"
+    },
+    {
+      "id": "USA",
+      "name": "USA",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+    },
+    {
+      "id": "VNM",
+      "name": "Vietnam",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg"
+    },
+    {
+      "id": "ZMB",
+      "name": "Zambia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/06/Flag_of_Zambia.svg"
+    }
+  ]
+}
