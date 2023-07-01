@@ -1,6 +1,158 @@
 {
   "sweepstakes": [
     {
+      "id": "example-wwc2023",
+      "name": "Example Women's World Cup 2023",
+      "headline": "Check out <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">this thing</a>!",
+      "tournament_id": "2023-fifa-womens-world-cup",
+      "prizes": {
+        "winner": true,
+        "runner_up": true,
+        "most_goals_conceded": true,
+        "most_yellow_cards": true,
+        "quickest_own_goal": true,
+        "quickest_red_card": true
+      },
+      "branding": {
+        "background_colour": "#ff6920",
+        "background_image": "http://wallpapercave.com/wp/39uHovY.jpg",
+        "primary_colour": "#ff6920",
+        "secondary_colour": "#1aa39d",
+        "tertiary_colour": "#f32688"
+      },
+      "build": true,
+      "participants": [
+        {
+          "team_id": "ARG",
+          "participant_name": "Paul McCartney"
+        },
+        {
+          "team_id": "AUS",
+          "participant_name": "John Lennon"
+        },
+        {
+          "team_id": "BRA",
+          "participant_name": "George Harrison"
+        },
+        {
+          "team_id": "CAN",
+          "participant_name": "Ringo Starr"
+        },
+        {
+          "team_id": "CHN",
+          "participant_name": "Johnny Ramone"
+        },
+        {
+          "team_id": "COL",
+          "participant_name": "Joey Ramone"
+        },
+        {
+          "team_id": "CRI",
+          "participant_name": "DeeDee Ramone"
+        },
+        {
+          "team_id": "DNK",
+          "participant_name": "Tommy Ramone"
+        },
+        {
+          "team_id": "ENG",
+          "participant_name": "Mick Jagger"
+        },
+        {
+          "team_id": "FRA",
+          "participant_name": "Keith Richards"
+        },
+        {
+          "team_id": "DEU",
+          "participant_name": "Ronnie Wood"
+        },
+        {
+          "team_id": "HTI",
+          "participant_name": "Bill Wyman"
+        },
+        {
+          "team_id": "ITA",
+          "participant_name": "Charlie Watts"
+        },
+        {
+          "team_id": "JAM",
+          "participant_name": "Kurt Cobain"
+        },
+        {
+          "team_id": "JPN",
+          "participant_name": "Krist Novoselic"
+        },
+        {
+          "team_id": "MAR",
+          "participant_name": "Dave Grohl"
+        },
+        {
+          "team_id": "NLD",
+          "participant_name": "Rick Astley"
+        },
+        {
+          "team_id": "NZL",
+          "participant_name": "Anthony Kiedis"
+        },
+        {
+          "team_id": "NGA",
+          "participant_name": "Flea"
+        },
+        {
+          "team_id": "NOR",
+          "participant_name": "Chad Smith"
+        },
+        {
+          "team_id": "PAN",
+          "participant_name": "John Frusciante"
+        },
+        {
+          "team_id": "PHL",
+          "participant_name": "Dexter Holland"
+        },
+        {
+          "team_id": "PRT",
+          "participant_name": "Noodles"
+        },
+        {
+          "team_id": "IRL",
+          "participant_name": "Ron Welty"
+        },
+        {
+          "team_id": "KOR",
+          "participant_name": "Greg K"
+        },
+        {
+          "team_id": "ZAF",
+          "participant_name": "Billy Joe Armstrong"
+        },
+        {
+          "team_id": "ESP",
+          "participant_name": "Mike Dirnt"
+        },
+        {
+          "team_id": "SWE",
+          "participant_name": "Tré Cool"
+        },
+        {
+          "team_id": "CHE",
+          "participant_name": "Steven Morrissey"
+        },
+        {
+          "team_id": "USA",
+          "participant_name": "Johnny Marr"
+        },
+        {
+          "team_id": "VNM",
+          "participant_name": "Andy Rourke"
+        },
+        {
+          "team_id": "ZMB",
+          "participant_name": "Mike Joyce"
+        }
+      ]
+    },
+    {
       "id": "example-wc2022",
       "name": "Example World Cup 2022",
       "headline": "Check out <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">this thing</a>!",
