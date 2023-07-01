@@ -23,7 +23,16 @@ type Sweepstake struct {
 	Tournament   *Tournament
 	Participants ParticipantCollection `json:"participants"`
 	Prizes       PrizeSettings         `json:"prizes"`
+	Branding     Branding              `json:"branding`
 	Build        bool                  `json:"build"`
+}
+
+type Branding struct {
+	BackgroundColour string `json:"background_colour"`
+	BackgroundImage  string `json:"background_image"`
+	Primary          string `json:"primary_colour"`
+	Secondary        string `json:"secondary_colour"`
+	Tertiary         string `json:"tertiary_colour"`
 }
 
 func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
