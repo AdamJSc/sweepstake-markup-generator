@@ -15,10 +15,10 @@
       },
       "branding": {
         "background_colour": "#ff6920",
-        "background_image": "http://wallpapercave.com/wp/39uHovY.jpg",
-        "primary_colour": "#ff6920",
-        "secondary_colour": "#1aa39d",
-        "tertiary_colour": "#f32688"
+        "background_image": "https://images.pexels.com/photos/1036379/pexels-photo-1036379.jpeg",
+        "primary_colour": "#f55302",
+        "secondary_colour": "#dfd262",
+        "tertiary_colour": "#fb9fbf"
       },
       "build": true,
       "participants": [

@@ -11,7 +11,8 @@
             html, body{ height: 100%; margin: 0; }
             body{
                 {{ if .Sweepstake.Branding.BackgroundImage }}
-                background: url('{{ .Sweepstake.Branding.BackgroundImage }}') fixed repeat {{ .Sweepstake.Branding.BackgroundColour }};
+                background: url('{{ .Sweepstake.Branding.BackgroundImage }}') fixed {{ .Sweepstake.Branding.BackgroundColour }};
+                background-size: cover;
                 {{ else }}
                 background: {{ .Sweepstake.Branding.BackgroundColour }};
                 {{ end }}
@@ -50,7 +51,7 @@
             .menu a{ background: {{ .Sweepstake.Branding.Primary }}; border-radius: 5px; color: #fff; font-family: 'Poor Story', cursive; font-size: 2rem; font-weight: bold; margin-top: 0.5rem; padding: 0.5rem 1rem; }
             .menu a:hover{ background: {{ .Sweepstake.Branding.Secondary }}; text-decoration: none; }
             .participant-name{ margin-top: 0.5rem; }
-            .prize{ border: 2px solid #ddd; border-radius: 5px; box-shadow: 4px 4px {{ .Sweepstake.Branding.Tertiary }}; margin: 1rem 0; }
+            .prize{ border: 2px solid #ddd; border-radius: 5px; box-shadow: 6px 6px {{ .Sweepstake.Branding.Tertiary }}; margin: 1rem 0; }
             .prize.outright{ max-width: 300px; padding: 0.5rem 2rem; }
             .prize.outright .image-container{ height: 140px; width: 210px; }
             .prize.ranked{ padding: 0.5rem 1rem; }
