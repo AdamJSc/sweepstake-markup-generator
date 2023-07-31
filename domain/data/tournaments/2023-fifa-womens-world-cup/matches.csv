@@ -47,12 +47,12 @@ F5,02/08/2023,11:00,GROUP,,,JAM,BRA,,,,,,,,,
 F6,02/08/2023,11:00,GROUP,,,PAN,FRA,,,,,,,,,
 H5,03/08/2023,11:00,GROUP,,,KOR,DEU,,,,,,,,,
 H6,03/08/2023,11:00,GROUP,,,MAR,COL,,,,,,,,,
-R16_1,05/08/2023,06:00,KO,,,,,,,,,,,,,Winner A vs Runner-up C
-R16_2,05/08/2023,09:00,KO,,,,,,,,,,,,,Winner C vs Runner-up A
+R16_1,05/08/2023,06:00,KO,,,CHE,ESP,,,,,,,,,Winner A vs Runner-up C
+R16_2,05/08/2023,09:00,KO,,,JPN,NOR,,,,,,,,,Winner C vs Runner-up A
 R16_3,06/08/2023,03:00,KO,,,,,,,,,,,,,Winner E vs Runner-up G
 R16_4,06/08/2023,10:00,KO,,,,,,,,,,,,,Winner G vs Runner-up E
-R16_6,07/08/2023,08:30,KO,,,,,,,,,,,,,Winner D vs Runner-up B
-R16_5,07/08/2023,11:30,KO,,,,,,,,,,,,,Winner B vs Runner-up D
+R16_6,07/08/2023,08:30,KO,,,,NGA,,,,,,,,,Winner D vs Runner-up B
+R16_5,07/08/2023,11:30,KO,,,AUS,,,,,,,,,,Winner B vs Runner-up D
 R16_8,08/08/2023,09:00,KO,,,,,,,,,,,,,Winner H vs Runner-up F
 R16_7,08/08/2023,12:00,KO,,,,,,,,,,,,,Winner F vs Runner-up H
 QF1,11/08/2023,02:00,KO,,,,,,,,,,,,,Winner R16_1 vs Winner R16_3
