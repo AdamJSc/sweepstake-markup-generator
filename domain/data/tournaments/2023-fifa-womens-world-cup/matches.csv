@@ -45,16 +45,16 @@ G5,02/08/2023,08:00,GROUP,Y,ZAF,ZAF,ITA,3,2,0,0,,1;Orsi:32,,,
 G6,02/08/2023,08:00,GROUP,Y,SWE,ARG,SWE,0,2,1,1,,,,,
 F5,02/08/2023,11:00,GROUP,Y,,JAM,BRA,0,0,1,0,,,,,
 F6,02/08/2023,11:00,GROUP,Y,FRA,PAN,FRA,3,6,1,0,,,,,
-H5,03/08/2023,11:00,GROUP,,,KOR,DEU,,,,,,,,,
-H6,03/08/2023,11:00,GROUP,,,MAR,COL,,,,,,,,,
+H5,03/08/2023,11:00,GROUP,Y,,KOR,DEU,1,1,0,1,,,,,
+H6,03/08/2023,11:00,GROUP,Y,MAR,MAR,COL,1,0,1,1,,,,,
 R16_1,05/08/2023,06:00,KO,,,CHE,ESP,,,,,,,,,Winner A vs Runner-up C
 R16_2,05/08/2023,09:00,KO,,,JPN,NOR,,,,,,,,,Winner C vs Runner-up A
 R16_3,06/08/2023,03:00,KO,,,NLD,ZAF,,,,,,,,,Winner E vs Runner-up G
 R16_4,06/08/2023,10:00,KO,,,SWE,USA,,,,,,,,,Winner G vs Runner-up E
 R16_6,07/08/2023,08:30,KO,,,ENG,NGA,,,,,,,,,Winner D vs Runner-up B
 R16_5,07/08/2023,11:30,KO,,,AUS,DNK,,,,,,,,,Winner B vs Runner-up D
-R16_8,08/08/2023,09:00,KO,,,,JAM,,,,,,,,,Winner H vs Runner-up F
-R16_7,08/08/2023,12:00,KO,,,FRA,,,,,,,,,,Winner F vs Runner-up H
+R16_8,08/08/2023,09:00,KO,,,COL,JAM,,,,,,,,,Winner H vs Runner-up F
+R16_7,08/08/2023,12:00,KO,,,FRA,MAR,,,,,,,,,Winner F vs Runner-up H
 QF1,11/08/2023,02:00,KO,,,,,,,,,,,,,Winner R16_1 vs Winner R16_3
 QF2,11/08/2023,08:30,KO,,,,,,,,,,,,,Winner R16_2 vs Winner R16_4
 QF3,12/08/2023,08:00,KO,,,,,,,,,,,,,Winner R16_5 vs Winner R16_7
