@@ -51,14 +51,14 @@ R16_1,05/08/2023,06:00,KO,Y,ESP,CHE,ESP,1,5,1,0,,1;Codina:11,,,Winner A vs Runne
 R16_2,05/08/2023,09:00,KO,Y,JPN,JPN,NOR,3,1,0,0,,1;Engen:15,,,Winner C vs Runner-up A
 R16_3,06/08/2023,03:00,KO,Y,NLD,NLD,ZAF,2,0,1,0,,,,,Winner E vs Runner-up G
 R16_4,06/08/2023,10:00,KO,Y,SWE,SWE,USA,0,0,1,1,,,,,Winner G vs Runner-up E; 0-0 AET; Sweden win 5-4 on penalties
-R16_6,07/08/2023,08:30,KO,,,ENG,NGA,,,,,,,,,Winner D vs Runner-up B
-R16_5,07/08/2023,11:30,KO,,,AUS,DNK,,,,,,,,,Winner B vs Runner-up D
+R16_6,07/08/2023,08:30,KO,Y,ENG,ENG,NGA,0,0,0,0,,,1;James:87,,Winner D vs Runner-up B; 0-0 AET; England win 4-2 on penalties
+R16_5,07/08/2023,11:30,KO,Y,AUS,AUS,DNK,2,0,0,1,,,,,Winner B vs Runner-up D
 R16_8,08/08/2023,09:00,KO,,,COL,JAM,,,,,,,,,Winner H vs Runner-up F
 R16_7,08/08/2023,12:00,KO,,,FRA,MAR,,,,,,,,,Winner F vs Runner-up H
 QF1,11/08/2023,02:00,KO,,,ESP,NLD,,,,,,,,,Winner R16_1 vs Winner R16_3
 QF2,11/08/2023,08:30,KO,,,JPN,SWE,,,,,,,,,Winner R16_2 vs Winner R16_4
-QF3,12/08/2023,08:00,KO,,,,,,,,,,,,,Winner R16_5 vs Winner R16_7
-QF4,12/08/2023,11:30,KO,,,,,,,,,,,,,Winner R16_6 vs Winner R16_8
+QF3,12/08/2023,08:00,KO,,,AUS,,,,,,,,,,Winner R16_5 vs Winner R16_7
+QF4,12/08/2023,11:30,KO,,,ENG,,,,,,,,,,Winner R16_6 vs Winner R16_8
 SF1,15/08/2023,09:00,KO,,,,,,,,,,,,,Winner QF1 vs Winner QF2
 SF2,16/08/2023,11:00,KO,,,,,,,,,,,,,Winner QF3 vs Winner QF4
 3RD,19/08/2023,09:00,KO,,,,,,,,,,,,,Loser SF1 vs Loser SF2
