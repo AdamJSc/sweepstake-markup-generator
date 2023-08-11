@@ -55,11 +55,11 @@ R16_6,07/08/2023,08:30,KO,Y,ENG,ENG,NGA,0,0,0,0,,,1;James:87,,Winner D vs Runner
 R16_5,07/08/2023,11:30,KO,Y,AUS,AUS,DNK,2,0,0,1,,,,,Winner B vs Runner-up D
 R16_8,08/08/2023,09:00,KO,Y,COL,COL,JAM,1,0,1,2,,,,,Winner H vs Runner-up F
 R16_7,08/08/2023,12:00,KO,Y,FRA,FRA,MAR,4,0,0,1,,,,,Winner F vs Runner-up H
-QF1,11/08/2023,02:00,KO,,,ESP,NLD,,,,,,,,,Winner R16_1 vs Winner R16_3
-QF2,11/08/2023,08:30,KO,,,JPN,SWE,,,,,,,,,Winner R16_2 vs Winner R16_4
+QF1,11/08/2023,02:00,KO,Y,,ESP,NLD,1,1,1,1,,,,,Winner R16_1 vs Winner R16_3; 2-1AET
+QF2,11/08/2023,08:30,KO,Y,SWE,JPN,SWE,1,2,1,0,,,,,Winner R16_2 vs Winner R16_4
 QF3,12/08/2023,08:00,KO,,,AUS,FRA,,,,,,,,,Winner R16_5 vs Winner R16_7
 QF4,12/08/2023,11:30,KO,,,ENG,COL,,,,,,,,,Winner R16_6 vs Winner R16_8
-SF1,15/08/2023,09:00,KO,,,,,,,,,,,,,Winner QF1 vs Winner QF2
+SF1,15/08/2023,09:00,KO,,,ESP,SWE,,,,,,,,,Winner QF1 vs Winner QF2
 SF2,16/08/2023,11:00,KO,,,,,,,,,,,,,Winner QF3 vs Winner QF4
 3RD,19/08/2023,09:00,KO,,,,,,,,,,,,,Loser SF1 vs Loser SF2
 F,20/08/2023,11:00,KO,,,,,,,,,,,,,Winner SF1 vs Winner SF2
