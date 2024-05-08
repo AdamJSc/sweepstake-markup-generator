@@ -1,6 +1,126 @@
 {
   "sweepstakes": [
     {
+      "id": "example-euro2024",
+      "name": "Example UEFA Euro 2024",
+      "headline": "Check out <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">this thing</a>!",
+      "tournament_id": "2024-uefa-euro",
+      "prizes": {
+        "winner": true,
+        "runner_up": true,
+        "most_goals_conceded": true,
+        "most_yellow_cards": true,
+        "quickest_own_goal": true,
+        "quickest_red_card": true
+      },
+      "branding": {
+        "background_colour": "#ff6920",
+        "background_image": "https://images.pexels.com/photos/1036379/pexels-photo-1036379.jpeg",
+        "primary_colour": "#f55302",
+        "secondary_colour": "#dfd262",
+        "tertiary_colour": "#fb9fbf"
+      },
+      "build": true,
+      "participants": [
+        {
+          "team_id": "ALB",
+          "participant_name": "Mick Jagger"
+        },
+        {
+          "team_id": "AUT",
+          "participant_name": "Keith Richards"
+        },
+        {
+          "team_id": "BEL",
+          "participant_name": "Ronnie Wood"
+        },
+        {
+          "team_id": "HRV",
+          "participant_name": "Bill Wyman"
+        },
+        {
+          "team_id": "CZE",
+          "participant_name": "Charlie Watts"
+        },
+        {
+          "team_id": "DNK",
+          "participant_name": "Billy Joe Armstrong"
+        },
+        {
+          "team_id": "ENG",
+          "participant_name": "Mike Dirnt"
+        },
+        {
+          "team_id": "FRA",
+          "participant_name": "Tré Cool"
+        },
+        {
+          "team_id": "GEO",
+          "participant_name": "Steven Morrissey"
+        },
+        {
+          "team_id": "DEU",
+          "participant_name": "Johnny Marr"
+        },
+        {
+          "team_id": "HUN",
+          "participant_name": "Andy Rourke"
+        },
+        {
+          "team_id": "ITA",
+          "participant_name": "Mike Joyce"
+        }
+        {
+          "team_id": "NLD",
+          "participant_name": "Johnny Ramone"
+        },
+        {
+          "team_id": "POL",
+          "participant_name": "Joey Ramone"
+        },
+        {
+          "team_id": "PRT",
+          "participant_name": "DeeDee Ramone"
+        },
+        {
+          "team_id": "ROU",
+          "participant_name": "Tommy Ramone"
+        },
+        {
+          "team_id": "SCO",
+          "participant_name": "Kurt Cobain"
+        },
+        {
+          "team_id": "SRB",
+          "participant_name": "Krist Novoselic"
+        },
+        {
+          "team_id": "SVK",
+          "participant_name": "Dave Grohl"
+        },
+        {
+          "team_id": "SVN",
+          "participant_name": "Rick Astley"
+        },
+        {
+          "team_id": "ESP",
+          "participant_name": "Anthony Kiedis"
+        },
+        {
+          "team_id": "CHE",
+          "participant_name": "Flea"
+        },
+        {
+          "team_id": "TUR",
+          "participant_name": "Chad Smith"
+        },
+        {
+          "team_id": "UKR",
+          "participant_name": "John Frusciante"
+        }
+      ]
+    },
+    {
       "id": "example-wwc2023",
       "name": "Example Women's World Cup 2023",
       "headline": "Check out <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\">this thing</a>!",
