@@ -14,11 +14,11 @@
         "quickest_red_card": true
       },
       "branding": {
-        "background_colour": "#ff6920",
-        "background_image": "https://images.pexels.com/photos/1036379/pexels-photo-1036379.jpeg",
-        "primary_colour": "#f55302",
-        "secondary_colour": "#dfd262",
-        "tertiary_colour": "#fb9fbf"
+        "background_colour": "#ddd",
+        "background_image": "https://esportesmais.com.br/wp-content/uploads/2023/03/UEFA-EURO2024-KV_UEFA.png",
+        "primary_colour": "#023ff5",
+        "secondary_colour": "#00b346",
+        "tertiary_colour": "#dba116"
       },
       "build": true,
       "participants": [
@@ -69,7 +69,7 @@
         {
           "team_id": "ITA",
           "participant_name": "Mike Joyce"
-        }
+        },
         {
           "team_id": "NLD",
           "participant_name": "Johnny Ramone"
