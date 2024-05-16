@@ -1,0 +1,124 @@
+{
+  "teams": [
+    {
+      "id": "ALB",
+      "name": "Albania",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Flag_of_Albania.svg"
+    },
+    {
+      "id": "AUT",
+      "name": "Austria",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_Austria.svg"
+    },
+    {
+      "id": "BEL",
+      "name": "Belgium",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Flag_of_Belgium.svg"
+    },
+    {
+      "id": "HRV",
+      "name": "Croatia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Flag_of_Croatia.svg"
+    },
+    {
+      "id": "CZE",
+      "name": "Czechia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_Czech_Republic.svg"
+    },
+    {
+      "id": "DNK",
+      "name": "Denmark",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Flag_of_Denmark.svg"
+    },
+    {
+      "id": "ENG",
+      "name": "England",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Flag_of_England.svg"
+    },
+    {
+      "id": "FRA",
+      "name": "France",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+    },
+    {
+      "id": "GEO",
+      "name": "Georgia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Flag_of_Georgia.svg"
+    },
+    {
+      "id": "DEU",
+      "name": "Germany",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg"
+    },
+    {
+      "id": "HUN",
+      "name": "Hungary",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Flag_of_Hungary.svg"
+    },
+    {
+      "id": "ITA",
+      "name": "Italy",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg"
+    },
+    {
+      "id": "NLD",
+      "name": "Netherlands",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Flag_of_the_Netherlands.svg"
+    },
+    {
+      "id": "POL",
+      "name": "Poland",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg"
+    },
+    {
+      "id": "PRT",
+      "name": "Portugal",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg"
+    },
+    {
+      "id": "ROU",
+      "name": "Romania",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Romania.svg"
+    },
+    {
+      "id": "SCO",
+      "name": "Scotland",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_Scotland.svg"
+    },
+    {
+      "id": "SRB",
+      "name": "Serbia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Flag_of_Serbia.svg"
+    },
+    {
+      "id": "SVK",
+      "name": "Slovakia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Flag_of_Slovakia.svg"
+    },
+    {
+      "id": "SVN",
+      "name": "Slovenia",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Flag_of_Slovenia.svg"
+    },
+    {
+      "id": "ESP",
+      "name": "Spain",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg"
+    },
+    {
+      "id": "CHE",
+      "name": "Switzerland",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Flag_of_Switzerland_%28Pantone%29.svg"
+    },
+    {
+      "id": "TUR",
+      "name": "Turkey",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Flag_of_Turkey.svg"
+    },
+    {
+      "id": "UKR",
+      "name": "Ukraine",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Ukraine.svg"
+    }
+  ]
+}
