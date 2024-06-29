@@ -27,22 +27,22 @@ A5,23/06/2024,20:00,GROUP,Y,,CHE,DEU,1,1,3,1,,,,,
 A6,23/06/2024,20:00,GROUP,Y,HUN,SCO,HUN,0,1,1,5,,,,,
 B5,24/06/2024,20:00,GROUP,Y,ESP,ALB,ESP,0,1,2,1,,,,,
 B6,24/06/2024,20:00,GROUP,Y,,HRV,ITA,1,1,6,2,,,,,
-D5,25/06/2024,17:00,GROUP,,,NLD,AUT,,,,,,,,,
-D6,25/06/2024,17:00,GROUP,,,FRA,POL,,,,,,,,,
-C5,25/06/2024,20:00,GROUP,,,ENG,SVN,,,,,,,,,
-C6,25/06/2024,20:00,GROUP,,,DNK,SRB,,,,,,,,,
-E5,26/06/2024,17:00,GROUP,,,SVK,ROU,,,,,,,,,
-E6,26/06/2024,17:00,GROUP,,,UKR,BEL,,,,,,,,,
-F5,26/06/2024,20:00,GROUP,,,GEO,PRT,,,,,,,,,
-F6,26/06/2024,20:00,GROUP,,,CZE,TUR,,,,,,,,,
-R16_1,29/06/2024,17:00,KO,,,,,,,,,,,,,Runner-up A vs Runner-up B
-R16_2,29/06/2024,20:00,KO,,,,,,,,,,,,,Winner A vs Runner-up C
-R16_3,30/06/2024,17:00,KO,,,,,,,,,,,,,Winner C vs Third D/E/F
-R16_4,30/06/2024,20:00,KO,,,,,,,,,,,,,Winner B vs Third A/D/E/F
-R16_5,01/07/2024,17:00,KO,,,,,,,,,,,,,Runner-up D vs Runner-up E
-R16_6,01/07/2024,20:00,KO,,,,,,,,,,,,,Winner F vs Third A/B/C
-R16_7,02/07/2024,17:00,KO,,,,,,,,,,,,,Winner E vs Third A/B/C/D
-R16_8,02/07/2024,20:00,KO,,,,,,,,,,,,,Winner D vs Runner-up F
+D5,25/06/2024,17:00,GROUP,,,NLD,AUT,2,3,0,3,1;D. Malen:6,,,,
+D6,25/06/2024,17:00,GROUP,,,FRA,POL,1,1,1,3,,,,,
+C5,25/06/2024,20:00,GROUP,,,ENG,SVN,0,0,3,2,,,,,
+C6,25/06/2024,20:00,GROUP,,,DNK,SRB,0,0,2,2,,,,,
+E5,26/06/2024,17:00,GROUP,,,SVK,ROU,1,1,1,3,,,,,
+E6,26/06/2024,17:00,GROUP,,,UKR,BEL,0,0,1,1,,,,,
+F5,26/06/2024,20:00,GROUP,,,GEO,PRT,2,0,1,3,,,,,
+F6,26/06/2024,20:00,GROUP,,,CZE,TUR,1,2,7,11,,,2;A. Barak:20;T. Chory:90+8,,
+R16_1,29/06/2024,17:00,KO,,,CHE,ITA,,,,,,,,,Runner-up A vs Runner-up B
+R16_2,29/06/2024,20:00,KO,,,DEU,DNK,,,,,,,,,Winner A vs Runner-up C
+R16_3,30/06/2024,17:00,KO,,,ENG,SVK,,,,,,,,,Winner C vs Third D/E/F
+R16_4,30/06/2024,20:00,KO,,,ESP,GEO,,,,,,,,,Winner B vs Third A/D/E/F
+R16_5,01/07/2024,17:00,KO,,,FRA,BEL,,,,,,,,,Runner-up D vs Runner-up E
+R16_6,01/07/2024,20:00,KO,,,PRT,SVN,,,,,,,,,Winner F vs Third A/B/C
+R16_7,02/07/2024,17:00,KO,,,ROU,NLD,,,,,,,,,Winner E vs Third A/B/C/D
+R16_8,02/07/2024,20:00,KO,,,AUT,TUR,,,,,,,,,Winner D vs Runner-up F
 QF1,05/07/2024,17:00,KO,,,,,,,,,,,,,Winner R16_4 vs Winner R16_2
 QF2,05/07/2024,20:00,KO,,,,,,,,,,,,,Winner R16_6 vs Winner R16_5
 QF3,06/07/2024,17:00,KO,,,,,,,,,,,,,Winner R16_7 vs Winner R16_8
