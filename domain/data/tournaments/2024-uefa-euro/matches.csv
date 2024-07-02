@@ -37,16 +37,16 @@ F5,26/06/2024,20:00,GROUP,Y,GEO,GEO,PRT,2,0,1,3,,,,,
 F6,26/06/2024,20:00,GROUP,Y,TUR,CZE,TUR,1,2,7,11,,,2;A. Barak:20;T. Chory:90+8,,
 R16_1,29/06/2024,17:00,KO,Y,CHE,CHE,ITA,2,0,0,3,,,,,Runner-up A vs Runner-up B
 R16_2,29/06/2024,20:00,KO,Y,DEU,DEU,DNK,2,0,0,2,,,,,Winner A vs Runner-up C
-R16_3,30/06/2024,17:00,KO,,,ENG,SVK,,,,,,,,,Winner C vs Third D/E/F
-R16_4,30/06/2024,20:00,KO,,,ESP,GEO,,,,,,,,,Winner B vs Third A/D/E/F
-R16_5,01/07/2024,17:00,KO,,,FRA,BEL,,,,,,,,,Runner-up D vs Runner-up E
-R16_6,01/07/2024,20:00,KO,,,PRT,SVN,,,,,,,,,Winner F vs Third A/B/C
+R16_3,30/06/2024,17:00,KO,Y,ENG,ENG,SVK,2,1,3,6,,,,,2-1 AET; 1-1 FT; Winner C vs Third D/E/F
+R16_4,30/06/2024,20:00,KO,Y,ESP,ESP,GEO,4,1,1,1,1;R. Le Normand:18,,,,Winner B vs Third A/D/E/F
+R16_5,01/07/2024,17:00,KO,Y,FRA,FRA,BEL,1,0,3,2,,,,,Runner-up D vs Runner-up E
+R16_6,01/07/2024,20:00,KO,Y,PRT,PRT,SVN,0,0,1,5,,,,,Portugal win 3-0 on penalties; Winner F vs Third A/B/C
 R16_7,02/07/2024,17:00,KO,,,ROU,NLD,,,,,,,,,Winner E vs Third A/B/C/D
 R16_8,02/07/2024,20:00,KO,,,AUT,TUR,,,,,,,,,Winner D vs Runner-up F
-QF1,05/07/2024,17:00,KO,,,,,,,,,,,,,Winner R16_4 vs Winner R16_2
-QF2,05/07/2024,20:00,KO,,,,,,,,,,,,,Winner R16_6 vs Winner R16_5
-QF3,06/07/2024,17:00,KO,,,,,,,,,,,,,Winner R16_7 vs Winner R16_8
-QF4,06/07/2024,20:00,KO,,,,,,,,,,,,,Winner R16_3 vs Winner R16_1
+QF1,05/07/2024,17:00,KO,,,ESP,DEU,,,,,,,,,Winner R16_4 vs Winner R16_2
+QF2,05/07/2024,20:00,KO,,,PRT,FRA,,,,,,,,,Winner R16_6 vs Winner R16_5
+QF3,06/07/2024,20:00,KO,,,,,,,,,,,,,Winner R16_7 vs Winner R16_8
+QF4,06/07/2024,17:00,KO,,,ENG,CHE,,,,,,,,,Winner R16_3 vs Winner R16_1
 SF1,09/07/2024,20:00,KO,,,,,,,,,,,,,Winner QF1 vs Winner QF2
 SF2,10/07/2024,20:00,KO,,,,,,,,,,,,,Winner QF3 vs Winner QF4 
 F,14/07/2024,20:00,KO,,,,,,,,,,,,,Winner SF1 vs Winner SF2
