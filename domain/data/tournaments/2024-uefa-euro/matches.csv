@@ -43,10 +43,10 @@ R16_5,01/07/2024,17:00,KO,Y,FRA,FRA,BEL,1,0,3,2,,,,,Runner-up D vs Runner-up E
 R16_6,01/07/2024,20:00,KO,Y,PRT,PRT,SVN,0,0,1,5,,,,,Portugal win 3-0 on penalties; Winner F vs Third A/B/C
 R16_7,02/07/2024,17:00,KO,Y,NLD,ROU,NLD,0,3,2,2,,,,,Winner E vs Third A/B/C/D
 R16_8,02/07/2024,20:00,KO,Y,TUR,AUT,TUR,1,2,2,2,,,,,Winner D vs Runner-up F
-QF1,05/07/2024,17:00,KO,,,ESP,DEU,,,,,,,,,Winner R16_4 vs Winner R16_2
-QF2,05/07/2024,20:00,KO,,,PRT,FRA,,,,,,,,,Winner R16_6 vs Winner R16_5
-QF3,06/07/2024,20:00,KO,,,NLD,TUR,,,,,,,,,Winner R16_7 vs Winner R16_8
-QF4,06/07/2024,17:00,KO,,,ENG,CHE,,,,,,,,,Winner R16_3 vs Winner R16_1
-SF1,09/07/2024,20:00,KO,,,,,,,,,,,,,Winner QF1 vs Winner QF2
-SF2,10/07/2024,20:00,KO,,,,,,,,,,,,,Winner QF3 vs Winner QF4 
+QF1,05/07/2024,17:00,KO,Y,ESP,ESP,DEU,2,1,7,8,,,1;Dani Carvajal:120+6,,2-1 AET; 1-1 FT; Winner R16_4 vs Winner R16_2
+QF2,05/07/2024,20:00,KO,Y,FRA,PRT,FRA,0,0,1,1,,,,,France win 5-3 on penalties; Winner R16_6 vs Winner R16_5
+QF3,06/07/2024,20:00,KO,Y,NLD,NLD,TUR,2,1,4,1,1;M. Muldur:76,,,1;B. Yildirim:90+6,Winner R16_7 vs Winner R16_8
+QF4,06/07/2024,17:00,KO,Y,ENG,ENG,CHE,1,1,1,2,,,,,England win 5-3 on penalties; Winner R16_3 vs Winner R16_1
+SF1,09/07/2024,20:00,KO,,,ESP,FRA,,,,,,,,,Winner QF1 vs Winner QF2
+SF2,10/07/2024,20:00,KO,,,NLD,ENG,,,,,,,,,Winner QF3 vs Winner QF4 
 F,14/07/2024,20:00,KO,,,,,,,,,,,,,Winner SF1 vs Winner SF2
