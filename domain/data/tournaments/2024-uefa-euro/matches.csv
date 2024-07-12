@@ -47,6 +47,6 @@ QF1,05/07/2024,17:00,KO,Y,ESP,ESP,DEU,2,1,7,8,,,1;Dani Carvajal:120+6,,2-1 AET; 
 QF2,05/07/2024,20:00,KO,Y,FRA,PRT,FRA,0,0,1,1,,,,,France win 5-3 on penalties; Winner R16_6 vs Winner R16_5
 QF3,06/07/2024,20:00,KO,Y,NLD,NLD,TUR,2,1,4,1,1;M. Muldur:76,,,1;B. Yildirim:90+6,Winner R16_7 vs Winner R16_8
 QF4,06/07/2024,17:00,KO,Y,ENG,ENG,CHE,1,1,1,2,,,,,England win 5-3 on penalties; Winner R16_3 vs Winner R16_1
-SF1,09/07/2024,20:00,KO,,,ESP,FRA,,,,,,,,,Winner QF1 vs Winner QF2
-SF2,10/07/2024,20:00,KO,,,NLD,ENG,,,,,,,,,Winner QF3 vs Winner QF4 
-F,14/07/2024,20:00,KO,,,,,,,,,,,,,Winner SF1 vs Winner SF2
+SF1,09/07/2024,20:00,KO,Y,ESP,ESP,FRA,2,1,2,2,,,,,Winner QF1 vs Winner QF2
+SF2,10/07/2024,20:00,KO,Y,ENG,NLD,ENG,1,2,3,3,,,,,Winner QF3 vs Winner QF4 
+F,14/07/2024,20:00,KO,,,ESP,ENG,,,,,,,,,Winner SF1 vs Winner SF2
