@@ -1,248 +1,770 @@
 {{ define "tpl" }}
-    <!DOCTYPE HTML>
-    <html>
-    <head>
-        <title>Results | {{ .Title }}</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Mukta&family=Poor+Story&display=swap');
-            html{ font-size: 18px; }
-            html, body{ height: 100%; margin: 0; }
-            body{
-                {{ if .Sweepstake.Branding.BackgroundImage }}
-                background: url('{{ .Sweepstake.Branding.BackgroundImage }}') fixed {{ .Sweepstake.Branding.BackgroundColour }};
-                background-size: cover;
-                {{ else }}
-                background: {{ .Sweepstake.Branding.BackgroundColour }};
-                {{ end }}
-                color: #292929;
-                font-family: 'Mukta', sans-serif;
-                margin: 0;
-                padding: 0 0.5rem 0.5rem;
-            }
-            a{ color: {{ .Sweepstake.Branding.Primary }}; text-decoration: none; }
-            a:hover{ color: {{ .Sweepstake.Branding.Secondary }}; text-decoration: underline; }
-            footer{ color: #222; font-size: 0.8rem; padding-top: 2rem; }
-            footer a{ color: #222; text-decoration: none; }
-            h1, h2, h3{ margin: 0; }
-            h1{ font-family: 'Poor Story', cursive; font-size: 2.8rem; }
-            h2{ font-size: 1.5rem; }
-            h2{ font-size: 1.3rem; }
-            table{ border-collapse: collapse; }
-            table.matches{ font-size: 0.8rem; }
-            td{ padding: 0.5rem; }
-            tr:nth-child(odd){ background: #ddd; }
-            .back-to-top{ padding-bottom: 1rem; }
-            .center{ text-align: center; }
-            .divider{ border-top: 2px solid #ddd; }
-            .entrant.flex-container{ column-gap: 5px; justify-content: flex-start; }
-            .fixtures .score { display: none; }
-            .flex-container{ align-items: center; display: flex; flex-wrap: wrap; justify-content: space-evenly; column-gap: 20px; }
-            .header{ padding: 1rem; }
-            .header .image-container{ margin: 0; max-width: 100px; }
-            .headline{ font-size: 1.2rem; font-style: italic; font-weight: bold; }
-            .image-container{ margin: 0 auto; }
-            .image-container img{ height: 100%; width: 100%; }
-            .info{ font-size: 0.6rem; font-style: italic; }
-            .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
-            .match{ text-align: left; }
-            .match .home{ text-align: right; }
-            .match.stage-group .id{ display: none; }
-            .menu a{ background: {{ .Sweepstake.Branding.Primary }}; border-radius: 5px; color: #fff; font-family: 'Poor Story', cursive; font-size: 2rem; font-weight: bold; margin-top: 0.5rem; padding: 0.5rem 1rem; }
-            .menu a:hover{ background: {{ .Sweepstake.Branding.Secondary }}; text-decoration: none; }
-            .participant-name{ margin-top: 0.5rem; }
-            .prize{ border: 2px solid #ddd; border-radius: 5px; box-shadow: 6px 6px {{ .Sweepstake.Branding.Tertiary }}; margin: 1rem 0; }
-            .prize.outright{ max-width: 300px; padding: 0.5rem 2rem; }
-            .prize.outright .image-container{ height: 140px; width: 210px; }
-            .prize.ranked{ padding: 0.5rem 1rem; }
-            .prize.ranked .image-container{ height: 40px; width: 60px; }
-            .prizes-container.flex-container{ align-items: start; padding: 1rem; }
-            .prize-name{ border-bottom: 3px solid #ddd; margin-bottom: 1rem; padding-right: 1.5rem; }
-            .rank-pos{ text-align: right; }
-            .section-container{ padding: 2rem; }
-            .section-container .image-container{ height: 20px; width: 30px; }
-            .title{ padding-bottom: 1rem; }
-            @media screen and (min-width: 550px){
-                body{ padding: 0 1rem 1rem; }
-                .match.stage-group .id{ display: table-cell; }
-            }
-            @media screen and (min-width: 768px){
-                body{ padding: 0 1.5rem 1.5rem; }
-            }
-            @media screen and (min-width: 992px){
-                .main{ width: 950px; }
-            }
-            @media screen and (min-width: 1200px){
-                .main{ width: 1150px; }
-            }
-        </style>
-    </head>
-    <body>
-    <section class="main">
-        <div class="header flex-container">
-            <div class="title">
-                <h1>{{ .Title }}</h1>
-            </div>
-            <div class="image-container">
-                <img src="{{ .ImageURL }}" />
-            </div>
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Results | {{ .Title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Mukta&family=Poor+Story&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:   {{ .Sweepstake.Branding.Primary }};
+            --secondary: {{ .Sweepstake.Branding.Secondary }};
+            --tertiary:  {{ .Sweepstake.Branding.Tertiary }};
+            --text:      #292929;
+            --muted:     #666;
+            --border:    #ddd;
+            --card-bg:   #fff;
+            --page-bg:   #e8e8e8;
+            --shadow:    rgba(0,0,0,0.12);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            scroll-padding-top: 68px;
+        }
+
+        body {
+            {{ if .Sweepstake.Branding.BackgroundImage }}
+            background: url('{{ .Sweepstake.Branding.BackgroundImage }}') fixed {{ .Sweepstake.Branding.BackgroundColour }};
+            background-size: cover;
+            {{ else }}
+            background: {{ .Sweepstake.Branding.BackgroundColour }};
+            {{ end }}
+            color: var(--text);
+            font-family: 'Mukta', sans-serif;
+            min-height: 100vh;
+        }
+
+        a { color: var(--secondary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ── Header ─────────────────────────────────────────── */
+        .site-header {
+            background: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-bar {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin: 0 auto;
+            max-width: 1150px;
+            padding: 0.5rem 1rem;
+        }
+
+        .header-brand {
+            align-items: center;
+            display: flex;
+            gap: 0.65rem;
+        }
+
+        .header-logo {
+            display: block;
+            height: 44px;
+            object-fit: contain;
+            width: auto;
+        }
+
+        .site-title {
+            color: #fff;
+            font-family: 'Poor Story', cursive;
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .burger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0.45rem;
+        }
+
+        .burger span {
+            background: #fff;
+            border-radius: 2px;
+            display: block;
+            height: 2px;
+            transition: opacity 0.2s;
+            width: 24px;
+        }
+
+        .site-nav {
+            border-top: 1px solid rgba(255,255,255,0.15);
+            display: none;
+            padding: 0.5rem 1rem 0.75rem;
+        }
+
+        .site-nav.open { display: block; }
+
+        .site-nav a {
+            background: var(--secondary);
+            border-radius: 5px;
+            color: #fff;
+            display: block;
+            font-family: 'Poor Story', cursive;
+            font-size: 1.15rem;
+            margin-bottom: 0.4rem;
+            padding: 0.45rem 1rem;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+
+        .site-nav a:hover { background: var(--tertiary); color: var(--primary); }
+
+        .desktop-nav {
+            display: none;
+            gap: 0.5rem;
+        }
+
+        .desktop-nav a {
+            background: var(--secondary);
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'Poor Story', cursive;
+            font-size: 1rem;
+            padding: 0.35rem 0.85rem;
+            text-decoration: none;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .desktop-nav a:hover { background: var(--tertiary); color: var(--primary); }
+
+        @media (min-width: 640px) {
+            .burger { display: none; }
+            .site-nav { display: none !important; }
+            .desktop-nav { display: flex; }
+            .site-title { font-size: 1.5rem; }
+        }
+
+        /* ── Main wrapper ────────────────────────────────────── */
+        .site-main {
+            margin: 0 auto;
+            max-width: 1150px;
+            padding: 1rem;
+        }
+
+        /* ── Page meta ───────────────────────────────────────── */
+        .page-meta {
+            background: rgba(255,255,255,0.92);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            padding: 0.4rem 0.9rem;
+            text-align: center;
+        }
+
+        .page-headline {
+            background: rgba(255,255,255,0.92);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-style: italic;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            padding: 0.4rem 0.9rem;
+            text-align: center;
+        }
+
+        /* ── Sections ────────────────────────────────────────── */
+        .section {
+            background: var(--page-bg);
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            align-items: center;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.65rem 1rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Poor Story', cursive;
+            font-size: 1.4rem;
+        }
+
+        .back-to-top {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .back-to-top:hover { color: #fff; text-decoration: none; }
+
+        .section-body { padding: 0.75rem; }
+
+        .empty-state {
+            color: var(--muted);
+            font-style: italic;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* ── Match cards grid ────────────────────────────────── */
+        .match-grid {
+            display: grid;
+            gap: 0.65rem;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 540px) {
+            .match-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 900px) {
+            .match-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* ── Individual match card ───────────────────────────── */
+        .match-card {
+            background: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 1px 4px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .match-meta {
+            align-items: center;
+            background: #f4f4f4;
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            display: flex;
+            font-size: 0.72rem;
+            justify-content: space-between;
+            padding: 0.3rem 0.7rem;
+        }
+
+        .match-id { font-weight: bold; text-transform: uppercase; }
+
+        .match-body { flex: 1; padding: 0.5rem 0.7rem; }
+
+        .match-team {
+            align-items: center;
+            display: flex;
+            gap: 0.55rem;
+            padding: 0.2rem 0;
+        }
+
+        .match-team.tbc {
+            color: var(--muted);
+            font-style: italic;
+            font-size: 0.85rem;
+            padding: 0.35rem 0;
+        }
+
+        .match-team .flag {
+            flex-shrink: 0;
+            height: 18px;
+            object-fit: contain;
+            width: 27px;
+        }
+
+        .team-info { min-width: 0; }
+
+        .participant-label {
+            font-size: 0.88rem;
+            font-weight: bold;
+            line-height: 1.25;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .team-name {
+            color: var(--muted);
+            font-size: 0.72rem;
+            line-height: 1.25;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .match-divider {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            padding: 0.1rem 0;
+        }
+
+        .vs-label {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: bold;
+        }
+
+        .score-label {
+            color: var(--secondary);
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .match-notes {
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.68rem;
+            font-style: italic;
+            padding: 0.3rem 0.7rem;
+        }
+
+        /* ── Prizes ──────────────────────────────────────────── */
+        .prizes-outright {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            padding: 0.75rem;
+        }
+
+        .prize-card-outright {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            box-shadow: 5px 5px var(--tertiary);
+            flex: 1;
+            max-width: 280px;
+            min-width: 200px;
+            padding: 0.75rem 1.25rem;
+            text-align: center;
+        }
+
+        .prize-name {
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 0.65rem;
+            padding-bottom: 0.35rem;
+        }
+
+        .prize-name h2 { font-size: 1.1rem; }
+
+        .prize-image {
+            display: block;
+            height: 110px;
+            margin: 0.5rem auto;
+            object-fit: contain;
+            width: 160px;
+        }
+
+        .prize-participant {
+            font-size: 1.05rem;
+            font-weight: bold;
+            margin-top: 0.4rem;
+        }
+
+        .prizes-ranked {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0 0.75rem 0.75rem;
+        }
+
+        .prize-card-ranked {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            box-shadow: 5px 5px var(--tertiary);
+            flex: 1;
+            min-width: 200px;
+            padding: 0.65rem 0.85rem;
+        }
+
+        .prize-card-ranked .prize-name { margin-bottom: 0.5rem; }
+
+        .prize-card-ranked .prize-name h2 { font-size: 0.95rem; }
+
+        .ranked-back-top {
+            display: block;
+            font-size: 0.72rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .rankings-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .rankings-table td {
+            font-size: 0.78rem;
+            padding: 0.3rem 0.4rem;
+            vertical-align: middle;
+        }
+
+        .rankings-table tr:nth-child(odd) { background: #f5f5f5; }
+
+        .rank-pos {
+            color: var(--muted);
+            text-align: right;
+            white-space: nowrap;
+            width: 1.5rem;
+        }
+
+        .rank-flag img {
+            display: block;
+            height: 14px;
+            object-fit: contain;
+            width: 21px;
+        }
+
+        .rank-participant { font-weight: bold; }
+
+        .rank-value {
+            color: var(--secondary);
+            font-weight: bold;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .no-rankings {
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-style: italic;
+            padding: 0.3rem 0;
+        }
+
+        /* ── Who's Who ───────────────────────────────────────── */
+        .whos-who-grid {
+            display: grid;
+            gap: 0.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            padding: 0.75rem;
+        }
+
+        .entrant-card {
+            align-items: center;
+            background: var(--card-bg);
+            border-radius: 5px;
+            box-shadow: 0 1px 3px var(--shadow);
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.4rem 0.6rem;
+        }
+
+        .entrant-flag {
+            flex-shrink: 0;
+            height: 18px;
+            object-fit: contain;
+            width: 27px;
+        }
+
+        .entrant-info { min-width: 0; }
+
+        .entrant-participant {
+            font-size: 0.8rem;
+            font-weight: bold;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .entrant-country {
+            color: var(--muted);
+            font-size: 0.68rem;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ── Footer ──────────────────────────────────────────── */
+        .site-footer {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.8rem;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+        .site-footer a {
+            color: rgba(255,255,255,0.65);
+            text-decoration: none;
+        }
+
+        .site-footer a:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-bar">
+        <div class="header-brand">
+            <img class="header-logo" src="{{ .ImageURL }}" alt="{{ .Title }}" />
+            <span class="site-title">{{ .Title }}</span>
         </div>
-        <div class="menu section-container flex-container">
-            <a href="#prizes">Prizes</a>
-            <a href="#results">Results</a>
+        <button class="burger" id="burger-btn" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="desktop-nav" aria-label="Main navigation">
             <a href="#fixtures">Fixtures</a>
+            <a href="#results">Results</a>
+            <a href="#prizes">Prizes</a>
             <a href="#whos-who">Who's Who</a>
+        </nav>
+    </div>
+    <nav class="site-nav" id="site-nav" aria-label="Mobile navigation">
+        <a href="#fixtures">Fixtures</a>
+        <a href="#results">Results</a>
+        <a href="#prizes">Prizes</a>
+        <a href="#whos-who">Who's Who</a>
+    </nav>
+</header>
+
+<main class="site-main">
+
+    {{- if .LastUpdated -}}
+        <div class="page-meta">Last updated: <strong>{{ .LastUpdated }}</strong></div>
+    {{- end -}}
+    {{- if .Sweepstake.Headline -}}
+        <div class="page-headline">{{ .Sweepstake.Headline }}</div>
+    {{- end -}}
+
+    <!-- Fixtures -->
+    <section class="section" id="fixtures">
+        <div class="section-header">
+            <h2>Upcoming Fixtures</h2>
+            <a class="back-to-top" href="#">&#8593; Top</a>
         </div>
-        {{- if .LastUpdated -}}
-            <div class="last-updated center">Last updated: <strong>{{ .LastUpdated }}</strong></div>
-        {{- end -}}
-        {{- if .Sweepstake.Headline -}}
-            <div class="headline center">{{ .Sweepstake.Headline }}</div>
-        {{- end -}}
-        <div id="prizes" class="outright prizes-container flex-container">
+        <div class="section-body">
+            {{- $fixtures := (filter_matches false .Sweepstake.Tournament.Matches) -}}
+            {{- $participants := .Sweepstake.Participants -}}
+            {{- if $fixtures -}}
+                <div class="match-grid">
+                    {{- range $fixtures -}}
+                        {{- $match := . -}}
+                        <div class="match-card">
+                            <div class="match-meta">
+                                <span class="match-id">{{- strip_text $match.ID -}}</span>
+                                <span>{{- short_date $match.Timestamp -}}</span>
+                            </div>
+                            <div class="match-body">
+                                {{- if $match.Home.Team -}}
+                                    {{- $team := $match.Home.Team -}}
+                                    {{- $participant := (get_participant_by_id $participants $team.ID) -}}
+                                    <div class="match-team">
+                                        <img class="flag" src="{{ $team.ImageURL }}" alt="{{ $team.Name }}" />
+                                        <div class="team-info">
+                                            {{- if $participant -}}
+                                                <div class="participant-label">{{ $participant.Name }}</div>
+                                            {{- end -}}
+                                            <div class="team-name">{{ $team.Name }}</div>
+                                        </div>
+                                    </div>
+                                {{- else -}}
+                                    <div class="match-team tbc">TBC</div>
+                                {{- end -}}
+                                <div class="match-divider">
+                                    <span class="vs-label">v</span>
+                                </div>
+                                {{- if $match.Away.Team -}}
+                                    {{- $team := $match.Away.Team -}}
+                                    {{- $participant := (get_participant_by_id $participants $team.ID) -}}
+                                    <div class="match-team">
+                                        <img class="flag" src="{{ $team.ImageURL }}" alt="{{ $team.Name }}" />
+                                        <div class="team-info">
+                                            {{- if $participant -}}
+                                                <div class="participant-label">{{ $participant.Name }}</div>
+                                            {{- end -}}
+                                            <div class="team-name">{{ $team.Name }}</div>
+                                        </div>
+                                    </div>
+                                {{- else -}}
+                                    <div class="match-team tbc">TBC</div>
+                                {{- end -}}
+                            </div>
+                            {{- if $match.Notes -}}
+                                <div class="match-notes">{{- strip_text $match.Notes -}}</div>
+                            {{- end -}}
+                        </div>
+                    {{- end -}}
+                </div>
+            {{- else -}}
+                <p class="empty-state">All played!</p>
+            {{- end -}}
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="section" id="results">
+        <div class="section-header">
+            <h2>Results</h2>
+            <a class="back-to-top" href="#">&#8593; Top</a>
+        </div>
+        <div class="section-body">
+            {{- $results := (filter_matches true .Sweepstake.Tournament.Matches) -}}
+            {{- $participants := .Sweepstake.Participants -}}
+            {{- if $results -}}
+                <div class="match-grid">
+                    {{- range $results -}}
+                        {{- $match := . -}}
+                        <div class="match-card">
+                            <div class="match-meta">
+                                <span class="match-id">{{- strip_text $match.ID -}}</span>
+                                <span>{{- short_date $match.Timestamp -}}</span>
+                            </div>
+                            <div class="match-body">
+                                {{- if $match.Home.Team -}}
+                                    {{- $team := $match.Home.Team -}}
+                                    {{- $participant := (get_participant_by_id $participants $team.ID) -}}
+                                    <div class="match-team">
+                                        <img class="flag" src="{{ $team.ImageURL }}" alt="{{ $team.Name }}" />
+                                        <div class="team-info">
+                                            {{- if $participant -}}
+                                                <div class="participant-label">{{ $participant.Name }}</div>
+                                            {{- end -}}
+                                            <div class="team-name">{{ $team.Name }}</div>
+                                        </div>
+                                    </div>
+                                {{- else -}}
+                                    <div class="match-team tbc">TBC</div>
+                                {{- end -}}
+                                <div class="match-divider">
+                                    <span class="score-label">{{ $match.Home.Goals }} &ndash; {{ $match.Away.Goals }}</span>
+                                </div>
+                                {{- if $match.Away.Team -}}
+                                    {{- $team := $match.Away.Team -}}
+                                    {{- $participant := (get_participant_by_id $participants $team.ID) -}}
+                                    <div class="match-team">
+                                        <img class="flag" src="{{ $team.ImageURL }}" alt="{{ $team.Name }}" />
+                                        <div class="team-info">
+                                            {{- if $participant -}}
+                                                <div class="participant-label">{{ $participant.Name }}</div>
+                                            {{- end -}}
+                                            <div class="team-name">{{ $team.Name }}</div>
+                                        </div>
+                                    </div>
+                                {{- else -}}
+                                    <div class="match-team tbc">TBC</div>
+                                {{- end -}}
+                            </div>
+                            {{- if $match.Notes -}}
+                                <div class="match-notes">{{- strip_text $match.Notes -}}</div>
+                            {{- end -}}
+                        </div>
+                    {{- end -}}
+                </div>
+            {{- else -}}
+                <p class="empty-state">Coming soon...</p>
+            {{- end -}}
+        </div>
+    </section>
+
+    <!-- Prizes -->
+    <section class="section" id="prizes">
+        <div class="section-header">
+            <h2>Prizes</h2>
+            <a class="back-to-top" href="#">&#8593; Top</a>
+        </div>
+        <div class="prizes-outright">
             {{- template "outright-prize" .Prizes.Winner -}}
             {{- template "outright-prize" .Prizes.RunnerUp -}}
         </div>
-        <div class="divider"></div>
-        <div class="ranked prizes-container flex-container">
+        <div class="prizes-ranked">
             {{- template "ranked-prize" .Prizes.MostGoalsConceded -}}
             {{- template "ranked-prize" .Prizes.MostYellowCards -}}
             {{- template "ranked-prize" .Prizes.QuickestOwnGoal -}}
             {{- template "ranked-prize" .Prizes.QuickestRedCard -}}
         </div>
-        <div class="divider"></div>
-        <div id="fixtures" class="fixtures section-container center">
-            <h2>Upcoming Fixtures</h2>
-            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-            <div class="flex-container">
-                {{ $fixtures := (filter_matches false .Sweepstake.Tournament.Matches) }}
-                {{- template "match-table" (dict "Matches" $fixtures "Participants" .Sweepstake.Participants "EmptyMessage" "All played!") -}}
-            </div>
-        </div>
-        <div id="results" class="results section-container center">
-            <h2>Results</h2>
-            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-            <div class="flex-container">
-                {{ $results := (filter_matches true .Sweepstake.Tournament.Matches) }}
-                {{- template "match-table" (dict "Matches" $results "Participants" .Sweepstake.Participants "EmptyMessage" "Coming soon...") -}}
-            </div>
-        </div>
-        <div class="divider"></div>
-        <div id="whos-who" class="whos-who section-container center">
+    </section>
+
+    <!-- Who's Who -->
+    <section class="section" id="whos-who">
+        <div class="section-header">
             <h2>Who's Who...</h2>
-            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-            <div class="flex-container">
-                {{- $sweepstake := .Sweepstake -}}
-                {{- range $team := (sort_teams .Sweepstake.Tournament.Teams) -}}
-                    {{- $participant := (get_participant_by_id $sweepstake.Participants $team.ID) -}}
-                    {{- $summary := (get_summary $team $participant) -}}
-                    <div class="entrant flex-container">
-                        <div class="image-container">
-                            <img src="{{ $team.ImageURL }}" />
-                        </div>
-                        <div class="participant-name">{{ $summary }}</div>
+            <a class="back-to-top" href="#">&#8593; Top</a>
+        </div>
+        <div class="whos-who-grid">
+            {{- $sweepstake := .Sweepstake -}}
+            {{- range $team := (sort_teams .Sweepstake.Tournament.Teams) -}}
+                {{- $participant := (get_participant_by_id $sweepstake.Participants $team.ID) -}}
+                <div class="entrant-card">
+                    <img class="entrant-flag" src="{{ $team.ImageURL }}" alt="{{ $team.Name }}" />
+                    <div class="entrant-info">
+                        {{- if $participant -}}
+                            <div class="entrant-participant">{{ $participant.Name }}</div>
+                        {{- end -}}
+                        <div class="entrant-country">{{ $team.Name }}</div>
                     </div>
-                {{- end -}}
-            </div>
+                </div>
+            {{- end -}}
         </div>
     </section>
-    <footer class="center">
-        <a href="https://github.com/AdamJSc/sweepstake-markup-generator">Made with ♥ by Adam</a>
-    </footer>
-    </body>
-    </html>
+
+</main>
+
+<footer class="site-footer">
+    <a href="https://github.com/AdamJSc/sweepstake-markup-generator">Made with &#9829; by Adam</a>
+</footer>
+
+<script>
+    var burgerBtn = document.getElementById('burger-btn');
+    var siteNav   = document.getElementById('site-nav');
+
+    burgerBtn.addEventListener('click', function () {
+        var isOpen = siteNav.classList.toggle('open');
+        burgerBtn.setAttribute('aria-expanded', isOpen);
+    });
+
+    siteNav.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            siteNav.classList.remove('open');
+            burgerBtn.setAttribute('aria-expanded', 'false');
+        });
+    });
+</script>
+
+</body>
+</html>
 {{ end }}
 
 {{ define "outright-prize" }}
     {{- if . -}}
-        <div class="prize outright">
+        <div class="prize-card-outright">
             <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
             {{- if .ImageURL -}}
-                <div class="image-container"><img src="{{ .ImageURL }}" /></div>
+                <img class="prize-image" src="{{ .ImageURL }}" alt="{{ .PrizeName }}" />
             {{- end -}}
-            <div class="participant-name center"><h3>{{ .ParticipantName }}</h3></div>
+            <div class="prize-participant">{{ .ParticipantName }}</div>
         </div>
     {{- end -}}
 {{ end }}
 
 {{ define "ranked-prize" }}
     {{- if . -}}
-        <div class="prize ranked">
+        <div class="prize-card-ranked">
             <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
-            <div class="back-to-top center"><a href="#">[Back to top]</a></div>
-            <div class="rankings-container">
-                {{- if .Rankings -}}
-                    <table>
-                        {{- range .Rankings -}}
-                            <tr class="rank">
-                                <td class="rank-pos">{{ .Position }}</td>
-                                <td class="rank-image"><div class="image-container"><img src="{{ .ImageURL }}" /></div></td>
-                                <td class="rank-participant-name">{{ .ParticipantName }}</td>
-                                <td class="rank-value">{{ .Value }}</td>
-                            </tr>
-                        {{- end -}}
-                    </table>
-                {{- else -}}
-                    <h3>None yet!</h3>
-                {{- end -}}
-            </div>
-        </div>
-    {{- end -}}
-{{ end }}
-
-{{ define "match-table" }}
-    {{- $matches := .Matches -}}
-    {{- $participants := .Participants -}}
-    {{- if $matches -}}
-        <table class="matches">
-            {{- range $matches }}
-                {{- $match := . -}}
-                <tr class="match {{ if eq $match.Stage 1 }}stage-group{{- else -}}stage-ko{{- end -}}">
-                    <td class="id">{{ strip_text $match.ID }}</td>
-                    <td class="date">{{ short_date $match.Timestamp }}</td>
-
-                    {{- if $match.Home.Team -}}
-                        {{- $team := $match.Home.Team -}}
-                        {{- $participant := (get_participant_by_id $participants $team.ID) -}}
-                        <td class="home participant-name">{{ $participant.Name }}</td>
-                        <td class="home image">
-                            <div class="image-container"><img src="{{ $team.ImageURL }}" /></div>
-                        </td>
-                        <td class="home score">
-                            {{- if $match.Completed -}}{{ $match.Home.Goals }}{{- end -}}
-                        </td>
-                    {{- else -}}
-                        <td class="home tbc" colspan="3">TBC</td>
+            <a class="ranked-back-top" href="#">&#8593; Top</a>
+            {{- if .Rankings -}}
+                <table class="rankings-table">
+                    {{- range .Rankings -}}
+                        <tr>
+                            <td class="rank-pos">{{ .Position }}</td>
+                            <td class="rank-flag"><img src="{{ .ImageURL }}" alt="" /></td>
+                            <td class="rank-participant">{{ .ParticipantName }}</td>
+                            <td class="rank-value">{{ .Value }}</td>
+                        </tr>
                     {{- end -}}
-
-                    <td>
-                        {{- if $match.Completed -}}
-                            -
-                        {{- else -}}
-                            v
-                        {{- end -}}
-                    </td>
-
-                    {{- if $match.Away.Team -}}
-                        {{- $team := $match.Away.Team -}}
-                        {{- $participant := (get_participant_by_id $participants $team.ID) -}}
-                        <td class="away score">
-                            {{- if $match.Completed -}}{{ $match.Away.Goals }}{{- end -}}
-                        </td>
-                        <td class="away image">
-                            <div class="image-container"><img src="{{ $team.ImageURL }}" /></div>
-                        </td>
-                        <td class="away participant-name">{{ $participant.Name }}</td>
-                    {{- else -}}
-                        <td class="away tbc" colspan="3">TBC</td>
-                    {{- end -}}
-
-                    <td class="info">{{- strip_text $match.Notes -}}</td>
-                </tr>
+                </table>
+            {{- else -}}
+                <div class="no-rankings">None yet!</div>
             {{- end -}}
-        </table>
-    {{- else -}}
-        <h3>{{ .EmptyMessage }}</h3>
+        </div>
     {{- end -}}
 {{ end }}
