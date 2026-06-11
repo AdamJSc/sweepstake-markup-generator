@@ -397,37 +397,45 @@
             text-align: center;
         }
 
-        .rankings-table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+        .rankings-list { border-radius: 4px; overflow: hidden; }
 
-        .rankings-table td {
+        .ranking-row {
+            align-items: center;
+            display: flex;
             font-size: 0.78rem;
-            padding: 0.3rem 0.4rem;
-            vertical-align: middle;
+            gap: 0.5rem;
+            padding: 0.3rem 0.5rem;
         }
 
-        .rankings-table tr:nth-child(odd) { background: #f5f5f5; }
+        .rankings-list .ranking-row:nth-child(odd) { background: #f5f5f5; }
 
         .rank-pos {
             color: var(--muted);
+            flex-shrink: 0;
+            min-width: 1.5rem;
             text-align: right;
-            white-space: nowrap;
-            width: 1.5rem;
         }
 
-        .rank-flag img {
+        .rank-flag {
             display: block;
+            flex-shrink: 0;
             height: 14px;
             object-fit: contain;
             width: 21px;
         }
 
-        .rank-participant { font-weight: bold; }
+        .rank-participant {
+            flex: 1;
+            font-weight: bold;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
         .rank-value {
             color: var(--secondary);
+            flex-shrink: 0;
             font-weight: bold;
             text-align: right;
             white-space: nowrap;
@@ -752,16 +760,16 @@
             <div class="prize-name"><h2>{{ .PrizeName }}</h2></div>
             <a class="ranked-back-top" href="#">&#8593; Top</a>
             {{- if .Rankings -}}
-                <table class="rankings-table">
+                <div class="rankings-list">
                     {{- range .Rankings -}}
-                        <tr>
-                            <td class="rank-pos">{{ .Position }}</td>
-                            <td class="rank-flag"><img src="{{ .ImageURL }}" alt="" /></td>
-                            <td class="rank-participant">{{ .ParticipantName }}</td>
-                            <td class="rank-value">{{ .Value }}</td>
-                        </tr>
+                        <div class="ranking-row">
+                            <span class="rank-pos">{{ .Position }}</span>
+                            <img class="rank-flag" src="{{ .ImageURL }}" alt="" />
+                            <span class="rank-participant">{{ .ParticipantName }}</span>
+                            <span class="rank-value">{{ .Value }}</span>
+                        </div>
                     {{- end -}}
-                </table>
+                </div>
             {{- else -}}
                 <div class="no-rankings">None yet!</div>
             {{- end -}}
