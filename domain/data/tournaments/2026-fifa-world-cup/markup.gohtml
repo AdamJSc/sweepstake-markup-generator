@@ -37,6 +37,7 @@
             .center{ text-align: center; }
             .divider{ border-top: 2px solid #ddd; }
             .entrant.flex-container{ column-gap: 5px; justify-content: flex-start; }
+            .fixtures .score { display: none; }
             .flex-container{ align-items: center; display: flex; flex-wrap: wrap; justify-content: space-evenly; column-gap: 20px; }
             .header{ padding: 1rem; }
             .header .image-container{ margin: 0; max-width: 100px; }
@@ -47,7 +48,7 @@
             .main{ background: #eee; border-radius: 4px; margin: 0 auto; overflow: hidden; width: 100%; }
             .match{ text-align: left; }
             .match .home{ text-align: right; }
-            .match .participant-name{ display: none; }
+            .match.stage-group .id{ display: none; }
             .menu a{ background: {{ .Sweepstake.Branding.Primary }}; border-radius: 5px; color: #fff; font-family: 'Poor Story', cursive; font-size: 2rem; font-weight: bold; margin-top: 0.5rem; padding: 0.5rem 1rem; }
             .menu a:hover{ background: {{ .Sweepstake.Branding.Secondary }}; text-decoration: none; }
             .participant-name{ margin-top: 0.5rem; }
@@ -64,7 +65,7 @@
             .title{ padding-bottom: 1rem; }
             @media screen and (min-width: 550px){
                 body{ padding: 0 1rem 1rem; }
-                .match td.participant-name{ display: table-cell; }
+                .match.stage-group .id{ display: table-cell; }
             }
             @media screen and (min-width: 768px){
                 body{ padding: 0 1.5rem 1.5rem; }
@@ -197,7 +198,7 @@
         <table class="matches">
             {{- range $matches }}
                 {{- $match := . -}}
-                <tr class="match">
+                <tr class="match {{ if eq $match.Stage 1 }}stage-group{{- else -}}stage-ko{{- end -}}">
                     <td class="id">{{ strip_text $match.ID }}</td>
                     <td class="date">{{ short_date $match.Timestamp }}</td>
 
