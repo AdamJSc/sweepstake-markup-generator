@@ -10,6 +10,7 @@
         "runner_up": true,
         "third_place": true,
         "most_goals_conceded": true,
+        "most_goals_conceded_group_stage": true,
         "most_yellow_cards": true,
         "quickest_own_goal": true,
         "quickest_red_card": true

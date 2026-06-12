@@ -8,11 +8,12 @@ import (
 
 const (
 	// finalMatchID defines the id of the match considered to be the final
-	finalMatchID      = "F"
-	mostGoalsConceded = "Most Goals Conceded"
-	mostYellowCards   = "Most Yellow Cards"
-	quickestOwnGoal   = "Quickest Own Goal"
-	quickestRedCard   = "Quickest Red Card"
+	finalMatchID                = "F"
+	mostGoalsConceded           = "Most Goals Conceded"
+	mostGoalsConcededGroupStage = "Most Goals Conceded (Group Stage)"
+	mostYellowCards             = "Most Yellow Cards"
+	quickestOwnGoal             = "Quickest Own Goal"
+	quickestRedCard             = "Quickest Red Card"
 	// thirdPlaceMatchID defines the id of the match considered to be the third place play-off match
 	thirdPlaceMatchID    = "3P"
 	tournamentRunnerUp   = "Tournament Runner-Up"
@@ -123,9 +124,15 @@ var TournamentThirdPlace = func(s *Sweepstake) *OutrightPrize {
 }
 
 // MostGoalsConceded returns the teams who have conceded the most goals in descending order
-var MostGoalsConceded = func(s *Sweepstake) *RankedPrize {
+// if a stage is provided, only matches from that stage will be considered
+// if no stage is provided, all matches will be considered
+var MostGoalsConceded = func(s *Sweepstake, stage *MatchStage) *RankedPrize {
+	prizeName := mostGoalsConceded
+	if stage != nil && *stage == GroupStage {
+		prizeName = mostGoalsConcededGroupStage
+	}
 	defaultPrize := &RankedPrize{
-		PrizeName: mostGoalsConceded,
+		PrizeName: prizeName,
 		Rankings:  make([]Rank, 0),
 	}
 
@@ -139,13 +146,16 @@ var MostGoalsConceded = func(s *Sweepstake) *RankedPrize {
 		if !match.Completed {
 			continue
 		}
+		if stage != nil && match.Stage != *stage {
+			continue
+		}
 
 		totals.inc(match.Home.Team, int(match.Away.Goals)) // goals scored by away team are conceded by home team
 		totals.inc(match.Away.Team, int(match.Home.Goals)) // goals scored by home team are conceded by away team
 	}
 
 	return &RankedPrize{
-		PrizeName: mostGoalsConceded,
+		PrizeName: prizeName,
 		Rankings:  getPrizeRankingsFromAudit("⚽", totals, s.Participants),
 	}
 }

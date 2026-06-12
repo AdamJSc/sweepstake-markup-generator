@@ -8,13 +8,14 @@ import (
 )
 
 const (
-	mostGoalsConceded    = "Most Goals Conceded"
-	mostYellowCards      = "Most Yellow Cards"
-	quickestOwnGoal      = "Quickest Own Goal"
-	quickestRedCard      = "Quickest Red Card"
-	tournamentRunnerUp   = "Tournament Runner-Up"
-	tournamentThirdPlace = "Tournament Third Place"
-	tournamentWinner     = "Tournament Winner"
+	mostGoalsConceded           = "Most Goals Conceded"
+	mostGoalsConcededGroupStage = "Most Goals Conceded (Group Stage)"
+	mostYellowCards             = "Most Yellow Cards"
+	quickestOwnGoal             = "Quickest Own Goal"
+	quickestRedCard             = "Quickest Red Card"
+	tournamentRunnerUp          = "Tournament Runner-Up"
+	tournamentThirdPlace        = "Tournament Third Place"
+	tournamentWinner            = "Tournament Winner"
 )
 
 var (
@@ -570,6 +571,7 @@ func TestTournamentThirdPlace(t *testing.T) {
 
 func TestMostGoalsConceded(t *testing.T) {
 	defaultPrize := &domain.RankedPrize{PrizeName: mostGoalsConceded, Rankings: []domain.Rank{}}
+	groupStage := domain.GroupStage
 
 	teams := domain.TeamCollection{teamA, teamB, teamC, teamD}
 	participants := domain.ParticipantCollection{participantA, participantB, participantC, participantD}
@@ -577,6 +579,7 @@ func TestMostGoalsConceded(t *testing.T) {
 	tt := []struct {
 		name       string
 		sweepstake *domain.Sweepstake
+		stage      *domain.MatchStage
 		wantPrize  *domain.RankedPrize
 	}{
 		{
@@ -666,6 +669,90 @@ func TestMostGoalsConceded(t *testing.T) {
 			},
 		},
 		{
+			name: "provided match stage must filter matches used in expected rankings",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Teams: teams,
+					Matches: domain.MatchCollection{
+						// teamA = 1 (1)
+						// teamB = 2 (2)
+						{
+							Stage:     domain.GroupStage,
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:  teamA,
+								Goals: 2,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 1,
+							},
+						},
+						// not completed, should be ignored
+						{
+							// completed is false
+							Stage: domain.GroupStage,
+							Home: domain.MatchCompetitor{
+								Team:  teamA,
+								Goals: 99,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 99,
+							},
+						},
+						// should be ignored as stage is not group stage
+						{
+							Stage:     domain.KnockoutStage,
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 2,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamC,
+								Goals: 3,
+							},
+						},
+						// teamB = 1 (3)
+						// teamD = 0 (0)
+						{
+							Stage:     domain.GroupStage,
+							Completed: true,
+							Home: domain.MatchCompetitor{
+								Team:  teamB,
+								Goals: 0,
+							},
+							Away: domain.MatchCompetitor{
+								Team:  teamD,
+								Goals: 1,
+							},
+						},
+					},
+				},
+				Participants: participants,
+			},
+			stage: &groupStage,
+			wantPrize: &domain.RankedPrize{
+				PrizeName: mostGoalsConcededGroupStage,
+				Rankings: []domain.Rank{
+					{
+						Position:        1,
+						ImageURL:        "http://teamB.jpg",
+						ParticipantName: "Steve Fletcher (Team B)",
+						Value:           "⚽️ 3",
+					},
+					{
+						Position:        2,
+						ImageURL:        "http://teamA.jpg",
+						ParticipantName: "Marc Pugh (Team A)",
+						Value:           "⚽️ 1",
+					},
+					// teamD do not rank
+				},
+			},
+		},
+		{
 			name:      "no sweepstake must return default prize",
 			wantPrize: defaultPrize,
 			// nil sweepstake
@@ -674,7 +761,7 @@ func TestMostGoalsConceded(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			gotPrize := domain.MostGoalsConceded(tc.sweepstake)
+			gotPrize := domain.MostGoalsConceded(tc.sweepstake, tc.stage)
 			cmpDiff(t, tc.wantPrize, gotPrize)
 		})
 	}

@@ -52,9 +52,13 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	}
 
 	// generate ranked prize data
-	var mostGoalsConceded, mostYellowCards, quickestOwnGoal, quickestRedCard *RankedPrize
+	var mostGoalsConceded, mostGoalsConcededGroupStage, mostYellowCards, quickestOwnGoal, quickestRedCard *RankedPrize
 	if s.Prizes.MostGoalsConceded {
-		mostGoalsConceded = MostGoalsConceded(s)
+		mostGoalsConceded = MostGoalsConceded(s, nil)
+	}
+	if s.Prizes.MostGoalsConcededGroupStage {
+		stage := GroupStage
+		mostGoalsConcededGroupStage = MostGoalsConceded(s, &stage)
 	}
 	if s.Prizes.MostYellowCards {
 		mostYellowCards = MostYellowCards(s)
@@ -78,13 +82,14 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	}
 
 	type prizeData struct {
-		Winner            *OutrightPrize
-		RunnerUp          *OutrightPrize
-		ThirdPlace        *OutrightPrize
-		MostGoalsConceded *RankedPrize
-		MostYellowCards   *RankedPrize
-		QuickestOwnGoal   *RankedPrize
-		QuickestRedCard   *RankedPrize
+		Winner                      *OutrightPrize
+		RunnerUp                    *OutrightPrize
+		ThirdPlace                  *OutrightPrize
+		MostGoalsConceded           *RankedPrize
+		MostGoalsConcededGroupStage *RankedPrize
+		MostYellowCards             *RankedPrize
+		QuickestOwnGoal             *RankedPrize
+		QuickestRedCard             *RankedPrize
 	}
 
 	data := struct {
@@ -98,13 +103,14 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		ImageURL:    s.Tournament.ImageURL,
 		LastUpdated: lastUpdated,
 		Prizes: prizeData{
-			Winner:            winner,
-			RunnerUp:          runnerUp,
-			ThirdPlace:        thirdPlace,
-			MostGoalsConceded: mostGoalsConceded,
-			MostYellowCards:   mostYellowCards,
-			QuickestOwnGoal:   quickestOwnGoal,
-			QuickestRedCard:   quickestRedCard,
+			Winner:                      winner,
+			RunnerUp:                    runnerUp,
+			ThirdPlace:                  thirdPlace,
+			MostGoalsConceded:           mostGoalsConceded,
+			MostGoalsConcededGroupStage: mostGoalsConcededGroupStage,
+			MostYellowCards:             mostYellowCards,
+			QuickestOwnGoal:             quickestOwnGoal,
+			QuickestRedCard:             quickestRedCard,
 		},
 		Sweepstake: s,
 	}
@@ -134,13 +140,14 @@ func (pc ParticipantCollection) GetByTeamID(id string) *Participant {
 }
 
 type PrizeSettings struct {
-	Winner            bool `json:"winner"`
-	RunnerUp          bool `json:"runner_up"`
-	ThirdPlace        bool `json:"third_place"`
-	MostGoalsConceded bool `json:"most_goals_conceded"`
-	MostYellowCards   bool `json:"most_yellow_cards"`
-	QuickestOwnGoal   bool `json:"quickest_own_goal"`
-	QuickestRedCard   bool `json:"quickest_red_card"`
+	Winner                      bool `json:"winner"`
+	RunnerUp                    bool `json:"runner_up"`
+	ThirdPlace                  bool `json:"third_place"`
+	MostGoalsConceded           bool `json:"most_goals_conceded"`
+	MostGoalsConcededGroupStage bool `json:"most_goals_conceded_group_stage"`
+	MostYellowCards             bool `json:"most_yellow_cards"`
+	QuickestOwnGoal             bool `json:"quickest_own_goal"`
+	QuickestRedCard             bool `json:"quickest_red_card"`
 }
 
 type SweepstakeCollection []*Sweepstake
