@@ -305,7 +305,7 @@ func TestSweepstakesJSONLoader_LoadSweepstakes(t *testing.T) {
 			wantErr: fmt.Errorf("cannot unmarshal sweepstakes: %w", &json.UnmarshalTypeError{
 				Value: "number",
 				Type:  reflect.TypeOf("string"),
-				Field: "sweepstakes.id",
+				Field: "sweepstakes.Sweepstake.id",
 			}),
 		},
 		{

@@ -98,7 +98,7 @@ func (mc MatchCollection) GetWinnerByMatchID(id string) *Team {
 	return match.Winner
 }
 
-func (mc MatchCollection) GetRunnerUpByMatchID(id string) *Team {
+func (mc MatchCollection) GetLoserByMatchID(id string) *Team {
 	match := mc.GetByID(id)
 
 	if match == nil || !match.Completed || match.Winner == nil {

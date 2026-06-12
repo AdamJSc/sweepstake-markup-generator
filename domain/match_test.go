@@ -126,7 +126,7 @@ func TestMatchCollection_GetWinnerByMatchID(t *testing.T) {
 	}
 }
 
-func TestMatchCollection_GetRunnerUpByMatchID(t *testing.T) {
+func TestMatchCollection_GetLoserByMatchID(t *testing.T) {
 	matchID := "test-match"
 
 	teamA := &domain.Team{
@@ -246,7 +246,7 @@ func TestMatchCollection_GetRunnerUpByMatchID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			gotTeam := tc.matchCollection.GetRunnerUpByMatchID(matchID)
+			gotTeam := tc.matchCollection.GetLoserByMatchID(matchID)
 			cmpDiff(t, tc.wantTeam, gotTeam)
 		})
 	}

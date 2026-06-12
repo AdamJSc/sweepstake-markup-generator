@@ -8,6 +8,7 @@
       "prizes": {
         "winner": true,
         "runner_up": true,
+        "third_place": true,
         "most_goals_conceded": true,
         "most_yellow_cards": true,
         "quickest_own_goal": true,

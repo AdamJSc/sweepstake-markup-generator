@@ -40,12 +40,15 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	buf := &bytes.Buffer{}
 
 	// generate outright prize data
-	var winner, runnerUp *OutrightPrize
+	var winner, runnerUp, thirdPlace *OutrightPrize
 	if s.Prizes.Winner {
 		winner = TournamentWinner(s)
 	}
 	if s.Prizes.RunnerUp {
 		runnerUp = TournamentRunnerUp(s)
+	}
+	if s.Prizes.ThirdPlace {
+		thirdPlace = TournamentThirdPlace(s)
 	}
 
 	// generate ranked prize data
@@ -77,6 +80,7 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 	type prizeData struct {
 		Winner            *OutrightPrize
 		RunnerUp          *OutrightPrize
+		ThirdPlace        *OutrightPrize
 		MostGoalsConceded *RankedPrize
 		MostYellowCards   *RankedPrize
 		QuickestOwnGoal   *RankedPrize
@@ -96,6 +100,7 @@ func (s *Sweepstake) GenerateMarkup() ([]byte, error) {
 		Prizes: prizeData{
 			Winner:            winner,
 			RunnerUp:          runnerUp,
+			ThirdPlace:        thirdPlace,
 			MostGoalsConceded: mostGoalsConceded,
 			MostYellowCards:   mostYellowCards,
 			QuickestOwnGoal:   quickestOwnGoal,
@@ -131,6 +136,7 @@ func (pc ParticipantCollection) GetByTeamID(id string) *Participant {
 type PrizeSettings struct {
 	Winner            bool `json:"winner"`
 	RunnerUp          bool `json:"runner_up"`
+	ThirdPlace        bool `json:"third_place"`
 	MostGoalsConceded bool `json:"most_goals_conceded"`
 	MostYellowCards   bool `json:"most_yellow_cards"`
 	QuickestOwnGoal   bool `json:"quickest_own_goal"`

@@ -8,12 +8,13 @@ import (
 )
 
 const (
-	mostGoalsConceded  = "Most Goals Conceded"
-	mostYellowCards    = "Most Yellow Cards"
-	quickestOwnGoal    = "Quickest Own Goal"
-	quickestRedCard    = "Quickest Red Card"
-	tournamentRunnerUp = "Tournament Runner-Up"
-	tournamentWinner   = "Tournament Winner"
+	mostGoalsConceded    = "Most Goals Conceded"
+	mostYellowCards      = "Most Yellow Cards"
+	quickestOwnGoal      = "Quickest Own Goal"
+	quickestRedCard      = "Quickest Red Card"
+	tournamentRunnerUp   = "Tournament Runner-Up"
+	tournamentThirdPlace = "Tournament Third Place"
+	tournamentWinner     = "Tournament Winner"
 )
 
 var (
@@ -426,6 +427,142 @@ func TestTournamentRunnerUp(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			gotPrize := domain.TournamentRunnerUp(tc.sweepstake)
+			cmpDiff(t, tc.wantPrize, gotPrize)
+		})
+	}
+}
+
+func TestTournamentThirdPlace(t *testing.T) {
+	defaultPrize := &domain.OutrightPrize{PrizeName: tournamentThirdPlace, ParticipantName: "TBC"}
+
+	tt := []struct {
+		name       string
+		sweepstake *domain.Sweepstake
+		wantPrize  *domain.OutrightPrize
+	}{
+		{
+			name: "completed third place match with winning team and participant name must return prize with participant name and team name",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Matches: domain.MatchCollection{
+						{
+							ID:        "3P",
+							Completed: true,
+							Winner:    teamA,
+						},
+					},
+				},
+				Participants: domain.ParticipantCollection{participantA},
+			},
+			wantPrize: &domain.OutrightPrize{
+				PrizeName:       tournamentThirdPlace,
+				ParticipantName: "Marc Pugh (Team A)",
+				ImageURL:        "http://teamA.jpg",
+			},
+		},
+		{
+			name: "completed third place match with winning team and no participant name must return prize with team name only",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Matches: domain.MatchCollection{
+						{
+							ID:        "3P",
+							Completed: true,
+							Winner:    teamA,
+						},
+					},
+				},
+				Participants: domain.ParticipantCollection{
+					{
+						TeamID: "teamA",
+						// no name
+					},
+				},
+			},
+			wantPrize: &domain.OutrightPrize{
+				PrizeName:       tournamentThirdPlace,
+				ParticipantName: "Team A",
+				ImageURL:        "http://teamA.jpg",
+			},
+		},
+		{
+			name: "completed third place match with winning team and no participant must return prize with team name only",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Matches: domain.MatchCollection{
+						{
+							ID:        "3P",
+							Completed: true,
+							Winner:    teamA,
+						},
+					},
+				},
+				// no participants
+			},
+			wantPrize: &domain.OutrightPrize{
+				PrizeName:       tournamentThirdPlace,
+				ParticipantName: "Team A",
+				ImageURL:        "http://teamA.jpg",
+			},
+		},
+		{
+			name: "third place match that has not yet completed must return default prize",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Matches: domain.MatchCollection{
+						{
+							ID:     "3P",
+							Winner: teamA,
+							// completed is false
+						},
+					},
+				},
+				Participants: domain.ParticipantCollection{participantA},
+			},
+			wantPrize: defaultPrize,
+		},
+		{
+			name: "third place match that has no winner must return default prize",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Matches: domain.MatchCollection{
+						{
+							ID:        "3P",
+							Completed: true,
+							// no winner
+						},
+					},
+				},
+				Participants: domain.ParticipantCollection{participantA},
+			},
+			wantPrize: defaultPrize,
+		},
+		{
+			name: "no third place match must return default prize",
+			sweepstake: &domain.Sweepstake{
+				Tournament: &domain.Tournament{
+					Matches: domain.MatchCollection{
+						{
+							ID:        "NOT-3P",
+							Completed: true,
+							Winner:    teamA,
+						},
+					},
+				},
+				Participants: domain.ParticipantCollection{participantA},
+			},
+			wantPrize: defaultPrize,
+		},
+		{
+			name:      "no sweepstake must return default prize",
+			wantPrize: defaultPrize,
+			// nil sweepstake
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			gotPrize := domain.TournamentThirdPlace(tc.sweepstake)
 			cmpDiff(t, tc.wantPrize, gotPrize)
 		})
 	}

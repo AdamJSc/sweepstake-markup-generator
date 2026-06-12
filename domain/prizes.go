@@ -8,13 +8,16 @@ import (
 
 const (
 	// finalMatchID defines the id of the match considered to be the final
-	finalMatchID       = "F"
-	mostGoalsConceded  = "Most Goals Conceded"
-	mostYellowCards    = "Most Yellow Cards"
-	quickestOwnGoal    = "Quickest Own Goal"
-	quickestRedCard    = "Quickest Red Card"
-	tournamentRunnerUp = "Tournament Runner-Up"
-	tournamentWinner   = "Tournament Winner"
+	finalMatchID      = "F"
+	mostGoalsConceded = "Most Goals Conceded"
+	mostYellowCards   = "Most Yellow Cards"
+	quickestOwnGoal   = "Quickest Own Goal"
+	quickestRedCard   = "Quickest Red Card"
+	// thirdPlaceMatchID defines the id of the match considered to be the third place play-off match
+	thirdPlaceMatchID    = "3P"
+	tournamentRunnerUp   = "Tournament Runner-Up"
+	tournamentThirdPlace = "Tournament Third Place"
+	tournamentWinner     = "Tournament Winner"
 )
 
 // OutrightPrize represents a prize with a single outright winner
@@ -75,7 +78,7 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 	}
 
 	// get match runner-up
-	runnerUpTeam := s.Tournament.Matches.GetRunnerUpByMatchID(finalMatchID)
+	runnerUpTeam := s.Tournament.Matches.GetLoserByMatchID(finalMatchID)
 	if runnerUpTeam == nil {
 		return defaultPrize
 	}
@@ -88,6 +91,34 @@ var TournamentRunnerUp = func(s *Sweepstake) *OutrightPrize {
 		PrizeName:       tournamentRunnerUp,
 		ParticipantName: participantSummary,
 		ImageURL:        runnerUpTeam.ImageURL,
+	}
+}
+
+// TournamentThirdPlace determines the third place finisher of the provided Sweepstake
+var TournamentThirdPlace = func(s *Sweepstake) *OutrightPrize {
+	defaultPrize := &OutrightPrize{
+		PrizeName:       tournamentThirdPlace,
+		ParticipantName: "TBC",
+	}
+
+	if s == nil {
+		return defaultPrize
+	}
+
+	// get match winner
+	thirdPlaceTeam := s.Tournament.Matches.GetWinnerByMatchID(thirdPlaceMatchID)
+	if thirdPlaceTeam == nil {
+		return defaultPrize
+	}
+
+	// get participant who represents the match runner-up
+	participant := s.Participants.GetByTeamID(thirdPlaceTeam.ID)
+	participantSummary := getSummaryFromTeamAndParticipant(thirdPlaceTeam, participant)
+
+	return &OutrightPrize{
+		PrizeName:       tournamentThirdPlace,
+		ParticipantName: participantSummary,
+		ImageURL:        thirdPlaceTeam.ImageURL,
 	}
 }
 
