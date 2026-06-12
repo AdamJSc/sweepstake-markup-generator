@@ -173,7 +173,7 @@ func (t *TournamentFSLoader) LoadTournament(ctx context.Context) (*Tournament, e
 				return collection.GetByTeamID(id)
 			},
 			"short_date": func(t time.Time) string {
-				return t.Format("02/01")
+				return t.Format("Mon 02 Jan 15:04")
 			},
 			"sort_teams": func(collection TeamCollection) TeamCollection {
 				var sorted TeamCollection

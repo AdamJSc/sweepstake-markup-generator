@@ -102,11 +102,13 @@
 
         .site-nav {
             border-top: 1px solid rgba(255,255,255,0.15);
-            display: none;
-            padding: 0.5rem 1rem 0.75rem;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 1rem;
+            transition: max-height 0.15s ease, padding 0.15s ease;
         }
 
-        .site-nav.open { display: block; }
+        .site-nav.open { max-height: 500px; padding: 0.5rem 1rem 0.75rem; }
 
         .site-nav a {
             background: var(--secondary);
@@ -731,9 +733,14 @@
     });
 
     siteNav.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function () {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            var href = this.getAttribute('href');
             siteNav.classList.remove('open');
             burgerBtn.setAttribute('aria-expanded', 'false');
+            setTimeout(function () {
+                window.location.hash = href;
+            }, 150);
         });
     });
 </script>
