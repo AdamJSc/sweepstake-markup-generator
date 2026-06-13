@@ -1,8 +1,8 @@
 MATCH_ID,DATE,TIME,STAGE,COMPLETED,WINNER_TEAM_ID,HOME_TEAM_ID,AWAY_TEAM_ID,HOME_GOALS,AWAY_GOALS,HOME_YELLOW_CARDS,AWAY_YELLOW_CARDS,HOME_OG,AWAY_OG,HOME_RED_CARDS,AWAY_RED_CARDS,NOTES
 A1,11/06/2026,20:00,GROUP,Y,MEX,MEX,ZAF,2,0,1,2,,,1;C.Montes:90+2,2;Y.Sithole:49;T.Zwane:84,Group A MD1: Mexico vs South Africa (Mexico City)
-A2,12/06/2026,03:00,GROUP,N,,KOR,CZE,,,,,,,,,Group A MD1: South Korea vs Czechia (Guadalajara)
-B1,12/06/2026,20:00,GROUP,N,,CAN,BIH,,,,,,,,,Group B MD1: Canada vs Bosnia and Herzegovina (Toronto)
-D1,13/06/2026,02:00,GROUP,N,,USA,PRY,,,,,,,,,Group D MD1: USA vs Paraguay (Los Angeles)
+A2,12/06/2026,03:00,GROUP,Y,KOR,KOR,CZE,2,1,1,0,,,,,Group A MD1: South Korea vs Czechia (Guadalajara)
+B1,12/06/2026,20:00,GROUP,Y,,CAN,BIH,1,1,2,3,,,,,Group B MD1: Canada vs Bosnia and Herzegovina (Toronto)
+D1,13/06/2026,02:00,GROUP,Y,USA,USA,PRY,4,1,1,5,,1;D.Bobadilla:7,,,Group D MD1: USA vs Paraguay (Los Angeles)
 B2,13/06/2026,20:00,GROUP,N,,QAT,CHE,,,,,,,,,Group B MD1: Qatar vs Switzerland (San Francisco)
 C1,13/06/2026,23:00,GROUP,N,,BRA,MAR,,,,,,,,,Group C MD1: Brazil vs Morocco (New York/NJ)
 C2,14/06/2026,02:00,GROUP,N,,HTI,SCO,,,,,,,,,Group C MD1: Haiti vs Scotland (Boston)
