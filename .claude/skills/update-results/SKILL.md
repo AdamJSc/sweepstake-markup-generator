@@ -1,5 +1,5 @@
 ---
-name: update-matches
+name: update-results
 description: Fetch completed match stats from BBC Sport and update matches.csv for the active tournament. Use when the user wants to update results, pull stats, or sync match data.
 user-invocable: true
 allowed-tools:
@@ -11,7 +11,7 @@ allowed-tools:
   - Bash(python3 *)
 ---
 
-# /update-matches — Fetch match stats and update matches.csv
+# /update-results — Fetch match stats and update matches.csv
 
 Fetches completed match stats from BBC Sport and writes them into the active tournament's `matches.csv`.
 
@@ -48,7 +48,7 @@ Same format as own goals. Covers straight red cards and second yellows.
 ## Step 2 — Run the stats fetcher
 
 ```bash
-python3 .claude/skills/update-matches/fetch_stats.py domain/data/tournaments/<tournament>/matches.csv
+python3 .claude/skills/update-results/fetch_stats.py domain/data/tournaments/<tournament>/matches.csv
 ```
 
 The script:
@@ -117,7 +117,7 @@ Wait for the response. If no, stop.
 Pipe the JSON output from Step 2 back into the script with `--write`:
 
 ```bash
-python3 .claude/skills/update-matches/fetch_stats.py domain/data/tournaments/<tournament>/matches.csv --write <<'EOF'
+python3 .claude/skills/update-results/fetch_stats.py domain/data/tournaments/<tournament>/matches.csv --write <<'EOF'
 <paste the exact JSON output from Step 2>
 EOF
 ```
