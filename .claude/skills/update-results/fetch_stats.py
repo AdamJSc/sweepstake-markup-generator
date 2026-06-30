@@ -176,7 +176,7 @@ def extract_tipo_id(event, html):
 
 def parse_event_actions(event):
     """
-    Extract goals, OGs, and winner from a scores-fixtures event.
+    Extract goals, OGs, winner, AET, and penalties from a scores-fixtures event.
 
     OG attribution:
       - OG listed under HOME team's actions → scored by AWAY player → AWAY_OG
@@ -191,6 +191,22 @@ def parse_event_actions(event):
                     ogs.append({"urn": ag.get("playerUrn", ""), "name": ag["playerName"], "time": t})
         return ogs
 
+    # Detect AET and penalties
+    aet = False
+    penalties_home = None
+    penalties_away = None
+
+    # Check for AET in durationInfo or statusText
+    duration_info = event.get("durationInfo", {})
+    if duration_info.get("isAET") or "AET" in duration_info.get("displayValue", ""):
+        aet = True
+
+    # Check for penalty shootout info
+    if event.get("shootOut"):
+        shootout = event["shootOut"]
+        penalties_home = int(shootout.get("homeScore", 0) or 0)
+        penalties_away = int(shootout.get("awayScore", 0) or 0)
+
     return {
         "home_goals": int(event["home"].get("score", 0) or 0),
         "away_goals": int(event["away"].get("score", 0) or 0),
@@ -199,6 +215,9 @@ def parse_event_actions(event):
         "home_og": parse_ogs(event["away"].get("actions", [])),
         # away_og = OGs by AWAY team players = listed under HOME actions
         "away_og": parse_ogs(event["home"].get("actions", [])),
+        "aet": aet,
+        "penalties_home": penalties_home,
+        "penalties_away": penalties_away,
     }
 
 
@@ -277,6 +296,26 @@ def fmt_field(lst):
     return "" if not lst else f"{len(lst)};" + ";".join(lst)
 
 
+def fmt_notes(actions, home_id, away_id):
+    """Format notes text for AET and penalties."""
+    home_goals = actions["home_goals"]
+    away_goals = actions["away_goals"]
+    aet = actions["aet"]
+    pen_h = actions["penalties_home"]
+    pen_a = actions["penalties_away"]
+
+    if pen_h is not None and pen_a is not None:
+        # Penalties shootout
+        winner_name = home_id if pen_h > pen_a else away_id
+        return f"{home_goals}-{away_goals} AET, {winner_name} win {pen_h}-{pen_a} on penalties"
+    elif aet:
+        # Extra time but no penalties
+        return f"{home_goals}-{away_goals} AET"
+    else:
+        # Regular time
+        return ""
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -305,6 +344,10 @@ def write_results(csv_path, results):
         row["AWAY_OG"] = r["away_og"]
         row["HOME_RED_CARDS"] = r["home_red_cards"]
         row["AWAY_RED_CARDS"] = r["away_red_cards"]
+        # Append notes_text to existing NOTES field
+        if r.get("notes_text"):
+            existing = row.get("NOTES", "").strip()
+            row["NOTES"] = f"{existing} {r['notes_text']}".strip()
         updated += 1
 
     with open(csv_path, "w", newline="", encoding="utf-8") as f:
@@ -411,6 +454,7 @@ def main():
                 "away_og": fmt_field(resolve_og(actions["away_og"], urn_map)),
                 "home_red_cards": fmt_field(hr),
                 "away_red_cards": fmt_field(ar),
+                "notes_text": fmt_notes(actions, home_id, away_id),
                 "source_url": url or (
                     f"https://www.bbc.co.uk/sport/football/live/{item['tipo_id']}"
                     if item["tipo_id"] else ""

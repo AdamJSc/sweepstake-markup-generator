@@ -43,7 +43,7 @@ python3 .claude/skills/update-results/fetch_stats.py domain/data/tournaments/<to
 EOF
 ```
 
-The script updates every matched row (`COMPLETED`, `WINNER_TEAM_ID`, goals, cards, OGs) and prints how many rows were changed. `NOTES` and all other fields are preserved.
+The script updates every matched row (`COMPLETED`, `WINNER_TEAM_ID`, goals, cards, OGs) and prints how many rows were changed. Match notes (AET/penalties info) are **appended** to the existing `NOTES` field. All other fields are preserved.
 
 ---
 
@@ -65,6 +65,7 @@ The script updates every matched row (`COMPLETED`, `WINNER_TEAM_ID`, goals, card
       "away_og": "",
       "home_red_cards": "",
       "away_red_cards": "1;T.Muharemović:80",
+      "notes_text": "2-1 AET",
       "source_url": "https://www.bbc.co.uk/sport/football/live/..."
     }
   ],
@@ -89,3 +90,13 @@ Format: `N;PLAYER:MINUTE` — total count, then one `PLAYER:MINUTE` pair per own
 ### Red cards (`HOME_RED_CARDS`, `AWAY_RED_CARDS`)
 
 Same format as own goals. Covers straight red cards and second yellows.
+
+### Match notes (`notes_text`)
+
+Automatically generated notes for matches that went to extra time or penalties:
+
+- **Extra time only:** `"2-1 AET"` — appended to the match's `NOTES` field
+- **Extra time + penalties:** `"1-1 AET, Morocco win 4-3 on penalties"` — appended to the match's `NOTES` field
+- **Regular time:** empty string (no note added)
+
+The `notes_text` is appended to any existing `NOTES` content; no existing notes are lost.
