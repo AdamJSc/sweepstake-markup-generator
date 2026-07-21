@@ -196,9 +196,9 @@ def parse_event_actions(event):
     penalties_home = None
     penalties_away = None
 
-    # Check for AET in durationInfo or statusText
-    duration_info = event.get("durationInfo", {})
-    if duration_info.get("isAET") or "AET" in duration_info.get("displayValue", ""):
+    # Check for AET via periodLabel/statusComment
+    if (event.get("periodLabel", {}).get("value") == "AET"
+            or event.get("statusComment", {}).get("value") == "AET"):
         aet = True
 
     # Check for penalty shootout info
@@ -274,7 +274,7 @@ def fetch_lineups(tipo_id):
                             home_y += 1
                         else:
                             away_y += 1
-                    elif ct in ("Red Card", "Second Yellow Card"):
+                    elif ct in ("Red Card", "Second Yellow Card", "Two Yellow Cards"):
                         if side == "home":
                             home_r.append(entry)
                         else:
